@@ -164,25 +164,6 @@ body {
   );
 }
 
-/* Stars */
-#wallpaper::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 32% 0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.95) 0.8px, transparent 1.2px),
-    radial-gradient(circle, rgba(255,255,255,0.7) 0.8px, transparent 1.2px),
-    radial-gradient(circle, rgba(200,210,255,0.6) 0.6px, transparent 1px),
-    radial-gradient(circle, rgba(255,240,200,0.5) 0.6px, transparent 1px);
-  background-size: 110px 85px, 170px 125px, 240px 190px, 300px 240px;
-  background-position: 12px 8px, 55px 38px, 18px 65px, 90px 20px;
-  animation: twinkle 6s ease-in-out infinite alternate;
-}
-
-@keyframes twinkle {
-  from { opacity: 0.7; }
-  to   { opacity: 1; }
-}
 
 .wp-sun {
   position: absolute;
@@ -444,6 +425,41 @@ body {
 }
 
 .win.minimized {
+  display: none;
+}
+
+@keyframes win-open {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.win-opening {
+  animation: win-open 0.12s ease-out forwards;
+}
+
+/* === Resize Handle === */
+.win-resize-handle {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0, transparent 2px,
+      var(--silver-dark) 2px, var(--silver-dark) 3px
+    );
+  opacity: 0.5;
+  z-index: 2;
+}
+
+.win-resize-handle:hover {
+  opacity: 0.9;
+}
+
+.win[data-maximized="1"] .win-resize-handle {
   display: none;
 }
 

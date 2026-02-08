@@ -184,7 +184,6 @@ var Windows = {
     var win = Windows.create(id, title, repo.language);
 
     var content = win.querySelector('.win-content');
-    content.style.height = (CONFIG.windowDefaults.height - 48) + 'px';
 
     if (repo.has_pages) {
       var iframe = document.createElement('iframe');
@@ -214,9 +213,8 @@ var Windows = {
       Windows.focus(id);
       return;
     }
-    var win = Windows.create(id, 'About vaporsoft Desktop', null);
+    var win = Windows.create(id, 'About vaporsoft Desktop', null, 'assets/icons/icon-about.svg');
     var content = win.querySelector('.win-content');
-    content.style.height = '260px';
     content.innerHTML =
       '<div class="about-card">' +
       '<div class="about-logo"></div>' +
@@ -237,9 +235,8 @@ var Windows = {
       Windows.focus(id);
       return;
     }
-    var win = Windows.create(id, 'My Projects', null);
+    var win = Windows.create(id, 'My Projects', null, 'assets/icons/icon-projects.svg');
     var content = win.querySelector('.win-content');
-    content.style.height = '320px';
 
     var pinned = CONFIG.pinnedRepos;
     var pinnedRepos = pinned.map(function(name) {
@@ -290,9 +287,9 @@ var Windows = {
     STATE.windows[id] = { id: id, title: 'My Projects', minimized: false };
   },
 
-  create: function(id, title, lang) {
+  create: function(id, title, lang, iconOverride) {
     var win = document.createElement('div');
-    win.className = 'win bevel-raised';
+    win.className = 'win bevel-raised win-opening';
     win.id = id;
     win.style.width = CONFIG.windowDefaults.width + 'px';
     win.style.height = CONFIG.windowDefaults.height + 'px';
@@ -302,7 +299,7 @@ var Windows = {
     win.style.left = (80 + offset) + 'px';
     win.style.top = (40 + offset) + 'px';
 
-    var iconSrc = Icons.getIconSrc(lang);
+    var iconSrc = iconOverride || Icons.getIconSrc(lang);
     win.innerHTML =
       '<div class="win-titlebar">' +
       '<img class="win-title-icon" src="' + iconSrc + '" alt="">' +
@@ -314,13 +311,42 @@ var Windows = {
       '</div>' +
       '</div>' +
       '<div class="win-menubar"><span>File</span><span>View</span><span>Help</span></div>' +
-      '<div class="win-content"></div>';
+      '<div class="win-content"></div>' +
+      '<div class="win-resize-handle"></div>';
 
     Windows.bindControls(win, id);
     Windows.makeDraggable(win);
+    Windows.makeResizable(win);
     win.addEventListener('mousedown', function() { Windows.focus(id); });
 
     return win;
+  },
+
+  makeResizable: function(win) {
+    var handle = win.querySelector('.win-resize-handle');
+    var startX, startY, startW, startH;
+    var resizing = false;
+
+    handle.addEventListener('mousedown', function(e) {
+      if (win.dataset.maximized === '1') return;
+      resizing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = win.offsetWidth;
+      startH = win.offsetHeight;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!resizing) return;
+      win.style.width = Math.max(320, startW + (e.clientX - startX)) + 'px';
+      win.style.height = Math.max(200, startH + (e.clientY - startY)) + 'px';
+    });
+
+    document.addEventListener('mouseup', function() {
+      resizing = false;
+    });
   },
 
   bindControls: function(win, id) {
@@ -331,6 +357,10 @@ var Windows = {
       Windows.minimize(id);
     });
     win.querySelector('.win-btn-max').addEventListener('click', function() {
+      Windows.toggleMaximize(win);
+    });
+    win.querySelector('.win-titlebar').addEventListener('dblclick', function(e) {
+      if (e.target.tagName === 'BUTTON') return;
       Windows.toggleMaximize(win);
     });
   },
@@ -414,8 +444,10 @@ var Windows = {
       if (!dragging) return;
       var dx = e.clientX - startX;
       var dy = e.clientY - startY;
-      win.style.left = Math.max(0, startLeft + dx) + 'px';
-      win.style.top = Math.max(0, startTop + dy) + 'px';
+      var maxX = window.innerWidth - 80;
+      var maxY = window.innerHeight - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--taskbar-h')) - 28;
+      win.style.left = Math.max(0, Math.min(maxX, startLeft + dx)) + 'px';
+      win.style.top = Math.max(0, Math.min(maxY, startTop + dy)) + 'px';
     });
 
     document.addEventListener('mouseup', function() {
@@ -707,6 +739,19 @@ var App = {
       Taskbar.init();
       StartMenu.init();
       ContextMenu.init();
+
+      // Deselect icons on desktop background click
+      document.getElementById('desktop').addEventListener('click', function(e) {
+        var t = e.target;
+        if (t.id === 'desktop' || t.id === 'wallpaper' || t.id === 'icon-grid' ||
+            t.classList.contains('wp-sun') || t.classList.contains('wp-grid') ||
+            t.classList.contains('wp-mountains') || t.classList.contains('wp-horizon')) {
+          document.querySelectorAll('.desktop-icon').forEach(function(i) {
+            i.classList.remove('selected');
+          });
+        }
+      });
+
       GitHubAPI.fetch(function(repos) {
         Icons.render(repos);
       });
