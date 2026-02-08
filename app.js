@@ -37,6 +37,7 @@ var CONFIG = {
     'TypeScript': 'icon-typescript.svg',
     'HTML':       'icon-html.svg',
   },
+  pinnedRepos: ['win95-oem-keygen', 'mc-texture-tool', 'ai-governance'],
   bootDuration: 2500,
   windowDefaults: { width: 500, height: 380 }
 };
@@ -113,6 +114,10 @@ var Icons = {
       grid.appendChild(icon);
     });
 
+    // Add "My Projects" icon
+    var projectsIcon = Icons.createProjectsIcon();
+    grid.appendChild(projectsIcon);
+
     // Add "About" icon
     var aboutIcon = Icons.createAboutIcon();
     grid.appendChild(aboutIcon);
@@ -139,6 +144,19 @@ var Icons = {
       Windows.open(repo);
     });
 
+    return el;
+  },
+
+  createProjectsIcon: function() {
+    var el = document.createElement('div');
+    el.className = 'desktop-icon';
+    el.title = 'My Projects';
+    el.innerHTML =
+      '<img src="assets/icons/icon-default.svg" alt="projects">' +
+      '<div class="desktop-icon-label">My Projects</div>';
+    el.addEventListener('dblclick', function() {
+      Windows.openProjects();
+    });
     return el;
   },
 
@@ -180,10 +198,17 @@ var Windows = {
     if (repo.has_pages) {
       var iframe = document.createElement('iframe');
       iframe.className = 'win-iframe';
-      iframe.src = 'https://corderro-artz.github.io/' + repo.name + '/';
+      iframe.src = 'https://' + CONFIG.username + '.github.io/' + repo.name + '/';
       content.appendChild(iframe);
     } else {
-      content.innerHTML = Windows.buildProjectCard(repo);
+      content.innerHTML = '<div class="readme-loading">Loading README\u2026</div>';
+      README.fetch(repo, function(md) {
+        if (md) {
+          content.innerHTML = '<div class="readme-content">' + Markdown.parse(md) + '</div>';
+        } else {
+          content.innerHTML = Windows.buildProjectCard(repo);
+        }
+      });
     }
 
     document.getElementById('window-layer').appendChild(win);
@@ -213,6 +238,65 @@ var Windows = {
     Windows.focus(id);
     Taskbar.addWindow(id, 'About');
     STATE.windows[id] = { id: id, title: 'About', minimized: false };
+  },
+
+  openProjects: function() {
+    var id = 'win-projects';
+    if (document.getElementById(id)) {
+      Windows.focus(id);
+      return;
+    }
+    var win = Windows.create(id, 'My Projects', null);
+    var content = win.querySelector('.win-content');
+    content.style.height = '320px';
+
+    var pinned = CONFIG.pinnedRepos;
+    var pinnedRepos = pinned.map(function(name) {
+      return STATE.repos.find(function(r) { return r.name === name; });
+    }).filter(Boolean);
+
+    // If repos haven't loaded yet, show all repos
+    if (pinnedRepos.length === 0 && STATE.repos.length > 0) {
+      pinnedRepos = STATE.repos.slice(0, 6);
+    }
+
+    var html = '<div class="projects-list"><h2>Pinned Projects</h2>';
+    if (pinnedRepos.length === 0) {
+      html += '<div class="readme-loading">Loading projects\u2026</div>';
+    } else {
+      pinnedRepos.forEach(function(repo) {
+        var lang = repo.language || 'Unknown';
+        var color = CONFIG.langColors[lang] || '#888';
+        html +=
+          '<div class="project-item" data-repo="' + Icons.escapeHtml(repo.name) + '">' +
+          '<img src="' + Icons.getIconSrc(repo.language) + '" alt="">' +
+          '<div class="project-item-info">' +
+          '<div class="project-item-name">' + Icons.escapeHtml(repo.name) + '</div>' +
+          '<div class="project-item-desc">' + Icons.escapeHtml(repo.description || 'No description') + '</div>' +
+          '<div class="project-item-meta">' +
+          '<span style="color:' + color + '">&#9679; ' + Icons.escapeHtml(lang) + '</span>' +
+          ' &nbsp;&#9733; ' + (repo.stargazers_count || 0) +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      });
+    }
+    html += '</div>';
+    content.innerHTML = html;
+
+    // Bind click on each project item to open its window
+    content.querySelectorAll('.project-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var name = item.dataset.repo;
+        var repo = STATE.repos.find(function(r) { return r.name === name; });
+        if (repo) Windows.open(repo);
+      });
+    });
+
+    document.getElementById('window-layer').appendChild(win);
+    Windows.focus(id);
+    Taskbar.addWindow(id, 'My Projects');
+    STATE.windows[id] = { id: id, title: 'My Projects', minimized: false };
   },
 
   create: function(id, title, lang) {
@@ -363,6 +447,99 @@ var Windows = {
       '</div>' +
       '<a class="btn-github" href="' + repo.html_url + '" target="_blank" rel="noopener">View on GitHub</a>' +
       '</div>';
+  }
+};
+
+/* ===== MARKDOWN ===== */
+var Markdown = {
+  parse: function(md) {
+    // Escape HTML first
+    var s = md
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Fenced code blocks
+    s = s.replace(/```[\w]*\n([\s\S]*?)```/g, function(_, code) {
+      return '<pre><code>' + code.trimEnd() + '</code></pre>';
+    });
+
+    // Inline code
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Images before links
+    s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+
+    // Links
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+    // Bold & italic
+    s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
+    s = s.replace(/_(.+?)_/g, '<em>$1</em>');
+
+    // HR
+    s = s.replace(/^---+$/gm, '<hr>');
+
+    // Headers
+    s = s.replace(/^#{6}\s+(.+)$/gm, '<h6>$1</h6>');
+    s = s.replace(/^#{5}\s+(.+)$/gm, '<h5>$1</h5>');
+    s = s.replace(/^#{4}\s+(.+)$/gm, '<h4>$1</h4>');
+    s = s.replace(/^#{3}\s+(.+)$/gm, '<h3>$1</h3>');
+    s = s.replace(/^#{2}\s+(.+)$/gm, '<h2>$1</h2>');
+    s = s.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+
+    // Blockquotes
+    s = s.replace(/^&gt;\s?(.*)$/gm, '<blockquote>$1</blockquote>');
+
+    // Unordered lists (simple — consecutive lines)
+    s = s.replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>');
+    s = s.replace(/(<li>[\s\S]*?<\/li>)/g, function(m) {
+      if (!m.startsWith('<ul>')) return '<ul>' + m + '</ul>';
+      return m;
+    });
+
+    // Ordered lists
+    s = s.replace(/^\d+\.\s+(.+)$/gm, '<oli>$1</oli>');
+    s = s.replace(/(<oli>[\s\S]*?<\/oli>)/g, function(m) {
+      return '<ol>' + m.replace(/<\/?oli>/g, function(t) { return t === '<oli>' ? '<li>' : '</li>'; }) + '</ol>';
+    });
+
+    // Paragraphs: wrap double-newline-separated blocks not already tagged
+    var lines = s.split(/\n\n+/);
+    s = lines.map(function(block) {
+      block = block.trim();
+      if (!block) return '';
+      if (/^<[hupbodli]/.test(block) || /^<pre/.test(block) || /^<hr/.test(block) || /^<blockquote/.test(block)) return block;
+      return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+    }).join('\n');
+
+    return s;
+  }
+};
+
+/* ===== README ===== */
+var README = {
+  fetch: function(repo, callback) {
+    var branches = ['main', 'master'];
+    var idx = 0;
+    function tryNext() {
+      if (idx >= branches.length) { callback(null); return; }
+      var branch = branches[idx++];
+      fetch('https://raw.githubusercontent.com/' + CONFIG.username + '/' + repo.name + '/' + branch + '/README.md')
+        .then(function(res) {
+          if (res.ok) return res.text();
+          return null;
+        })
+        .then(function(text) {
+          if (text) callback(text);
+          else tryNext();
+        })
+        .catch(function() { tryNext(); });
+    }
+    tryNext();
   }
 };
 
