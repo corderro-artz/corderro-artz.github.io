@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>corderro-artz — vaporsoft</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Boot Screen -->
+  <div id="boot-screen">
+    <div class="boot-logo">
+      <div class="boot-logo-icon"></div>
+      <div class="boot-logo-text">vaporsoft</div>
+      <div class="boot-logo-sub">Professional Edition</div>
+    </div>
+    <div class="boot-bar-wrap">
+      <div class="boot-bar"></div>
+    </div>
+    <div class="boot-copy">Copyright &copy; 2024 vaporsoft Corporation</div>
+  </div>
+
+  <!-- Desktop -->
+  <div id="desktop" hidden>
+    <!-- Icon Grid -->
+    <div id="icon-grid"></div>
+
+    <!-- Window Layer -->
+    <div id="window-layer"></div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu" hidden>
+      <ul>
+        <li id="ctx-refresh">Refresh</li>
+        <li id="ctx-about">About vaporsoft Desktop</li>
+      </ul>
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu" hidden>
+      <div class="start-menu-header">
+        <div class="start-menu-avatar"></div>
+        <div class="start-menu-user">
+          <div class="start-menu-brand">vaporsoft</div>
+          <div class="start-menu-tagline">where code meets nostalgia</div>
+        </div>
+      </div>
+      <div class="start-menu-body">
+        <div class="start-menu-section">
+          <div class="start-menu-section-title">Contact</div>
+          <div id="start-menu-contacts"></div>
+        </div>
+        <div class="start-menu-section">
+          <div class="start-menu-section-title">About</div>
+          <div id="start-menu-about"></div>
+        </div>
+      </div>
+      <div class="start-menu-footer">
+        <button id="start-shutdown">Shut Down</button>
+      </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+      <button id="start-btn">
+        <span class="start-icon"></span>
+        <span>Start</span>
+      </button>
+      <div id="taskbar-windows"></div>
+      <div id="taskbar-clock"></div>
+    </div>
+  </div>
+
+  <!-- Mobile Notice -->
+  <div id="mobile-notice" hidden>
+    <div class="mobile-notice-box bevel-raised">
+      <div class="mobile-notice-title">vaporsoft Desktop</div>
+      <p>This site is designed for desktop browsers.</p>
+      <p>Please visit on a screen wider than 600px for the full experience.</p>
+      <a href="https://github.com/corderro-artz" class="btn-link">View GitHub Profile</a>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
