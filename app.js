@@ -39,7 +39,7 @@ var CONFIG = {
   },
   pinnedRepos: ['win95-oem-keygen', 'mc-texture-tool', 'ai-governance'],
   bootDuration: 2500,
-  windowDefaults: { width: 500, height: 380 }
+  windowDefaults: { width: 560, height: 430 }
 };
 
 /* ===== STATE ===== */
@@ -108,19 +108,14 @@ var Icons = {
     var grid = document.getElementById('icon-grid');
     grid.innerHTML = '';
 
-    // Filter out the .github.io repo itself from the icon list (or keep it, your choice)
+    // Special system icons first
+    grid.appendChild(Icons.createProjectsIcon());
+    grid.appendChild(Icons.createAboutIcon());
+
+    // Repo icons
     repos.forEach(function(repo) {
-      var icon = Icons.createIcon(repo);
-      grid.appendChild(icon);
+      grid.appendChild(Icons.createIcon(repo));
     });
-
-    // Add "My Projects" icon
-    var projectsIcon = Icons.createProjectsIcon();
-    grid.appendChild(projectsIcon);
-
-    // Add "About" icon
-    var aboutIcon = Icons.createAboutIcon();
-    grid.appendChild(aboutIcon);
   },
 
   createIcon: function(repo) {
@@ -152,11 +147,9 @@ var Icons = {
     el.className = 'desktop-icon';
     el.title = 'My Projects';
     el.innerHTML =
-      '<img src="assets/icons/icon-default.svg" alt="projects">' +
+      '<img src="assets/icons/icon-projects.svg" alt="projects">' +
       '<div class="desktop-icon-label">My Projects</div>';
-    el.addEventListener('dblclick', function() {
-      Windows.openProjects();
-    });
+    el.addEventListener('dblclick', function() { Windows.openProjects(); });
     return el;
   },
 
@@ -165,11 +158,9 @@ var Icons = {
     el.className = 'desktop-icon';
     el.title = 'About vaporsoft Desktop';
     el.innerHTML =
-      '<img src="assets/icons/icon-default.svg" alt="about">' +
+      '<img src="assets/icons/icon-about.svg" alt="about">' +
       '<div class="desktop-icon-label">About</div>';
-    el.addEventListener('dblclick', function() {
-      Windows.openAbout();
-    });
+    el.addEventListener('dblclick', function() { Windows.openAbout(); });
     return el;
   },
 
@@ -638,6 +629,19 @@ var StartMenu = {
   },
 
   populate: function() {
+    var apps = [
+      { label: 'My Projects', icon: 'assets/icons/icon-projects.svg', action: function() { Windows.openProjects(); } },
+      { label: 'About vaporsoft', icon: 'assets/icons/icon-about.svg', action: function() { Windows.openAbout(); } }
+    ];
+    var appsEl = document.getElementById('start-menu-apps');
+    apps.forEach(function(app) {
+      var div = document.createElement('div');
+      div.className = 'start-menu-link';
+      div.innerHTML = '<img class="link-icon" src="' + app.icon + '" alt="">' + Icons.escapeHtml(app.label);
+      div.addEventListener('click', app.action);
+      appsEl.appendChild(div);
+    });
+
     var contactEl = document.getElementById('start-menu-contacts');
     CONFIG.contact.forEach(function(c) {
       var a = document.createElement('a');
@@ -645,17 +649,9 @@ var StartMenu = {
       a.href = c.url;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.innerHTML = '<span class="link-icon">' + c.icon + '</span>' + c.label;
+      a.innerHTML = '<span class="link-icon">' + c.icon + '</span>' + Icons.escapeHtml(c.label);
       contactEl.appendChild(a);
     });
-
-    var aboutEl = document.getElementById('start-menu-about');
-    var p = document.createElement('div');
-    p.className = 'start-menu-link';
-    p.style.cursor = 'default';
-    p.style.pointerEvents = 'none';
-    p.textContent = CONFIG.brand.description;
-    aboutEl.appendChild(p);
   }
 };
 
