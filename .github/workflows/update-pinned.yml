@@ -1,0 +1,55 @@
+name: Update Pinned Repos
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6am UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-pinned:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch pinned repos via GraphQL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          QUERY='{ "query": "{ user(login: \"'"$OWNER"'\") { pinnedItems(first: 6, types: REPOSITORY) { nodes { ... on Repository { name description url stargazerCount primaryLanguage { name } } } } } }" }'
+
+          RESPONSE=$(curl -s -H "Authorization: bearer $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -X POST https://api.github.com/graphql \
+            -d "$QUERY")
+
+          echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          nodes = data.get('data', {}).get('user', {}).get('pinnedItems', {}).get('nodes', [])
+          pinned = []
+          for r in nodes:
+              if r:
+                  pinned.append({
+                      'name': r.get('name', ''),
+                      'description': r.get('description', ''),
+                      'url': r.get('url', ''),
+                      'stars': r.get('stargazerCount', 0),
+                      'language': (r.get('primaryLanguage') or {}).get('name', '')
+                  })
+          print(json.dumps(pinned, indent=2))
+          " > pinned.json
+
+          echo "Fetched $(python3 -c "import json; print(len(json.load(open('pinned.json'))))" ) pinned repos"
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pinned.json
+          git diff --staged --quiet || git commit -m "chore: update pinned repos [skip ci]" && git push

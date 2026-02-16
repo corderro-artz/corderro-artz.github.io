@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:no-designer.shop)",
+      "Bash(dir:*)",
+      "Bash(python -m http.server:*)",
+      "Bash(start:*)",
+      "mcp__MCP_DOCKER__browser_navigate",
+      "mcp__MCP_DOCKER__browser_wait_for",
+      "mcp__MCP_DOCKER__browser_evaluate",
+      "mcp__MCP_DOCKER__browser_run_code",
+      "mcp__MCP_DOCKER__browser_take_screenshot",
+      "mcp__MCP_DOCKER__browser_click",
+      "mcp__MCP_DOCKER__browser_snapshot",
+      "mcp__MCP_DOCKER__browser_type",
+      "mcp__MCP_DOCKER__browser_press_key"
+    ]
+  }
+}

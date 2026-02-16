@@ -1,92 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>corderro-artz — vaporsoft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>guest@vaporsoft.dev: ~</title>
+  <meta name="description" content="vaporsoft.dev — developer terminal portfolio">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▸</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <!-- CRT power-on overlay -->
+  <div id="crt-overlay"></div>
 
-  <!-- Boot Screen -->
-  <div id="boot-screen">
-    <div class="boot-logo">
-      <div class="boot-logo-icon"></div>
-      <div class="boot-logo-text">vaporsoft</div>
-      <div class="boot-logo-sub">Professional Edition</div>
-    </div>
-    <div class="boot-bar-wrap">
-      <div class="boot-bar"></div>
-    </div>
-    <div class="boot-copy">Copyright &copy; 2024 vaporsoft Corporation</div>
-  </div>
-
-  <!-- Desktop -->
-  <div id="desktop" hidden>
-    <!-- Wallpaper -->
-    <div id="wallpaper">
-      <div class="wp-sun"></div>
-      <div class="wp-horizon"></div>
-      <div class="wp-mountains"></div>
-      <div class="wp-grid"></div>
-    </div>
-
-    <!-- Icon Grid -->
-    <div id="icon-grid"></div>
-
-    <!-- Window Layer -->
-    <div id="window-layer"></div>
-
-    <!-- Context Menu -->
-    <div id="context-menu" class="context-menu" hidden>
-      <ul>
-        <li id="ctx-refresh">Refresh</li>
-        <li id="ctx-about">About vaporsoft Desktop</li>
-      </ul>
-    </div>
-
-    <!-- Start Menu -->
-    <div id="start-menu" hidden>
-      <div class="start-menu-header">
-        <div class="start-menu-avatar"></div>
-        <div class="start-menu-user">
-          <div class="start-menu-brand">vaporsoft</div>
-          <div class="start-menu-tagline">where code meets nostalgia</div>
-        </div>
+  <!-- Monitor -->
+  <div id="monitor">
+    <!-- Screen -->
+    <div id="screen">
+      <div id="terminal">
+        <div id="output"></div>
+        <div id="input-line"><span id="prompt-text"></span><span id="input-before"></span><span id="cursor"
+            class="blink">█</span><span id="input-after"></span><span id="ghost"></span></div>
       </div>
-      <div class="start-menu-body">
-        <div class="start-menu-section">
-          <div class="start-menu-section-title">Apps</div>
-          <div id="start-menu-apps"></div>
+
+      <!-- Mobile quick-commands -->
+      <div id="mobile-bar">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Command menu">&#xf0c9;</button>
+        <div class="mobile-quick-btns" id="mobile-quick-btns">
+          <button class="cmd-btn" data-cmd="help">help</button>
+          <button class="cmd-btn" data-cmd="about">about</button>
+          <button class="cmd-btn" data-cmd="projects">projects</button>
+          <button class="cmd-btn" data-cmd="theme">theme</button>
+          <button class="cmd-btn" data-cmd="clear">clear</button>
         </div>
-        <div class="start-menu-section">
-          <div class="start-menu-section-title">Contact</div>
-          <div id="start-menu-contacts"></div>
-        </div>
+        <div class="cmd-menu" id="cmd-menu"></div>
       </div>
-      <div class="start-menu-footer">
-        <button id="start-shutdown">Shut Down</button>
-      </div>
+
+      <!-- CRT effect layers -->
+      <div id="scanlines"></div>
+      <div id="vignette"></div>
     </div>
 
-    <!-- Taskbar -->
-    <div id="taskbar">
-      <button id="start-btn" title="Start"></button>
-      <div id="taskbar-windows"></div>
-      <div id="taskbar-clock"></div>
+    <!-- Monitor bezel -->
+    <div id="bezel">
+      <div class="bezel-section">
+        <span id="power-led"></span>
+        <span class="bezel-model">&copy; vaporsoft.dev</span>
+      </div>
+      <div class="bezel-section">
+        <span class="bezel-badge">vaporsoft-web-term</span>
+      </div>
     </div>
   </div>
 
-  <!-- Mobile Notice -->
-  <div id="mobile-notice" hidden>
-    <div class="mobile-notice-box bevel-raised">
-      <div class="mobile-notice-title">vaporsoft Desktop</div>
-      <p>This site is designed for desktop browsers.</p>
-      <p>Please visit on a screen wider than 600px for the full experience.</p>
-      <a href="https://github.com/corderro-artz" class="btn-link">View GitHub Profile</a>
-    </div>
-  </div>
+  <!-- Hidden input for mobile keyboard support -->
+  <textarea id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+    aria-label="Terminal input"></textarea>
+
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container"></div>
 
   <script src="app.js"></script>
 </body>
+
 </html>
