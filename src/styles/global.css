@@ -1,0 +1,903 @@
+:root {
+  --akira-carmine: #a11f31;
+  --akira-carmine-rgb: 161, 31, 49;
+  --akira-ink: #07080b;
+  --akira-paper: #f2ede6;
+  --akira-line: rgba(242, 237, 230, 0.14);
+  --akira-shadow: 0 36px 96px rgba(0, 0, 0, 0.46);
+  --akira-max-width: 1220px;
+  --theme-bg: var(--akira-ink);
+  --theme-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
+  --theme-surface-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+  --theme-line: var(--akira-line);
+  --theme-text: var(--akira-paper);
+  --theme-muted: rgba(242, 237, 230, 0.78);
+  --theme-shadow: var(--akira-shadow);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(var(--akira-carmine-rgb), 0.16), transparent 18%),
+    radial-gradient(circle at 82% 14%, rgba(255, 255, 255, 0.06), transparent 16%),
+    linear-gradient(180deg, #06070a 0%, #090b0f 52%, #07080b 100%);
+  color: var(--theme-text);
+  font-family: 'Manrope', 'Zen Kaku Gothic New', sans-serif;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+  background-size: 92px 92px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 96%);
+  pointer-events: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+.akira-light {
+  --theme-bg: #f4efe8;
+  --theme-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68));
+  --theme-surface-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.8));
+  --theme-line: rgba(18, 20, 24, 0.12);
+  --theme-text: #121318;
+  --theme-muted: rgba(18, 20, 24, 0.72);
+  --theme-shadow: 0 26px 66px rgba(18, 20, 24, 0.1);
+}
+
+body.akira-light {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(var(--akira-carmine-rgb), 0.07), transparent 18%),
+    radial-gradient(circle at 82% 14%, rgba(0, 0, 0, 0.025), transparent 16%),
+    linear-gradient(180deg, #f7f3ed 0%, #f4efe8 52%, #f2ede6 100%);
+  color: var(--theme-text);
+}
+
+body.akira-light::before {
+  background-image:
+    linear-gradient(rgba(18, 20, 24, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 20, 24, 0.035) 1px, transparent 1px);
+}
+
+.akira-site,
+.akira-preview {
+  position: relative;
+  width: min(calc(100% - 2rem), var(--akira-max-width));
+  margin: 0 auto;
+}
+
+.akira-site {
+  min-height: 100vh;
+  padding: 1.1rem 0 2.5rem;
+}
+
+.akira-preview {
+  padding: 1.15rem;
+  border: 1px solid var(--theme-line);
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow);
+  overflow: hidden;
+}
+
+.akira-noise,
+.akira-preview::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.akira-noise {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 60%);
+}
+
+.akira-preview::before {
+  content: '';
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 84px 84px;
+  opacity: 0.65;
+}
+
+.akira-light::before {
+  background-image:
+    linear-gradient(rgba(18, 20, 24, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 20, 24, 0.04) 1px, transparent 1px);
+}
+
+.akira-topbar,
+.akira-hero,
+.akira-section,
+.akira-band,
+.akira-ledger,
+.akira-footer,
+.akira-showcase-block {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: akira-reveal 0.72s ease forwards;
+}
+
+.akira-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0 1.4rem;
+  animation-delay: 0.04s;
+}
+
+.akira-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.akira-brand-lockup {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.akira-brand-mark,
+.akira-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--akira-carmine);
+  box-shadow: 0 0 24px rgba(var(--akira-carmine-rgb), 0.4);
+}
+
+.akira-brand-name,
+.akira-nav,
+.akira-kicker,
+.akira-label,
+.akira-button,
+.akira-ledger span,
+.akira-footer p:first-child,
+.akira-class-type,
+.akira-meta {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.akira-brand-name {
+  font-size: 0.92rem;
+}
+
+.akira-brand-subtitle,
+.akira-nav,
+.akira-intro,
+.akira-copy p,
+.akira-card p,
+.akira-ledger-row,
+.akira-footer p:last-child,
+.akira-class-card p,
+.akira-muted {
+  color: var(--theme-muted);
+}
+
+.akira-brand-subtitle {
+  font-size: 0.72rem;
+}
+
+.akira-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.74rem;
+}
+
+.akira-nav a,
+.akira-button {
+  transition: transform 180ms ease, border-color 180ms ease, color 180ms ease, background-color 180ms ease;
+}
+
+.akira-nav a:hover,
+.akira-nav a:focus-visible,
+.akira-button:hover,
+.akira-button:focus-visible {
+  transform: translateY(-1px);
+}
+
+.akira-frame,
+.akira-panel,
+.akira-band,
+.akira-ledger,
+.akira-class-card,
+.akira-preview-surface {
+  position: relative;
+  border: 1px solid var(--theme-line);
+  background: var(--theme-surface);
+  box-shadow: var(--theme-shadow);
+  overflow: hidden;
+}
+
+.akira-frame::before,
+.akira-frame::after,
+.akira-panel::before,
+.akira-panel::after,
+.akira-band::before,
+.akira-band::after,
+.akira-preview-surface::before,
+.akira-preview-surface::after {
+  content: '';
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border-color: rgba(255, 255, 255, 0.42);
+  pointer-events: none;
+}
+
+.akira-light .akira-frame::before,
+.akira-light .akira-frame::after,
+.akira-light .akira-panel::before,
+.akira-light .akira-panel::after,
+.akira-light .akira-band::before,
+.akira-light .akira-band::after,
+.akira-light .akira-preview-surface::before,
+.akira-light .akira-preview-surface::after {
+  border-color: rgba(18, 20, 24, 0.3);
+}
+
+.akira-frame::before,
+.akira-panel::before,
+.akira-band::before,
+.akira-preview-surface::before {
+  top: 0.8rem;
+  left: 0.8rem;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+.akira-frame::after,
+.akira-panel::after,
+.akira-band::after,
+.akira-preview-surface::after {
+  right: 0.8rem;
+  bottom: 0.8rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+/* ── Nested corner rotation ──
+   Depth 0 (default):  TL + BR
+   Depth 1 (nested):   TR + BL  (opposite diagonal)
+   Depth 2 (deep):     BL only  (single corner)
+*/
+
+/* Panels inside frames → TR + BL */
+.akira-frame .akira-panel::before {
+  top: 0.8rem;
+  left: auto;
+  right: 0.8rem;
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+.akira-frame .akira-panel::after {
+  bottom: 0.8rem;
+  right: auto;
+  left: 0.8rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+/* Frames inside preview → BL + TR */
+.akira-preview .akira-frame::before {
+  top: auto;
+  bottom: 0.8rem;
+  left: 0.8rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+.akira-preview .akira-frame::after {
+  bottom: auto;
+  top: 0.8rem;
+  right: 0.8rem;
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+/* Bands inside preview → BR + TL */
+.akira-preview .akira-band::before {
+  top: auto;
+  left: auto;
+  bottom: 0.8rem;
+  right: 0.8rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+.akira-preview .akira-band::after {
+  bottom: auto;
+  right: auto;
+  top: 0.8rem;
+  left: 0.8rem;
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+/* Panels inside preview (standalone cards) → TR + BL */
+.akira-preview .akira-card-grid .akira-panel::before {
+  top: 0.8rem;
+  left: auto;
+  right: 0.8rem;
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+.akira-preview .akira-card-grid .akira-panel::after {
+  bottom: 0.8rem;
+  right: auto;
+  left: 0.8rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+/* Depth 2: panels inside frames inside preview → single BL corner */
+.akira-preview .akira-frame .akira-panel::before {
+  top: auto;
+  bottom: 0.8rem;
+  left: 0.8rem;
+  right: auto;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+.akira-preview .akira-frame .akira-panel::after {
+  display: none;
+}
+
+.akira-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  gap: 1rem;
+  padding: 1rem;
+  animation-delay: 0.1s;
+}
+
+.akira-copy,
+.akira-aside {
+  position: relative;
+  min-height: 20rem;
+  padding: 1.15rem 1.35rem;
+}
+
+.akira-copy {
+  display: grid;
+  align-content: center;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.akira-heading {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-weight: 400;
+}
+
+.akira-title,
+.akira-card h3,
+.akira-band h2,
+.akira-aside h2,
+.akira-class-card h3 {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.akira-heading {
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1.06;
+  letter-spacing: 0.1em;
+}
+
+.akira-title {
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+  line-height: 1.22;
+  letter-spacing: 0.04em;
+}
+
+.akira-kicker,
+.akira-label,
+.akira-meta,
+.akira-class-type {
+  font-size: 0.72rem;
+  color: var(--akira-carmine);
+}
+
+.akira-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: min(100%, 38rem);
+}
+
+.akira-rule span {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.akira-light .akira-rule span {
+  background: rgba(18, 20, 24, 0.18);
+}
+
+.akira-rule strong {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 500;
+}
+
+.akira-intro,
+.akira-copy p,
+.akira-card p,
+.akira-band-copy p,
+.akira-class-card p {
+  max-width: 40rem;
+  font-size: 0.92rem;
+  line-height: 1.78;
+}
+
+.akira-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.akira-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--theme-line);
+  font-size: 0.72rem;
+}
+
+.akira-button--primary {
+  background: rgba(var(--akira-carmine-rgb), 0.14);
+  border-color: rgba(var(--akira-carmine-rgb), 0.58);
+  color: var(--theme-text);
+}
+
+.akira-button--secondary {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.akira-light .akira-button--secondary {
+  background: rgba(18, 20, 24, 0.02);
+}
+
+.akira-aside {
+  display: grid;
+  align-content: space-between;
+  gap: 0.75rem;
+}
+
+.akira-panel-grid,
+.akira-card-grid,
+.akira-class-grid,
+.akira-preview-grid,
+.akira-stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.akira-panel-grid,
+.akira-card-grid,
+.akira-preview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.akira-section {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  animation-delay: 0.16s;
+}
+
+.akira-section-head {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.akira-card,
+.akira-class-card,
+.akira-preview-surface {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem 1.2rem;
+  min-height: 100%;
+}
+
+.akira-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 0.75rem;
+  padding: 0.85rem;
+  animation-delay: 0.22s;
+}
+
+.akira-band-copy {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: 0.75rem 0.95rem;
+}
+
+.akira-signal-map {
+  position: relative;
+  min-height: 14rem;
+  border: 1px solid var(--theme-line);
+  background: var(--theme-surface-strong);
+  overflow: hidden;
+}
+
+.akira-route,
+.akira-node,
+.akira-pulse,
+.akira-route-label {
+  position: absolute;
+}
+
+.akira-route {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+}
+
+.akira-light .akira-route {
+  background: linear-gradient(90deg, transparent, rgba(18, 20, 24, 0.55), transparent);
+}
+
+.akira-route--a {
+  top: 28%;
+  left: 4%;
+  right: 22%;
+}
+
+.akira-route--b {
+  top: 49%;
+  left: 10%;
+  right: 8%;
+  background: linear-gradient(90deg, transparent, rgba(var(--akira-carmine-rgb), 0.84), transparent);
+}
+
+.akira-route--c {
+  top: 68%;
+  left: 18%;
+  right: 6%;
+}
+
+.akira-node,
+.akira-pulse {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--theme-text);
+}
+
+.akira-node--accent,
+.akira-pulse {
+  background: var(--akira-carmine);
+}
+
+.akira-node--a {
+  top: 27%;
+  left: 24%;
+}
+
+.akira-node--b {
+  top: 48%;
+  right: 28%;
+}
+
+.akira-node--c {
+  top: 67%;
+  left: 56%;
+}
+
+.akira-pulse {
+  top: 46%;
+  left: 49%;
+  box-shadow: 0 0 28px rgba(var(--akira-carmine-rgb), 0.56);
+}
+
+.akira-route-label {
+  top: 1rem;
+  left: 1rem;
+}
+
+.akira-ledger {
+  display: grid;
+  gap: 0;
+  animation-delay: 0.28s;
+}
+
+.akira-ledger-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--theme-line);
+}
+
+.akira-ledger-row:first-child {
+  border-top: 0;
+}
+
+.akira-ledger-row strong {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 500;
+}
+
+.akira-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.2rem;
+  animation-delay: 0.34s;
+}
+
+.akira-showcase-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.akira-showcase-block {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.akira-class-grid {
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
+.akira-class-card h3 {
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+}
+
+/* ── Landing page ── */
+
+.akira-landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.akira-landing-center {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: akira-reveal 0.72s ease 0.08s forwards;
+}
+
+.akira-landing-mark {
+  width: 1rem;
+  height: 1rem;
+}
+
+.akira-landing .akira-heading {
+  font-size: clamp(3.2rem, 10vw, 7rem);
+  max-width: none;
+}
+
+.akira-landing .akira-rule {
+  width: min(100%, 22rem);
+}
+
+.akira-landing-tagline {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--theme-muted);
+}
+
+.akira-landing-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.akira-landing-footer {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--theme-muted);
+  opacity: 0;
+  animation: akira-reveal 0.72s ease 0.3s forwards;
+}
+
+.akira-token-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--theme-line);
+  background: var(--theme-surface);
+}
+
+.akira-token-swatch {
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--akira-carmine);
+}
+
+.akira-ledger-row {
+  font-size: 0.92rem;
+}
+
+/* ── Theme toggle ── */
+
+.akira-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid var(--theme-line);
+  background: transparent;
+  color: var(--theme-muted);
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.akira-theme-toggle:hover {
+  border-color: rgba(var(--akira-carmine-rgb), 0.5);
+  color: var(--theme-text);
+}
+
+.akira-theme-toggle-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--akira-carmine);
+  box-shadow: 0 0 8px rgba(var(--akira-carmine-rgb), 0.4);
+  transition: background 180ms ease;
+}
+
+/* ── Component showcase – preview toggle ── */
+
+.akira-preview-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.akira-preview-tab {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--theme-line);
+  background: transparent;
+  color: var(--theme-muted);
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.akira-preview-tab[aria-selected="true"] {
+  border-color: rgba(var(--akira-carmine-rgb), 0.58);
+  background: rgba(var(--akira-carmine-rgb), 0.1);
+  color: var(--theme-text);
+}
+
+.akira-preview-tab:hover {
+  border-color: rgba(var(--akira-carmine-rgb), 0.4);
+  color: var(--theme-text);
+}
+
+@keyframes akira-reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 960px) {
+  .akira-hero,
+  .akira-band,
+  .akira-panel-grid,
+  .akira-card-grid,
+  .akira-preview-grid,
+  .akira-topbar,
+  .akira-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .akira-topbar,
+  .akira-footer,
+  .akira-ledger-row {
+    display: grid;
+  }
+}
+
+@media (max-width: 720px) {
+  .akira-site,
+  .akira-preview {
+    width: min(calc(100% - 1rem), var(--akira-max-width));
+  }
+
+  .akira-copy,
+  .akira-aside,
+  .akira-band-copy,
+  .akira-preview-surface,
+  .akira-card,
+  .akira-class-card {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .akira-heading {
+    font-size: clamp(2.2rem, 12vw, 3.8rem);
+    letter-spacing: 0.1em;
+  }
+
+  .akira-actions,
+  .akira-button {
+    width: 100%;
+  }
+
+  .akira-copy,
+  .akira-aside {
+    min-height: auto;
+  }
+
+  .akira-landing .akira-heading {
+    font-size: clamp(2.6rem, 14vw, 5rem);
+  }
+
+  .akira-landing-nav {
+    flex-direction: column;
+  }
+}
