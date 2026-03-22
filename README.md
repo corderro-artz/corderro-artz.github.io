@@ -1,11 +1,11 @@
 # Vaporsoft
 
-Static site for vaporsoft.dev — minimal landing page and Vaporsoft theme component reference.
+Static site for vaporsoft.dev — minimal landing page and Vaporsoft design system reference.
 
 ## Pages
 
 - **/** — Brand landing page
-- **/components/** — Design system component reference (Vaporsoft theme)
+- **/components/** — Design system component reference
 
 ## Stack
 
@@ -27,6 +27,12 @@ npm run build
 ```
 
 The production build outputs to `dist/`.
+
+## Preview
+
+```bash
+npm run preview
+```
 
 ## Deployment
 
