@@ -1,11 +1,11 @@
 # Vaporsoft
 
-Static site for vaporsoft.dev — minimal landing page and Akira theme component reference.
+Static site for vaporsoft.dev — minimal landing page and Vaporsoft theme component reference.
 
 ## Pages
 
 - **/** — Brand landing page
-- **/components/** — Design system component reference (Akira theme)
+- **/components/** — Design system component reference (Vaporsoft theme)
 
 ## Stack
 
@@ -34,8 +34,3 @@ The repository includes a GitHub Pages workflow at `.github/workflows/deploy.yml
 
 The Astro site URL is configured for the Vaporsoft custom domain.
 
-## Backup
-
-The pre-reset terminal site has been preserved at `backup/pre-astro-reset-2026-03-21/`.
-
-That backup includes the previous runtime files, support assets, workflow, fonts, and concept-art references so the old site can be restored if needed.

@@ -7,6 +7,17 @@ const {
   themeColor = '#07080b',
   bodyClass = ''
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL('/vaporsoft-logo-512.png', Astro.site);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Vaporsoft',
+  url: Astro.site,
+  logo: ogImageUrl.href,
+  description
+};
 ---
 
 <!doctype html>
@@ -16,17 +27,51 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content={themeColor} />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#07080b" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2ede6" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="author" content="Vaporsoft" />
+    <meta name="application-name" content="Vaporsoft" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonicalUrl.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://vaporsoft.dev" />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:site_name" content="Vaporsoft" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Vaporsoft brand mark" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl.href} />
+    <link rel="icon" type="image/svg+xml" href="/vaporsoft-logo.svg" data-favicon data-dark-href="/vaporsoft-logo.svg" data-light-href="/vaporsoft-logo-light.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/vaporsoft-logo-32.png" data-favicon data-dark-href="/vaporsoft-logo-32.png" data-light-href="/vaporsoft-logo-light-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/vaporsoft-logo-16.png" data-favicon data-dark-href="/vaporsoft-logo-16.png" data-light-href="/vaporsoft-logo-light-16.png" />
+    <link rel="apple-touch-icon" sizes="256x256" href="/vaporsoft-logo-256.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Syncopate:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     <slot name="head" />
     <title>{title}</title>
     <script is:inline>
-      (function(){var t=localStorage.getItem('akira-theme');if(t!=='dark')document.documentElement.className='akira-light';})();
+      (function(){
+        function setFavicon(isLight){
+          var icons=document.querySelectorAll('link[data-favicon]');
+          icons.forEach(function(link){
+            var href=isLight?link.getAttribute('data-light-href'):link.getAttribute('data-dark-href');
+            if(href)link.setAttribute('href',href);
+          });
+        }
+        var t=localStorage.getItem('vapor-theme');
+        if(t!=='dark')document.documentElement.className='vapor-light';
+        setFavicon(document.documentElement.classList.contains('vapor-light'));
+        window.__vaporSetFavicon=setFavicon;
+      })();
     </script>
   </head>
   <body class={bodyClass}>
@@ -37,14 +82,15 @@ const {
         if(!toggle)return;
         var label=toggle.querySelector('[data-theme-label]');
         function sync(){
-          var light=document.documentElement.classList.contains('akira-light');
+          var light=document.documentElement.classList.contains('vapor-light');
           if(label)label.textContent=light?'LIGHT':'DARK';
-          document.body.classList.toggle('akira-light',light);
+          document.body.classList.toggle('vapor-light',light);
+          if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
         }
         sync();
         toggle.addEventListener('click',function(){
-          document.documentElement.classList.toggle('akira-light');
-          localStorage.setItem('akira-theme',document.documentElement.classList.contains('akira-light')?'light':'dark');
+          document.documentElement.classList.toggle('vapor-light');
+          localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');
           sync();
         });
       })();
