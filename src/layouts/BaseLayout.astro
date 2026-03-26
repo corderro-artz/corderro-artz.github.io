@@ -9,7 +9,7 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const ogImageUrl = new URL('/vaporsoft-logo-512.png', Astro.site);
+const ogImageUrl = new URL('/vaporsoft-logo.svg', Astro.site);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -41,17 +41,15 @@ const jsonLd = {
     <meta property="og:site_name" content="Vaporsoft" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={ogImageUrl.href} />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
     <meta property="og:image:alt" content="Vaporsoft brand mark" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl.href} />
-    <link rel="icon" type="image/svg+xml" href="/vaporsoft-logo.svg" data-favicon data-dark-href="/vaporsoft-logo.svg" data-light-href="/vaporsoft-logo-light.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/vaporsoft-logo-32.png" data-favicon data-dark-href="/vaporsoft-logo-32.png" data-light-href="/vaporsoft-logo-light-32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/vaporsoft-logo-16.png" data-favicon data-dark-href="/vaporsoft-logo-16.png" data-light-href="/vaporsoft-logo-light-16.png" />
-    <link rel="apple-touch-icon" sizes="256x256" href="/vaporsoft-logo-256.png" />
+    <link rel="icon" type="image/svg+xml" href="/vaporsoft-favicon.svg" data-favicon data-dark-href="/vaporsoft-favicon.svg" data-light-href="/vaporsoft-favicon-light.svg" />
+    <link rel="apple-touch-icon" type="image/svg+xml" href="/vaporsoft-logo.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Syncopate:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -78,21 +76,50 @@ const jsonLd = {
     <slot />
     <script is:inline>
       (function(){
+        // Theme toggle
         var toggle=document.querySelector('[data-theme-toggle]');
-        if(!toggle)return;
-        var label=toggle.querySelector('[data-theme-label]');
-        function sync(){
-          var light=document.documentElement.classList.contains('vapor-light');
-          if(label)label.textContent=light?'LIGHT':'DARK';
-          document.body.classList.toggle('vapor-light',light);
-          if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
-        }
-        sync();
-        toggle.addEventListener('click',function(){
-          document.documentElement.classList.toggle('vapor-light');
-          localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');
+        if(toggle){
+          var label=toggle.querySelector('[data-theme-label]');
+          function sync(){
+            var light=document.documentElement.classList.contains('vapor-light');
+            if(label)label.textContent=light?'LIGHT':'DARK';
+            document.body.classList.toggle('vapor-light',light);
+            if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
+          }
           sync();
-        });
+          toggle.addEventListener('click',function(){
+            document.documentElement.classList.toggle('vapor-light');
+            localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');
+            sync();
+          });
+        }
+
+        // Landing / arch glow animation (GPU-composited: opacity + transform only)
+        var snap=document.querySelector('.vapor-snap-container');
+        var noiseLand=document.querySelector('.vapor-noise--landing');
+        var noiseArch=document.querySelector('.vapor-noise--arch');
+        if(snap&&noiseLand){
+          var ticking=false;
+          function onScroll(){
+            if(!ticking){ticking=true;requestAnimationFrame(updateGlow);}
+          }
+          function updateGlow(){
+            ticking=false;
+            var y=snap.scrollTop;
+            var h=snap.offsetHeight;
+            var t=Math.min(1,Math.max(0,y/h));
+            // Page 1: fade + shrink to nothing
+            noiseLand.style.opacity=(1-t)*0.32;
+            noiseLand.style.transform='scale('+(1-t)+')';
+            // Page 2: fade + grow from nothing
+            if(noiseArch){
+              noiseArch.style.opacity=t*0.32;
+              noiseArch.style.transform='scale('+t+')';
+            }
+          }
+          snap.addEventListener('scroll',onScroll,{passive:true});
+          updateGlow();
+        }
       })();
     </script>
   </body>

@@ -8,32 +8,116 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   themeColor="#f2ede6"
   bodyClass="vapor-body"
 >
-  <main class="vapor-site vapor-landing">
-    <div class="vapor-noise"></div>
+  <div class="vapor-snap-container">
 
-    <div class="vapor-landing-center">
-      <span class="vapor-brand-mark vapor-landing-mark"></span>
+    <!-- ── Page 1 · Landing ── -->
+    <section class="vapor-snap-page">
+      <main class="vapor-site vapor-landing">
+        <div class="vapor-noise vapor-noise--landing"></div>
 
-      <h1 class="vapor-heading">VAPORSOFT</h1>
+        <div class="vapor-landing-center">
+          <span class="vapor-brand-mark vapor-landing-mark"></span>
 
-      <div class="vapor-rule">
-        <span></span>
-        <strong>仮想</strong>
-        <span></span>
+          <h1 class="vapor-heading">VAPORSOFT</h1>
+
+          <div class="vapor-rule">
+            <span></span>
+            <strong>仮想</strong>
+            <span></span>
+          </div>
+
+          <p class="vapor-landing-tagline">Software Contracting & Digital Assets</p>
+
+          <nav class="vapor-landing-nav">
+            <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+              <span class="vapor-theme-toggle-dot"></span>
+              <span data-theme-label>LIGHT</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="vapor-scroll-cue" aria-hidden="true">
+          <span class="vapor-scroll-cue-line"></span>
+        </div>
+      </main>
+    </section>
+
+    <!-- ── Page 2 · Architecture ── -->
+    <section class="vapor-snap-page">
+      <div class="vapor-site vapor-arch">
+        <div class="vapor-noise vapor-noise--arch"></div>
+
+        <header class="vapor-arch-header">
+          <p class="vapor-kicker">Fabric & Surface</p>
+          <h2 class="vapor-title">A single loom</h2>
+          <div class="vapor-rule vapor-rule--compact">
+            <span></span>
+            <strong>織</strong>
+            <span></span>
+          </div>
+          <h2 class="vapor-title">to spin many threads</h2>
+        </header>
+
+        <div class="vapor-arch-stack">
+
+          <!-- Upper tier -->
+          <div class="vapor-arch-tier vapor-arch-tier--upper">
+
+            <article class="vapor-arch-card vapor-panel vapor-arch-card--active">
+              <div class="vapor-arch-card-icon">
+                <img src="/akira-icon.svg" alt="Akira MCP Server" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--dark" />
+                <img src="/akira-icon-light.svg" alt="Akira MCP Server" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--light" />
+              </div>
+              <p class="vapor-kicker">Surface</p>
+              <h3>Akira MCP Server</h3>
+              <p class="vapor-arch-desc">An MCP server built on Akira, exposing Akira tooling through MCP.</p>
+              <div class="vapor-arch-dep">
+                <span class="vapor-meta">The product</span>
+              </div>
+            </article>
+
+            <article class="vapor-arch-card vapor-panel vapor-arch-card--future">
+              <div class="vapor-arch-card-icon">
+                <span class="vapor-arch-placeholder-icon"></span>
+              </div>
+              <p class="vapor-kicker">Unannounced</p>
+              <h3>[Future]</h3>
+              <p class="vapor-arch-desc">Another system in the pipeline — same foundation, new surface.</p>
+              <div class="vapor-arch-dep">
+                <span class="vapor-meta">The product</span>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Connector lines -->
+          <div class="vapor-arch-connectors" aria-hidden="true">
+            <div class="vapor-arch-connector vapor-arch-connector--left"></div>
+            <div class="vapor-arch-connector vapor-arch-connector--right"></div>
+            <div class="vapor-arch-connector-trunk"></div>
+          </div>
+
+          <!-- Base tier -->
+          <div class="vapor-arch-tier vapor-arch-tier--base">
+            <a class="vapor-arch-card vapor-arch-card--foundation vapor-frame vapor-arch-card--active" href="https://github.com/corderro-artz/akira" target="_blank" rel="noopener noreferrer" aria-label="Open Akira on GitHub">
+              <div class="vapor-arch-card-icon">
+                <img src="/akira-icon.svg" alt="Akira Framework" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--dark" />
+                <img src="/akira-icon-light.svg" alt="Akira Framework" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--light" />
+              </div>
+              <p class="vapor-kicker">Fabric</p>
+              <h3>Akira</h3>
+              <p class="vapor-arch-desc">A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.</p>
+              <span class="vapor-meta">the foundation</span>
+            </a>
+          </div>
+
+        </div>
+
+        <footer class="vapor-landing-footer">
+          <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
+        </footer>
       </div>
+    </section>
 
-      <p class="vapor-landing-tagline">Software Contracting & Digital Assets</p>
-
-      <nav class="vapor-landing-nav">
-        <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
-          <span class="vapor-theme-toggle-dot"></span>
-          <span data-theme-label>LIGHT</span>
-        </button>
-      </nav>
-    </div>
-
-    <footer class="vapor-landing-footer">
-      <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
-    </footer>
-  </main>
+  </div>
 </BaseLayout>

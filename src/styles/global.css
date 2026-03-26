@@ -28,8 +28,8 @@ body {
   min-width: 320px;
   background:
     radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.012) 14%, transparent 28%),
-    radial-gradient(circle at 6% 6%, rgba(var(--vapor-carmine-rgb), 0.16), transparent 16%),
-    radial-gradient(circle at 96% 94%, rgba(var(--vapor-carmine-rgb), 0.14), transparent 16%),
+    radial-gradient(ellipse at 4% 4%, rgba(var(--vapor-carmine-rgb), 0.1), transparent 36%),
+    radial-gradient(ellipse at 96% 96%, rgba(var(--vapor-carmine-rgb), 0.08), transparent 36%),
     linear-gradient(180deg, #06070a 0%, #090b0f 52%, #07080b 100%);
   color: var(--theme-text);
   font-family: 'Manrope', 'Zen Kaku Gothic New', sans-serif;
@@ -74,9 +74,9 @@ ul {
 
 body.vapor-light {
   background:
-    radial-gradient(circle at 50% 44%, rgba(var(--vapor-carmine-rgb), 0.09) 0%, rgba(var(--vapor-carmine-rgb), 0.04) 22%, transparent 44%),
-    radial-gradient(circle at 6% 6%, rgba(var(--vapor-carmine-rgb), 0.2), transparent 16%),
-    radial-gradient(circle at 96% 94%, rgba(var(--vapor-carmine-rgb), 0.18), transparent 16%),
+    radial-gradient(ellipse at 50% 44%, rgba(var(--vapor-carmine-rgb), 0.06) 0%, rgba(var(--vapor-carmine-rgb), 0.02) 22%, transparent 44%),
+    radial-gradient(ellipse at 4% 4%, rgba(var(--vapor-carmine-rgb), 0.12), transparent 36%),
+    radial-gradient(ellipse at 96% 96%, rgba(var(--vapor-carmine-rgb), 0.1), transparent 36%),
     linear-gradient(180deg, #f7f3ed 0%, #f4efe8 52%, #f2ede6 100%);
   color: var(--theme-text);
 }
@@ -119,7 +119,15 @@ body.vapor-light::before {
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02), transparent 60%);
   opacity: 0.32;
   animation: none;
-  will-change: transform, opacity;
+  will-change: opacity, transform;
+}
+.vapor-noise--landing,
+.vapor-noise--arch {
+  transform-origin: center center;
+}
+.vapor-noise--arch {
+  opacity: 0;
+  transform: scale(0);
 }
 
 .vapor-preview::before {
@@ -1028,5 +1036,440 @@ body.vapor-light::before {
 @media (min-width: 1400px) {
   .vapor-landing-center {
     padding: 3rem 1rem;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   Snap-scroll container
+   ══════════════════════════════════════════════ */
+
+.vapor-snap-container {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.vapor-snap-page {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Scroll cue pulse ── */
+
+.vapor-scroll-cue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: vapor-reveal 0.72s ease 0.6s forwards;
+}
+
+.vapor-scroll-cue-line {
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(180deg, transparent, var(--vapor-carmine), transparent);
+  animation: vapor-scroll-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes vapor-scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ══════════════════════════════════════════════
+   Architecture page
+   ══════════════════════════════════════════════ */
+
+.vapor-arch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 0 2rem;
+  min-height: 100vh;
+}
+
+.vapor-arch-header {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: vapor-reveal 0.72s ease 0.1s forwards;
+}
+
+.vapor-arch-subtitle {
+  font-size: 0.88rem;
+  line-height: 1.72;
+  color: var(--theme-muted);
+  max-width: 30rem;
+}
+
+.vapor-rule--compact {
+  width: min(100%, 14rem);
+}
+
+/* ── Tiered stack ── */
+
+.vapor-arch-stack {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  max-width: 52rem;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: vapor-reveal 0.72s ease 0.24s forwards;
+}
+
+.vapor-arch-tier {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.vapor-arch-tier--upper {
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.vapor-arch-tier--base {
+  grid-template-columns: 1fr;
+}
+
+/* ── Connector lines ── */
+
+.vapor-arch-connectors {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: 3rem;
+  position: relative;
+}
+
+.vapor-arch-connector-trunk {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(var(--vapor-carmine-rgb), 0.6), rgba(var(--vapor-carmine-rgb), 0.2));
+  position: absolute;
+  left: 50%;
+}
+
+.vapor-arch-connector {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--vapor-carmine-rgb), 0.4), rgba(var(--vapor-carmine-rgb), 0.6));
+}
+
+.vapor-arch-connector--left {
+  right: 50%;
+  left: 25%;
+}
+
+.vapor-arch-connector--right {
+  left: 50%;
+  right: 25%;
+  background: linear-gradient(90deg, rgba(var(--vapor-carmine-rgb), 0.6), rgba(var(--vapor-carmine-rgb), 0.4), transparent);
+}
+
+/* ── Cards ── */
+
+.vapor-arch-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.25rem 1.4rem;
+  align-content: start;
+  box-shadow: none;
+}
+
+.vapor-arch-card--active {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.24s cubic-bezier(.2,.8,.2,1), border-color 0.24s ease, background-color 0.24s ease;
+}
+
+.vapor-arch-card--active:hover,
+.vapor-arch-card--active:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(var(--vapor-carmine-rgb), 0.55);
+  background: linear-gradient(180deg, rgba(var(--vapor-carmine-rgb), 0.1), rgba(var(--vapor-carmine-rgb), 0.03));
+  outline: none;
+}
+
+.vapor-light .vapor-arch-card--active:hover,
+.vapor-light .vapor-arch-card--active:focus-visible {
+  border-color: rgba(var(--vapor-carmine-rgb), 0.45);
+  background: linear-gradient(180deg, rgba(var(--vapor-carmine-rgb), 0.06), rgba(var(--vapor-carmine-rgb), 0.02));
+}
+
+.vapor-arch-card h3 {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 1.1rem;
+}
+
+.vapor-arch-card--foundation {
+  text-align: center;
+  justify-items: center;
+}
+
+.vapor-arch-card--foundation h3 {
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+}
+
+.vapor-arch-card--future {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.vapor-arch-desc {
+  font-size: 0.88rem;
+  line-height: 1.72;
+  color: var(--theme-muted);
+  max-width: 32rem;
+}
+
+/* ── Card icon ── */
+
+.vapor-arch-card-icon {
+  margin-bottom: 0.25rem;
+}
+
+.vapor-arch-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+}
+
+.vapor-arch-icon--light { display: none; }
+.vapor-light .vapor-arch-icon--dark { display: none; }
+.vapor-light .vapor-arch-icon--light { display: inline; }
+
+.vapor-arch-placeholder-icon {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border: 1px dashed var(--theme-line);
+  border-radius: 6px;
+  background: var(--theme-surface);
+}
+
+/* ── Dependency tag ── */
+
+.vapor-arch-dep {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.vapor-arch-dep-line {
+  width: 1.2rem;
+  height: 1px;
+  background: rgba(var(--vapor-carmine-rgb), 0.5);
+}
+
+/* ── Responsive ── */
+
+/* Desktop: 1200px+ (widescreen) */
+@media (min-width: 1200px) {
+  .vapor-arch-stack {
+    max-width: 60rem;
+  }
+
+  .vapor-arch {
+    gap: 2.5rem;
+  }
+}
+
+/* Laptop/Tablet landscape: 960px - 1199px */
+@media (max-width: 1199px) and (min-width: 960px) {
+  .vapor-arch-stack {
+    max-width: 50rem;
+    padding: 0 1.5rem;
+  }
+
+  .vapor-arch-card h3 {
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .vapor-arch-desc {
+    font-size: 0.85rem;
+  }
+}
+
+/* Tablet landscape: 820px - 959px */
+@media (max-width: 959px) and (min-width: 820px) {
+  .vapor-arch {
+    padding: 2.5rem 1rem 1.5rem;
+    gap: 1.75rem;
+  }
+
+  .vapor-arch-header {
+    gap: 0.6rem;
+  }
+
+  .vapor-arch-stack {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .vapor-arch-card {
+    padding: 1.1rem 1.2rem;
+  }
+
+  .vapor-arch-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .vapor-arch-card--foundation h3 {
+    font-size: 1.2rem;
+  }
+
+  .vapor-arch-desc {
+    font-size: 0.81rem;
+    line-height: 1.6;
+  }
+
+  .vapor-rule--compact {
+    width: min(100%, 12rem);
+  }
+
+  .vapor-arch-connectors {
+    height: 2rem;
+  }
+}
+
+/* Tablet portrait & smaller: 540px - 819px */
+@media (max-width: 819px) and (min-width: 540px) {
+  .vapor-arch {
+    padding: 2rem 0.75rem 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .vapor-arch-header {
+    gap: 0.5rem;
+  }
+
+  .vapor-arch-tier--upper {
+    grid-template-columns: 1fr;
+  }
+
+  .vapor-arch-stack {
+    max-width: 100%;
+    padding: 0 0.75rem;
+  }
+
+  .vapor-arch-card {
+    padding: 1rem 1.1rem;
+  }
+
+  .vapor-arch-card h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+
+  .vapor-arch-card--foundation h3 {
+    font-size: 1rem;
+  }
+
+  .vapor-arch-desc {
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .vapor-kicker {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+  }
+
+  .vapor-rule--compact {
+    width: min(100%, 10rem);
+  }
+
+  .vapor-connectors,
+  .vapor-arch-connectors {
+    display: none;
+  }
+}
+
+/* Mobile & small: 0 - 539px */
+@media (max-width: 539px) {
+  .vapor-arch {
+    padding: 1.5rem 0.5rem 1rem;
+    gap: 1.25rem;
+  }
+
+  .vapor-arch-header {
+    gap: 0.4rem;
+  }
+
+  .vapor-arch-tier--upper {
+    grid-template-columns: 1fr;
+  }
+
+  .vapor-arch-stack {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .vapor-arch-card {
+    padding: 0.9rem 1rem;
+  }
+
+  .vapor-arch-card h3 {
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+  }
+
+  .vapor-arch-card--foundation h3 {
+    font-size: 0.95rem;
+  }
+
+  .vapor-arch-desc {
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .vapor-meta {
+    font-size: 0.7rem;
+  }
+
+  .vapor-kicker {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+
+  .vapor-rule--compact {
+    width: min(100%, 8rem);
+  }
+
+  .vapor-arch-connectors,
+  .vapor-arch-connector--left,
+  .vapor-arch-connector--right {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vapor-scroll-cue-line,
+  .vapor-arch-header,
+  .vapor-arch-stack {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
