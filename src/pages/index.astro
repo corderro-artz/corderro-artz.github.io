@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
 ---
 
 <BaseLayout
@@ -37,12 +38,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <div class="vapor-scroll-cue" aria-hidden="true">
+          <span class="vapor-scroll-cue-label">Scroll</span>
           <span class="vapor-scroll-cue-line"></span>
         </div>
       </main>
     </section>
 
-    <!-- ── Page 2 · Architecture ── -->
+    <!-- ── Page 2 · Products ── -->
     <section class="vapor-snap-page">
       <div class="vapor-site vapor-arch">
         <div class="vapor-noise vapor-noise--arch"></div>
@@ -58,57 +60,70 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <h2 class="vapor-title">to spin many threads</h2>
         </header>
 
-        <div class="vapor-arch-stack">
+        <nav class="vapor-product-nav" aria-label="Product navigation">
+          <button type="button" class="vapor-product-tab" data-product="akira" aria-selected="true">Akira</button>
+          <button type="button" class="vapor-product-tab" data-product="kata" aria-selected="false">Kata</button>
+        </nav>
 
-          <!-- Upper tier -->
-          <div class="vapor-arch-tier vapor-arch-tier--upper">
+        <div class="vapor-product-panels">
 
-            <article class="vapor-arch-card vapor-panel vapor-arch-card--active">
-              <div class="vapor-arch-card-icon">
-                <img src="/akira-icon.svg" alt="Akira MCP Server" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--dark" />
-                <img src="/akira-icon-light.svg" alt="Akira MCP Server" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--light" />
-              </div>
-              <p class="vapor-kicker">Surface</p>
-              <h3>Akira MCP Server</h3>
-              <p class="vapor-arch-desc">An MCP server built on Akira, exposing Akira tooling through MCP.</p>
-              <div class="vapor-arch-dep">
-                <span class="vapor-meta">The product</span>
-              </div>
-            </article>
+          <!-- Akira ecosystem -->
+          <div class="vapor-product-panel vapor-product-panel--active" data-product-panel="akira" aria-hidden="false">
+            <div class="vapor-arch-stack">
 
-            <article class="vapor-arch-card vapor-panel vapor-arch-card--future">
-              <div class="vapor-arch-card-icon">
-                <span class="vapor-arch-placeholder-icon"></span>
+              <!-- Upper tier: surfaces -->
+              <div class="vapor-arch-tier vapor-arch-tier--upper">
+                <ProductCard
+                  name="Akira MCP Server"
+                  description="An MCP server built on Akira, exposing Akira tooling through MCP."
+                  icon="akira"
+                  label="SURFACE"
+                  variant="surface"
+                />
+                <ProductCard
+                  name="[Future]"
+                  description="Another system in the pipeline — same foundation, new surface."
+                  label="SURFACE"
+                  variant="future"
+                />
               </div>
-              <p class="vapor-kicker">Unannounced</p>
-              <h3>[Future]</h3>
-              <p class="vapor-arch-desc">Another system in the pipeline — same foundation, new surface.</p>
-              <div class="vapor-arch-dep">
-                <span class="vapor-meta">The product</span>
-              </div>
-            </article>
 
+              <!-- Connector lines -->
+              <div class="vapor-arch-connectors" aria-hidden="true">
+                <div class="vapor-arch-connector vapor-arch-connector--left"></div>
+                <div class="vapor-arch-connector vapor-arch-connector--right"></div>
+                <div class="vapor-arch-connector-trunk"></div>
+              </div>
+
+              <!-- Base tier: fabric -->
+              <div class="vapor-arch-tier vapor-arch-tier--base">
+                <ProductCard
+                  name="Akira"
+                  description="A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS."
+                  icon="akira"
+                  href="https://github.com/corderro-artz/akira"
+                  label="FABRIC"
+                  variant="foundation"
+                />
+              </div>
+
+            </div>
           </div>
 
-          <!-- Connector lines -->
-          <div class="vapor-arch-connectors" aria-hidden="true">
-            <div class="vapor-arch-connector vapor-arch-connector--left"></div>
-            <div class="vapor-arch-connector vapor-arch-connector--right"></div>
-            <div class="vapor-arch-connector-trunk"></div>
-          </div>
-
-          <!-- Base tier -->
-          <div class="vapor-arch-tier vapor-arch-tier--base">
-            <a class="vapor-arch-card vapor-arch-card--foundation vapor-frame vapor-arch-card--active" href="https://github.com/corderro-artz/akira" target="_blank" rel="noopener noreferrer" aria-label="Open Akira on GitHub">
-              <div class="vapor-arch-card-icon">
-                <img src="/akira-icon.svg" alt="Akira Framework" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--dark" />
-                <img src="/akira-icon-light.svg" alt="Akira Framework" width="48" height="48" class="vapor-arch-icon vapor-arch-icon--light" />
+          <!-- Kata standalone -->
+          <div class="vapor-product-panel" data-product-panel="kata" aria-hidden="true" hidden>
+            <div class="vapor-arch-stack">
+              <div class="vapor-arch-tier vapor-arch-tier--base">
+                <ProductCard
+                  name="Kata"
+                  description="A local-first structured text parser and visualizer. Parse, inspect, compare, and export structured text entirely in-browser."
+                  icon="kata"
+                  href="https://github.com/corderro-artz/kata"
+                  label="SURFACE"
+                  variant="standalone"
+                />
               </div>
-              <p class="vapor-kicker">Fabric</p>
-              <h3>Akira</h3>
-              <p class="vapor-arch-desc">A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.</p>
-              <span class="vapor-meta">the foundation</span>
-            </a>
+            </div>
           </div>
 
         </div>
@@ -120,4 +135,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
   </div>
+
+  <script is:inline>
+    (function(){
+      // Product navigation
+      var tabs = document.querySelectorAll('[data-product]');
+      var panels = document.querySelectorAll('[data-product-panel]');
+      if (tabs.length && panels.length) {
+        tabs.forEach(function(tab) {
+          tab.addEventListener('click', function() {
+            var product = tab.getAttribute('data-product');
+            tabs.forEach(function(t) { t.setAttribute('aria-selected', 'false'); });
+            tab.setAttribute('aria-selected', 'true');
+            panels.forEach(function(p) {
+              if (p.getAttribute('data-product-panel') === product) {
+                p.classList.add('vapor-product-panel--active');
+                p.hidden = false;
+                p.setAttribute('aria-hidden', 'false');
+              } else {
+                p.classList.remove('vapor-product-panel--active');
+                p.hidden = true;
+                p.setAttribute('aria-hidden', 'true');
+              }
+            });
+          });
+        });
+      }
+    })();
+  </script>
 </BaseLayout>

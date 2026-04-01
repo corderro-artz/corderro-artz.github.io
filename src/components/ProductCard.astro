@@ -1,0 +1,68 @@
+---
+/**
+ * ProductCard — Reusable product/project card for the Vaporsoft architecture page.
+ *
+ * @prop {string}  name        – Display name of the product.
+ * @prop {string}  description – One-line product description.
+ * @prop {string}  [icon]      – Icon base name (e.g. "akira" → /akira-icon.svg & /akira-icon-light.svg).
+ * @prop {string}  [href]      – GitHub or external link. When set, renders as <a>.
+ * @prop {string}  label       – Category label (FABRIC, SURFACE, etc.).
+ * @prop {'foundation'|'surface'|'standalone'|'future'} [variant='surface'] – Card presentation variant.
+ */
+interface Props {
+  name: string;
+  description: string;
+  icon?: string;
+  href?: string;
+  label: string;
+  variant?: 'foundation' | 'surface' | 'standalone' | 'future';
+}
+
+const { name, description, icon, href, label, variant = 'surface' } = Astro.props;
+
+const isFoundation = variant === 'foundation';
+const isStandalone = variant === 'standalone';
+const isFuture = variant === 'future';
+
+const classes = [
+  'vapor-arch-card',
+  isFoundation || isStandalone ? 'vapor-frame' : 'vapor-panel',
+  isStandalone ? 'vapor-arch-card--standalone' : '',
+  isFoundation ? 'vapor-arch-card--foundation' : '',
+  !isFuture ? 'vapor-arch-card--active' : 'vapor-arch-card--future',
+].filter(Boolean).join(' ');
+---
+
+{href ? (
+  <a class={classes} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Open ${name} on GitHub`}>
+    <div class="vapor-arch-card-icon">
+      {icon ? (
+        <>
+          <img src={`/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={`/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+        </>
+      ) : (
+        <span class="vapor-arch-placeholder-icon"></span>
+      )}
+    </div>
+    <h3>{name}</h3>
+    <p class="vapor-arch-desc">{description}</p>
+    <span class="vapor-meta">{label}</span>
+  </a>
+) : (
+  <article class={classes}>
+    <div class="vapor-arch-card-icon">
+      {icon ? (
+        <>
+          <img src={`/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={`/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+        </>
+      ) : (
+        <span class="vapor-arch-placeholder-icon"></span>
+      )}
+    </div>
+    <h3>{name}</h3>
+    <p class="vapor-arch-desc">{description}</p>
+    <span class="vapor-meta">{label}</span>
+  </article>
+)}

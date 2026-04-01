@@ -66,7 +66,7 @@ const jsonLd = {
           });
         }
         var t=localStorage.getItem('vapor-theme');
-        if(t!=='dark')document.documentElement.className='vapor-light';
+        document.documentElement.classList.toggle('vapor-light',t!=='dark');
         setFavicon(document.documentElement.classList.contains('vapor-light'));
         window.__vaporSetFavicon=setFavicon;
       })();
@@ -98,6 +98,13 @@ const jsonLd = {
         var snap=document.querySelector('.vapor-snap-container');
         var noiseLand=document.querySelector('.vapor-noise--landing');
         var noiseArch=document.querySelector('.vapor-noise--arch');
+        var scrollCue=document.querySelector('.vapor-scroll-cue');
+        if(scrollCue){
+          scrollCue.addEventListener('animationend',function(){
+            scrollCue.style.animation='none';
+            scrollCue.style.opacity='1';
+          },{once:true});
+        }
         if(snap&&noiseLand){
           var ticking=false;
           function onScroll(){
@@ -116,9 +123,32 @@ const jsonLd = {
               noiseArch.style.opacity=t*0.32;
               noiseArch.style.transform='scale('+t+')';
             }
+            if(scrollCue){
+              scrollCue.style.opacity=t<0.1?(1-t/0.1):0;
+            }
           }
           snap.addEventListener('scroll',onScroll,{passive:true});
           updateGlow();
+
+          // Snap enforcement — debounced scroll-end detection
+          var snapPages=snap.querySelectorAll('.vapor-snap-page');
+          var snapTimer=null;
+          function enforceSnap(){
+            clearTimeout(snapTimer);
+            snapTimer=setTimeout(function(){
+              var scrollTop=snap.scrollTop;
+              var closest=null;
+              var minDist=Infinity;
+              snapPages.forEach(function(page){
+                var dist=Math.abs(page.offsetTop-scrollTop);
+                if(dist<minDist){minDist=dist;closest=page;}
+              });
+              if(closest&&minDist>2){
+                closest.scrollIntoView({behavior:'smooth'});
+              }
+            },120);
+          }
+          snap.addEventListener('scroll',enforceSnap,{passive:true});
         }
       })();
     </script>
