@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vaporsoft.dev/sitemap.xml
+Host: www.vaporsoft.dev
+Sitemap: https://www.vaporsoft.dev/sitemap.xml

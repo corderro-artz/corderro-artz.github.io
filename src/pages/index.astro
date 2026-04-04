@@ -1,13 +1,81 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
+
+const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
+const homePageStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Vaporsoft',
+    url: new URL('/', siteUrl).href,
+    description: 'Vaporsoft builds software contracting systems, MCP servers, and browser-first digital tools.',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Vaporsoft',
+      url: siteUrl.href
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Vaporsoft products',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Akira',
+          url: 'https://github.com/corderro-artz/akira'
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Kata',
+          url: 'https://github.com/corderro-artz/kata'
+        }
+      ]
+    }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: 'Akira',
+    url: 'https://github.com/corderro-artz/akira',
+    codeRepository: 'https://github.com/corderro-artz/akira',
+    author: {
+      '@type': 'Organization',
+      name: 'Vaporsoft'
+    },
+    description: 'A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: 'Kata',
+    url: 'https://github.com/corderro-artz/kata',
+    codeRepository: 'https://github.com/corderro-artz/kata',
+    author: {
+      '@type': 'Organization',
+      name: 'Vaporsoft'
+    },
+    description: 'A local-first structured text parser and visualizer for inspecting, comparing, and exporting structured text entirely in-browser.'
+  }
+];
 ---
 
 <BaseLayout
-  title="Vaporsoft"
-  description="Vaporsoft — Software contracting and digital assets."
+  title="Vaporsoft | Software Contracting, MCP Servers, and Digital Tools"
+  description="Vaporsoft builds software contracting systems, MCP servers, and browser-first digital tools, including Akira and Kata."
   themeColor="#f2ede6"
   bodyClass="vapor-body"
+  keywords={[
+    'software contracting',
+    'MCP server',
+    'digital tools',
+    'Akira',
+    'Kata',
+    'cross-platform telemetry',
+    'local-first tools'
+  ]}
+  structuredData={homePageStructuredData}
 >
   <div class="vapor-snap-container">
 
@@ -28,9 +96,15 @@ import ProductCard from '../components/ProductCard.astro';
           </div>
 
           <p class="vapor-landing-tagline">Software Contracting & Digital Assets</p>
+          <p class="vapor-landing-summary">
+            Vaporsoft builds software contracting systems, MCP server infrastructure, and local-first digital tools with clean execution, dependable telemetry, and browser-native workflows.
+          </p>
 
-          <nav class="vapor-landing-nav">
-            <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+          <nav class="vapor-landing-nav" aria-label="Primary">
+            <button type="button" class="vapor-inline-link" data-scroll-target="products" aria-controls="products">Products</button>
+            <a class="vapor-inline-link" href="/components/">Components</a>
+            <a class="vapor-inline-link" href="/contact/">Contact</a>
+            <button type="button" class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
               <span class="vapor-theme-toggle-dot"></span>
               <span data-theme-label>LIGHT</span>
             </button>
@@ -45,7 +119,7 @@ import ProductCard from '../components/ProductCard.astro';
     </section>
 
     <!-- ── Page 2 · Products ── -->
-    <section class="vapor-snap-page">
+    <section class="vapor-snap-page" id="products">
       <div class="vapor-site vapor-arch">
         <div class="vapor-noise vapor-noise--arch"></div>
 
@@ -58,6 +132,9 @@ import ProductCard from '../components/ProductCard.astro';
             <span></span>
           </div>
           <h2 class="vapor-title">to spin many threads</h2>
+          <p class="vapor-intro vapor-arch-summary">
+            Explore the Vaporsoft product catalog: Akira for cross-platform system telemetry, Kata for local-first structured text parsing, and MCP surfaces built on the same technical foundation.
+          </p>
         </header>
 
         <nav class="vapor-product-nav" aria-label="Product navigation">
@@ -130,6 +207,7 @@ import ProductCard from '../components/ProductCard.astro';
 
         <footer class="vapor-landing-footer">
           <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
+          <p class="vapor-footer-contact"><a href="/contact/">Contact</a></p>
         </footer>
       </div>
     </section>
@@ -138,6 +216,17 @@ import ProductCard from '../components/ProductCard.astro';
 
   <script is:inline>
     (function(){
+      var scrollTargets = document.querySelectorAll('[data-scroll-target]');
+      scrollTargets.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          var targetId = trigger.getAttribute('data-scroll-target');
+          var target = targetId ? document.getElementById(targetId) : null;
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
       // Product navigation
       var tabs = document.querySelectorAll('[data-product]');
       var panels = document.querySelectorAll('[data-product-panel]');

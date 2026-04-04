@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
+const contactFormEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ?? '';
+const contactStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact Vaporsoft',
+    url: new URL('/contact/', siteUrl).href,
+    description: 'Contact Vaporsoft for software contracting, business inquiries, and product questions.',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Vaporsoft',
+      url: siteUrl.href
+    }
+  }
+];
+---
+
+<BaseLayout
+  title="Contact Vaporsoft | Business Inquiry Form"
+  description="Contact Vaporsoft for software contracting, business inquiries, and product questions through a static-safe contact form."
+  themeColor="#f2ede6"
+  bodyClass="vapor-body"
+  keywords={['contact Vaporsoft', 'software inquiry', 'business contact', 'project inquiry']}
+  structuredData={contactStructuredData}
+>
+  <main class="vapor-site">
+    <div class="vapor-noise"></div>
+
+    <header class="vapor-topbar">
+      <a class="vapor-brand" href="/">
+        <span class="vapor-brand-mark"></span>
+        <span class="vapor-brand-lockup">
+          <span class="vapor-brand-name">Vaporsoft</span>
+          <span class="vapor-brand-subtitle">Contact</span>
+        </span>
+      </a>
+
+      <nav class="vapor-nav">
+        <a href="/">Home</a>
+        <a href="/components/">Components</a>
+      </nav>
+    </header>
+
+    <section class="vapor-section vapor-contact-section">
+      <div class="vapor-section-head vapor-contact-head">
+        <p class="vapor-kicker">Business Inquiry</p>
+        <h1 class="vapor-title">Contact Vaporsoft</h1>
+        <p class="vapor-intro">
+          Use this form for project inquiries, licensing questions, partnership requests, and product support. Messages route through a static-safe form service so the business email stays private.
+        </p>
+      </div>
+
+      <div class="vapor-contact-layout">
+        <article class="vapor-panel vapor-contact-copy">
+          <p class="vapor-label">What to include</p>
+          <div class="vapor-ledger">
+            <div class="vapor-ledger-row">
+              <span>Scope</span>
+              <strong>What you need built, reviewed, or approved</strong>
+            </div>
+            <div class="vapor-ledger-row">
+              <span>Timeline</span>
+              <strong>Target date or response window</strong>
+            </div>
+            <div class="vapor-ledger-row">
+              <span>Context</span>
+              <strong>Company, product, or repository details</strong>
+            </div>
+            <div class="vapor-ledger-row">
+              <span>Follow-up</span>
+              <strong>A valid reply email for the response</strong>
+            </div>
+          </div>
+        </article>
+
+        <section class="vapor-frame vapor-contact-form-shell">
+          <form
+            class="vapor-contact-form"
+            method="POST"
+            action={contactFormEndpoint || undefined}
+            data-contact-form
+            data-endpoint={contactFormEndpoint}
+          >
+            <input class="vapor-contact-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" />
+
+            <div class="vapor-contact-grid">
+              <label class="vapor-contact-field">
+                <span>Name</span>
+                <input type="text" name="name" autocomplete="name" required />
+              </label>
+
+              <label class="vapor-contact-field">
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+
+              <label class="vapor-contact-field">
+                <span>Company</span>
+                <input type="text" name="company" autocomplete="organization" />
+              </label>
+
+              <label class="vapor-contact-field">
+                <span>Subject</span>
+                <input type="text" name="subject" maxlength="120" required />
+              </label>
+
+              <label class="vapor-contact-field vapor-contact-field--full">
+                <span>Message</span>
+                <textarea name="message" minlength="30" maxlength="3000" required></textarea>
+              </label>
+            </div>
+
+            <p class="vapor-contact-note">
+              {contactFormEndpoint
+                ? 'Form delivery is active through Formspree.'
+                : 'Form delivery is not configured yet. Add PUBLIC_FORMSPREE_ENDPOINT to enable submissions.'}
+            </p>
+
+            <div class="vapor-actions vapor-contact-actions">
+              <button type="submit" class="vapor-button vapor-button--primary" data-contact-submit disabled={!contactFormEndpoint}>Send Message</button>
+              <a class="vapor-button vapor-button--secondary" href="/">Back Home</a>
+            </div>
+
+            <p class="vapor-contact-status" data-contact-status role="status" aria-live="polite"></p>
+          </form>
+
+          <div class="vapor-contact-success" data-contact-success hidden>
+            <p class="vapor-kicker">Message Sent</p>
+            <h2 class="vapor-title">Thanks. Your inquiry is on its way.</h2>
+            <p>
+              A reply will go back to the email address you submitted. If you need to send another message, reload the page or head back to the homepage.
+            </p>
+            <a class="vapor-button vapor-button--secondary" href="/">Return Home</a>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="vapor-footer">
+      <p>Vaporsoft</p>
+      <div class="vapor-footer-meta">
+        <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
+      </div>
+    </footer>
+  </main>
+
+  <script is:inline>
+    (function() {
+      var form = document.querySelector('[data-contact-form]');
+      if (!form) return;
+
+      var endpoint = form.getAttribute('data-endpoint');
+      var status = document.querySelector('[data-contact-status]');
+      var submit = document.querySelector('[data-contact-submit]');
+      var success = document.querySelector('[data-contact-success]');
+      var honeypot = form.querySelector('[name="website"]');
+      var submitLabel = submit ? submit.textContent : 'Send Message';
+
+      if (!endpoint) {
+        if (status) {
+          status.textContent = 'This form will start working after PUBLIC_FORMSPREE_ENDPOINT is configured for the site build.';
+        }
+        return;
+      }
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        if (honeypot && honeypot.value) {
+          form.reset();
+          return;
+        }
+
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent = 'Sending...';
+        }
+
+        if (status) {
+          status.textContent = 'Sending your message...';
+        }
+
+        fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            Accept: 'application/json'
+          }
+        })
+          .then(function(response) {
+            if (response.ok) {
+              return { ok: true };
+            }
+
+            return response
+              .json()
+              .then(function(data) {
+                return { ok: false, data: data };
+              })
+              .catch(function() {
+                return { ok: false };
+              });
+          })
+          .then(function(result) {
+            if (result.ok) {
+              form.reset();
+              form.hidden = true;
+              if (success) {
+                success.hidden = false;
+              }
+              if (status) {
+                status.textContent = 'Message sent.';
+              }
+              return;
+            }
+
+            var message = 'Unable to send your message right now. Please try again in a moment.';
+            if (result.data && result.data.errors && result.data.errors.length && result.data.errors[0].message) {
+              message = result.data.errors[0].message;
+            }
+
+            throw new Error(message);
+          })
+          .catch(function(error) {
+            if (status) {
+              status.textContent = error.message;
+            }
+            if (submit) {
+              submit.disabled = false;
+              submit.textContent = submitLabel;
+            }
+          });
+      });
+    })();
+  </script>
+</BaseLayout>

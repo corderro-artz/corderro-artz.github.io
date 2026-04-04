@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://vaporsoft.dev',
+  site: 'https://www.vaporsoft.dev',
   trailingSlash: 'always',
 });

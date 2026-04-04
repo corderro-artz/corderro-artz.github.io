@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://vaporsoft.dev/</loc>
-    <lastmod>2026-03-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.vaporsoft.dev/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/vaporsoft-logo.svg</image:loc>
+      <image:title>Vaporsoft Logo</image:title>
+      <image:caption>Vaporsoft software contracting and digital tools brand mark.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/akira-icon.svg</image:loc>
+      <image:title>Akira Icon</image:title>
+      <image:caption>Akira cross-platform telemetry library icon.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/kata-icon.svg</image:loc>
+      <image:title>Kata Icon</image:title>
+      <image:caption>Kata local-first structured text tool icon.</image:caption>
+    </image:image>
   </url>
   <url>
-    <loc>https://vaporsoft.dev/components/</loc>
-    <lastmod>2026-03-22</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vaporsoft.dev/components/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/vaporsoft-logo.svg</image:loc>
+      <image:title>Vaporsoft Components</image:title>
+      <image:caption>Vaporsoft design system reference and component library.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/contact/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

@@ -689,9 +689,17 @@ body.vapor-light::before {
 .vapor-footer {
   display: flex;
   justify-content: space-between;
+  align-items: start;
   gap: 1rem;
   padding-top: 1.2rem;
   animation-delay: 0.34s;
+}
+
+.vapor-footer-meta {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: center;
+  text-align: center;
 }
 
 .vapor-showcase-stack {
@@ -764,12 +772,46 @@ body.vapor-light::before {
   max-width: 28rem;
 }
 
+.vapor-landing-summary,
+.vapor-arch-summary {
+  max-width: 42rem;
+  color: var(--theme-muted);
+}
+
 .vapor-landing-nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   justify-content: center;
   width: 100%;
+}
+
+.vapor-inline-link,
+.vapor-footer-contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--theme-line);
+  background: transparent;
+  color: var(--theme-muted);
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.vapor-inline-link:hover,
+.vapor-inline-link:focus-visible,
+.vapor-footer-contact a:hover,
+.vapor-footer-contact a:focus-visible {
+  border-color: rgba(var(--vapor-carmine-rgb), 0.5);
+  color: var(--theme-text);
+  transform: translateY(-1px);
 }
 
 .vapor-landing-footer {
@@ -784,6 +826,16 @@ body.vapor-light::before {
   color: var(--theme-muted);
   opacity: 0;
   animation: vapor-reveal 0.72s ease 0.3s forwards;
+}
+
+.vapor-footer-contact {
+  display: grid;
+  justify-content: center;
+}
+
+.vapor-landing-footer .vapor-footer-contact a {
+  min-height: 2rem;
+  font-size: 0.54rem;
 }
 
 .vapor-token-chip {
@@ -827,6 +879,118 @@ body.vapor-light::before {
 .vapor-theme-toggle:hover {
   border-color: rgba(var(--vapor-carmine-rgb), 0.5);
   color: var(--theme-text);
+}
+
+.vapor-contact-section {
+  gap: 1rem;
+}
+
+.vapor-contact-head {
+  justify-items: center;
+  text-align: center;
+}
+
+.vapor-contact-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 0.75rem;
+}
+
+.vapor-contact-copy,
+.vapor-contact-form-shell {
+  min-height: 100%;
+}
+
+.vapor-contact-copy,
+.vapor-contact-form-shell {
+  padding: 1rem 1.2rem;
+}
+
+.vapor-contact-form,
+.vapor-contact-success {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.vapor-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.vapor-contact-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.vapor-contact-field--full {
+  grid-column: 1 / -1;
+}
+
+.vapor-contact-field span,
+.vapor-contact-note,
+.vapor-contact-status,
+.vapor-contact-success p,
+.vapor-contact-success a {
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.vapor-contact-field span,
+.vapor-contact-note {
+  color: var(--theme-muted);
+}
+
+.vapor-contact-field input,
+.vapor-contact-field textarea {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--theme-line);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--theme-text);
+  font: inherit;
+}
+
+.vapor-contact-field textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.vapor-light .vapor-contact-field input,
+.vapor-light .vapor-contact-field textarea {
+  background: rgba(18, 20, 24, 0.02);
+}
+
+.vapor-contact-field input:focus,
+.vapor-contact-field textarea:focus {
+  outline: 1px solid rgba(var(--vapor-carmine-rgb), 0.65);
+  outline-offset: 1px;
+  border-color: rgba(var(--vapor-carmine-rgb), 0.58);
+}
+
+.vapor-contact-actions {
+  align-items: center;
+}
+
+.vapor-contact-status {
+  min-height: 1.7rem;
+  color: var(--theme-muted);
+}
+
+.vapor-contact-success {
+  align-content: start;
+}
+
+.vapor-contact-honeypot {
+  position: absolute;
+  left: -9999px;
+}
+
+.vapor-contact-note a,
+.vapor-contact-success a {
+  color: var(--theme-text);
+  text-decoration: underline;
+  text-underline-offset: 0.18rem;
 }
 
 .vapor-theme-toggle-dot {
@@ -971,6 +1135,11 @@ body.vapor-light::before {
   .vapor-ledger-row {
     display: grid;
   }
+
+  .vapor-footer-meta {
+    justify-items: start;
+    text-align: left;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1010,6 +1179,11 @@ body.vapor-light::before {
 
   .vapor-landing-nav {
     flex-direction: column;
+  }
+
+  .vapor-footer-meta {
+    justify-items: center;
+    text-align: center;
   }
 }
 

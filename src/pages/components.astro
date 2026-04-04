@@ -1,12 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
+const componentsStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Vaporsoft Components',
+    url: new URL('/components/', siteUrl).href,
+    description: 'Vaporsoft theme component reference for surfaces, containers, and layout patterns.',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Vaporsoft',
+      url: siteUrl.href
+    }
+  }
+];
 ---
 
 <BaseLayout
-  title="Vaporsoft — Components"
-  description="Vaporsoft theme component reference. Surfaces, containers, and layout patterns."
+  title="Vaporsoft Components | Design System Reference"
+  description="Vaporsoft theme component reference for surfaces, containers, layout patterns, and reusable UI structure."
   themeColor="#f2ede6"
   bodyClass="vapor-body"
+  keywords={['Vaporsoft components', 'design system', 'UI patterns', 'Astro component reference']}
+  structuredData={componentsStructuredData}
 >
   <main class="vapor-site">
     <div class="vapor-noise"></div>
@@ -25,6 +43,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <a href="#tokens">Tokens</a>
         <a href="#catalogue">Catalogue</a>
         <a href="#preview">Preview</a>
+        <a href="/contact/">Contact</a>
         <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
           <span class="vapor-theme-toggle-dot"></span>
           <span data-theme-label>Dark</span>
@@ -246,7 +265,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <footer class="vapor-footer">
       <p>Vaporsoft</p>
-      <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
+      <div class="vapor-footer-meta">
+        <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
+        <p class="vapor-footer-contact"><a href="/contact/">Contact</a></p>
+      </div>
     </footer>
   </main>
 

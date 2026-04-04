@@ -19,6 +19,8 @@ jobs:
 
       - name: Install, build, and upload site
         uses: withastro/action@v5
+        env:
+          PUBLIC_FORMSPREE_ENDPOINT: ${{ vars.PUBLIC_FORMSPREE_ENDPOINT }}
 
   deploy:
     needs: build
