@@ -39,7 +39,7 @@ const contactStructuredData = [
         </span>
       </a>
 
-      <nav class="vapor-nav">
+      <nav class="vapor-nav" aria-label="Secondary">
         <a href="/">Home</a>
         <a href="/components/">Components</a>
         <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
@@ -63,30 +63,18 @@ const contactStructuredData = [
         </p>
       </div>
 
-      <div class="vapor-contact-layout">
-        <article class="vapor-panel vapor-contact-copy">
-          <p class="vapor-label">What to include</p>
-          <div class="vapor-ledger">
-            <div class="vapor-ledger-row">
-              <span>Scope</span>
-              <strong>What you need built, reviewed, or approved</strong>
-            </div>
-            <div class="vapor-ledger-row">
-              <span>Timeline</span>
-              <strong>Target date or response window</strong>
-            </div>
-            <div class="vapor-ledger-row">
-              <span>Context</span>
-              <strong>Company, product, or repository details</strong>
-            </div>
-            <div class="vapor-ledger-row">
-              <span>Follow-up</span>
-              <strong>A valid reply email for the response</strong>
-            </div>
-          </div>
-        </article>
+      <div class="vapor-status-bar">
+        <div class="vapor-status-indicator vapor-status-indicator--active">
+          <span class="vapor-status-dot"></span>
+          <span>Accepting contract work</span>
+        </div>
+        <div class="vapor-status-indicator vapor-status-indicator--active">
+          <span class="vapor-status-dot"></span>
+          <span>Accepting new team members</span>
+        </div>
+      </div>
 
-        <section class="vapor-frame vapor-contact-form-shell">
+      <section class="vapor-frame vapor-contact-form-shell">
           <form
             class="vapor-contact-form"
             method="POST"
@@ -146,14 +134,10 @@ const contactStructuredData = [
             <a class="vapor-button vapor-button--secondary" href="/">Return Home</a>
           </div>
         </section>
-      </div>
     </section>
 
-    <footer class="vapor-footer">
-      <p>Vaporsoft</p>
-      <div class="vapor-footer-meta">
-        <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
-      </div>
+    <footer class="vapor-landing-footer">
+      <p>&copy; 2026 Vaporsoft. All rights reserved.</p>
     </footer>
   </main>
 

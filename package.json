@@ -1,10 +1,11 @@
 {
   "name": "vaporsoft-site",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "dev:mock": "node dev/form-mock.mjs",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
