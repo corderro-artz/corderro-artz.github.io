@@ -17,10 +17,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Resolve contact form endpoint
+        shell: bash
+        env:
+          FORMSPREE_ENDPOINT_VAR: ${{ vars.PUBLIC_FORMSPREE_ENDPOINT }}
+          FORMSPREE_ENDPOINT_SECRET: ${{ secrets.PUBLIC_FORMSPREE_ENDPOINT }}
+        run: |
+          endpoint="${FORMSPREE_ENDPOINT_VAR:-$FORMSPREE_ENDPOINT_SECRET}"
+          if [ -z "$endpoint" ]; then
+            echo "PUBLIC_FORMSPREE_ENDPOINT is not configured as a repository variable or secret."
+            exit 1
+          fi
+          echo "PUBLIC_FORMSPREE_ENDPOINT=$endpoint" >> "$GITHUB_ENV"
+
       - name: Install, build, and upload site
         uses: withastro/action@v5
-        env:
-          PUBLIC_FORMSPREE_ENDPOINT: ${{ vars.PUBLIC_FORMSPREE_ENDPOINT }}
 
   deploy:
     needs: build
