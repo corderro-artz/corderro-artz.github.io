@@ -96,6 +96,8 @@ body.vapor-light::before {
 }
 
 .vapor-site {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   padding: 1.1rem 0 2.5rem;
 }
@@ -840,7 +842,7 @@ body.vapor-light::before {
 }
 
 .vapor-landing-footer {
-  margin-bottom: auto;
+  margin-top: auto;
   width: 100%;
   text-align: center;
   padding-bottom: 0.5rem;
@@ -976,6 +978,10 @@ body.vapor-light::before {
 .vapor-contact-success {
   display: grid;
   gap: 0.9rem;
+}
+
+.vapor-contact-success[hidden] {
+  display: none;
 }
 
 .vapor-contact-form-shell {
@@ -1368,7 +1374,6 @@ body.vapor-light::before {
 }
 
 .vapor-arch-header {
-  margin-top: auto;
   text-align: center;
   display: grid;
   justify-items: center;
@@ -1602,6 +1607,7 @@ body.vapor-light::before {
 .vapor-product-panels {
   width: 100%;
   position: relative;
+  flex: 1;
 }
 
 .vapor-product-panel {
