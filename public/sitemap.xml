@@ -6,17 +6,17 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://www.vaporsoft.dev/vaporsoft-logo.svg</image:loc>
+      <image:loc>https://www.vaporsoft.dev/vaporsoft/vaporsoft-logo.svg</image:loc>
       <image:title>Vaporsoft Logo</image:title>
       <image:caption>Vaporsoft software contracting and digital tools brand mark.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.vaporsoft.dev/akira-icon.svg</image:loc>
+      <image:loc>https://www.vaporsoft.dev/akira/akira-icon.svg</image:loc>
       <image:title>Akira Icon</image:title>
       <image:caption>Akira cross-platform telemetry library icon.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.vaporsoft.dev/kata-icon.svg</image:loc>
+      <image:loc>https://www.vaporsoft.dev/kata/kata-icon.svg</image:loc>
       <image:title>Kata Icon</image:title>
       <image:caption>Kata local-first structured text tool icon.</image:caption>
     </image:image>
@@ -27,7 +27,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <image:image>
-      <image:loc>https://www.vaporsoft.dev/vaporsoft-logo.svg</image:loc>
+      <image:loc>https://www.vaporsoft.dev/vaporsoft/vaporsoft-logo.svg</image:loc>
       <image:title>Vaporsoft Components</image:title>
       <image:caption>Vaporsoft design system reference and component library.</image:caption>
     </image:image>

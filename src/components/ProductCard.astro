@@ -4,7 +4,7 @@
  *
  * @prop {string}  name        – Display name of the product.
  * @prop {string}  description – One-line product description.
- * @prop {string}  [icon]      – Icon base name (e.g. "akira" → /akira-icon.svg & /akira-icon-light.svg).
+ * @prop {string}  [icon]      – Icon base name (e.g. "akira" → /akira/akira-icon.svg & /akira/akira-icon-light.svg).
  * @prop {string}  [href]      – GitHub or external link. When set, renders as <a>.
  * @prop {string}  label       – Category label (FABRIC, SURFACE, etc.).
  * @prop {'foundation'|'surface'|'standalone'|'future'} [variant='surface'] – Card presentation variant.
@@ -38,8 +38,8 @@ const classes = [
     <div class="vapor-arch-card-icon">
       {icon ? (
         <>
-          <img src={`/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={`/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={`/${icon}/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={`/${icon}/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>
@@ -54,8 +54,8 @@ const classes = [
     <div class="vapor-arch-card-icon">
       {icon ? (
         <>
-          <img src={`/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={`/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={`/${icon}/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={`/${icon}/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>
