@@ -10,13 +10,13 @@
   "lang": "en-US",
   "icons": [
     {
-      "src": "/vaporsoft/vaporsoft-logo.svg",
+      "src": "/brand/vaporsoft/vaporsoft-logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/vaporsoft/vaporsoft-favicon.svg",
+      "src": "/brand/vaporsoft/vaporsoft-favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
