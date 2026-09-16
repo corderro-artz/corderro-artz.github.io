@@ -128,7 +128,12 @@ npm run brand:check
 
 It fails if `palette.json` and `global.css` disagree, if a retired value appears
 anywhere in `src/` or `public/brand/`, if a brand SVG uses a colour outside the
-palette, or if any SVG has changed since the PNG beside it was rendered.
+palette, or if any SVG has changed since the PNG beside it was rendered. It
+compares hashes, never pixels, so it gives the same answer on any machine.
+
+`npm run brand:verify` additionally re-renders and compares bytes. That only
+means anything where Yu Gothic and Meiryo are installed, so it is local-only and
+deliberately not in CI.
 
 All of this exists because four values drifted with nothing watching, and the
 PNGs kept serving the old ones after the sources were already corrected.

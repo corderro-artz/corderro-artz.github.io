@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "brand:png": "node scripts/render-brand-png.mjs",
-    "brand:check": "node scripts/check-palette.mjs && node scripts/render-brand-png.mjs --check"
+    "brand:check": "node scripts/check-palette.mjs",
+    "brand:verify": "node scripts/render-brand-png.mjs --check"
   },
   "devDependencies": {
     "astro": "^7.3.2",

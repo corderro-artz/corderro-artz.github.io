@@ -66,18 +66,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Check the palette and the rendered marks
         # Compares palette.json against global.css, rejects retired values, and
-        # verifies every PNG still matches the SVG it was rendered from. It does
-        # not re-render: the marks set Japanese text in fonts this runner does
-        # not have, so a Linux rasterisation would differ from the committed
-        # files for reasons that have nothing to do with the palette.
-        run: npm run brand:check
+        # verifies every PNG still matches the SVG it was rendered from.
+        #
+        # No npm ci: this script imports nothing but node builtins, because it
+        # compares hashes rather than re-rendering. Re-rendering here would be
+        # worse than useless — the marks set Japanese text in Yu Gothic and
+        # Meiryo, which this runner does not have, so it would report the
+        # committed files wrong for a reason unrelated to the palette. The byte
+        # comparison lives in `npm run brand:verify`, for machines with the
+        # fonts.
+        run: node scripts/check-palette.mjs
 
   audit:
     name: Dependency audit
