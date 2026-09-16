@@ -13,7 +13,8 @@
       "mcp__MCP_DOCKER__browser_click",
       "mcp__MCP_DOCKER__browser_snapshot",
       "mcp__MCP_DOCKER__browser_type",
-      "mcp__MCP_DOCKER__browser_press_key"
+      "mcp__MCP_DOCKER__browser_press_key",
+      "Bash(git fetch *)"
     ]
   }
 }

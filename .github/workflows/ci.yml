@@ -1,0 +1,75 @@
+name: CI
+
+# Validates a change before it can reach main. deploy.yml only runs on push to
+# main, so without this a broken build first shows up on the default branch,
+# after it is already live.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore: [main]   # main is already built by deploy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Superseded runs on the same ref are pointless, so cancel them. This is safe
+# here (unlike the deploy workflow) because nothing is published.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'   # Astro 7 requires >=22.12.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        # PUBLIC_FORMSPREE_ENDPOINT is deliberately not provided. The contact
+        # page falls back to an empty endpoint and renders a "not configured"
+        # notice, so the build stays valid without exposing the secret to CI.
+        run: npm run build
+
+      - name: Verify expected pages were emitted
+        # A build can succeed while producing nothing useful. Assert the routes
+        # actually exist rather than trusting the exit code alone.
+        run: |
+          set -euo pipefail
+          for page in index.html components/index.html contact/index.html; do
+            if [ ! -s "dist/$page" ]; then
+              echo "::error::Expected dist/$page to exist and be non-empty"
+              exit 1
+            fi
+          done
+          echo "All expected pages present."
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fail on high or critical advisories
+        run: npm audit --audit-level=high
