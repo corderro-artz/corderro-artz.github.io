@@ -91,10 +91,16 @@ const structuredDataNodes = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     {keywordContent && <meta name="keywords" content={keywordContent} />}
+    {/*
+      Mobile browsers paint their chrome, and the strip revealed by overscroll,
+      with theme-color. The site's theme comes from a manual toggle stored in
+      localStorage and ignores the OS, so keying theme-color to
+      prefers-color-scheme paints a near-white band under a black page on a
+      light phone, and a black band under a paper page on a dark one. One tag,
+      rewritten from the resolved theme before first paint and on every toggle.
+      color-scheme is set from the same class in CSS for the same reason.
+    */}
     <meta name="theme-color" content={themeColor} />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#07080b" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2ede6" />
-    <meta name="color-scheme" content="dark light" />
     <meta name="author" content="Vaporsoft" />
     <meta name="generator" content={Astro.generator} />
     <meta name="application-name" content="Vaporsoft" />
@@ -140,10 +146,17 @@ const structuredDataNodes = [
             if(href)link.setAttribute('href',href);
           });
         }
+        function setThemeColor(isLight){
+          var meta=document.querySelector('meta[name="theme-color"]');
+          if(meta)meta.setAttribute('content',isLight?'#f2ede6':'#07080b');
+        }
         var t=localStorage.getItem('vapor-theme');
         document.documentElement.classList.toggle('vapor-light',t!=='dark');
-        setFavicon(document.documentElement.classList.contains('vapor-light'));
+        var light=document.documentElement.classList.contains('vapor-light');
+        setFavicon(light);
+        setThemeColor(light);
         window.__vaporSetFavicon=setFavicon;
+        window.__vaporSetThemeColor=setThemeColor;
       })();
     </script>
   </head>
@@ -155,6 +168,7 @@ const structuredDataNodes = [
         var light=document.documentElement.classList.contains('vapor-light');
         document.body.classList.toggle('vapor-light',light);
         if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
+        if(window.__vaporSetThemeColor)window.__vaporSetThemeColor(light);
 
         // Theme toggle
         var toggle=document.querySelector('[data-theme-toggle]');
@@ -165,6 +179,7 @@ const structuredDataNodes = [
             if(label)label.textContent=light?'LIGHT':'DARK';
             document.body.classList.toggle('vapor-light',light);
             if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
+            if(window.__vaporSetThemeColor)window.__vaporSetThemeColor(light);
           }
           sync();
           toggle.addEventListener('click',function(){

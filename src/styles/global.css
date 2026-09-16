@@ -7,35 +7,61 @@
   --vapor-shadow: 0 36px 96px rgba(0, 0, 0, 0.46);
   --vapor-max-width: 1320px;
   --theme-bg: var(--vapor-ink);
+  /* Opaque floor for the canvas. Matches the end stop of the atmosphere
+     gradient so the two are indistinguishable where they meet. */
+  --theme-canvas: var(--vapor-ink);
   --theme-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
   --theme-surface-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
   --theme-line: var(--vapor-line);
   --theme-text: var(--vapor-paper);
   --theme-muted: rgba(242, 237, 230, 0.78);
   --theme-shadow: var(--vapor-shadow);
+  /* Follows the manual toggle, not the OS — same reasoning as theme-color. */
+  color-scheme: dark;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Mobile browsers expose canvas outside the body box in two ways: the chrome
+   collapses and the visual viewport grows past 100svh, and overscroll stretches
+   the scroller. A background that lives only on body is propagated to that
+   canvas with body's box as its positioning area, so it tiles across the gap
+   and leaves a hard seam. An opaque colour here is the floor that nothing can
+   reveal past, and it makes painting deterministic: once html has a background
+   of its own, body's is no longer propagated. */
 html {
   scroll-behavior: smooth;
+  background-color: var(--theme-canvas);
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  color: var(--theme-text);
   font-size: 16.5px;
+  font-family: 'Manrope', 'Zen Kaku Gothic New', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Atmosphere. Fixed, so it is always exactly the viewport — it cannot be
+   scrolled past, tiled across a taller canvas, or pulled away by overscroll.
+   Negative z-index keeps it behind every in-flow box while staying above the
+   canvas colour. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
     radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.012) 14%, transparent 28%),
     radial-gradient(ellipse at 4% 4%, rgba(var(--vapor-carmine-rgb), 0.1), transparent 36%),
     radial-gradient(ellipse at 96% 96%, rgba(var(--vapor-carmine-rgb), 0.08), transparent 36%),
     linear-gradient(180deg, #06070a 0%, #090b0f 52%, #07080b 100%);
-  color: var(--theme-text);
-  font-family: 'Manrope', 'Zen Kaku Gothic New', sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  background-repeat: no-repeat;
 }
 
 body::before {
@@ -65,6 +91,8 @@ ul {
 
 .vapor-light {
   --theme-bg: #f4efe8;
+  --theme-canvas: var(--vapor-paper);
+  color-scheme: light;
   --theme-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68));
   --theme-surface-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.8));
   --theme-line: rgba(18, 20, 24, 0.12);
@@ -74,12 +102,16 @@ ul {
 }
 
 body.vapor-light {
+  color: var(--theme-text);
+}
+
+body.vapor-light::after {
   background:
     radial-gradient(ellipse at 50% 44%, rgba(var(--vapor-carmine-rgb), 0.06) 0%, rgba(var(--vapor-carmine-rgb), 0.02) 22%, transparent 44%),
     radial-gradient(ellipse at 4% 4%, rgba(var(--vapor-carmine-rgb), 0.12), transparent 36%),
     radial-gradient(ellipse at 96% 96%, rgba(var(--vapor-carmine-rgb), 0.1), transparent 36%),
     linear-gradient(180deg, #f7f3ed 0%, #f4efe8 52%, #f2ede6 100%);
-  color: var(--theme-text);
+  background-repeat: no-repeat;
 }
 
 body.vapor-light::before {
@@ -98,7 +130,12 @@ body.vapor-light::before {
 .vapor-site {
   display: flex;
   flex-direction: column;
+  /* svh, not vh: on mobile `vh` resolves to the *large* viewport, so a bare
+     100vh here makes a page taller than the 100svh snap page that holds it —
+     the page overflows, snapping lands off by the height of the browser
+     chrome, and the footer sits underneath it. */
   min-height: 100vh;
+  min-height: 100svh;
   padding: 1.1rem 0 2.5rem;
 }
 
