@@ -197,9 +197,10 @@ const homePageStructuredData = [
           </p>
 
           <nav class="vapor-landing-nav" aria-label="Primary">
-            <button type="button" class="vapor-inline-link" data-scroll-target="products" aria-controls="products">Products</button>
-            <a class="vapor-inline-link" href="/components/">Components</a>
-            <a class="vapor-inline-link" href="/contact/">Contact</a>
+            <div class="vapor-landing-nav-row">
+              <button type="button" class="vapor-inline-link" data-scroll-target="products" aria-controls="products">Products</button>
+              <a class="vapor-inline-link" href="/contact/">Contact</a>
+            </div>
             <button type="button" class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
               <span class="vapor-theme-toggle-dot"></span>
               <span data-theme-label>LIGHT</span>
@@ -331,8 +332,31 @@ const homePageStructuredData = [
         trigger.addEventListener('click', function() {
           var targetId = trigger.getAttribute('data-scroll-target');
           var target = targetId ? document.getElementById(targetId) : null;
-          if (target) {
+          if (!target) return;
+          // This button did nothing at all. scrollIntoView() and scrollTo() are
+          // both cancelled by the container's mandatory snapping, and so is a
+          // scrollTop assignment while the container's CSS scroll-behavior is
+          // smooth — the scroll never starts. Assigning scrollTop with
+          // scroll-behavior temporarily set to auto is honoured. The override is
+          // put back on the next frame so wheel and touch scrolling keep the
+          // behaviour they had. Offsets come from rects because offsetTop is
+          // relative to the offset parent, which here is the body, not the
+          // scroller.
+          var container = target.closest('.vapor-snap-container');
+          if (!container) {
             target.scrollIntoView({ behavior: 'smooth' });
+            return;
+          }
+          var previousBehavior = container.style.scrollBehavior;
+          container.style.scrollBehavior = 'auto';
+          container.scrollTop += target.getBoundingClientRect().top - container.getBoundingClientRect().top;
+          // scroll-behavior only applies at the moment of the assignment, and
+          // the assignment above is synchronous, so the override can be undone
+          // immediately rather than on a later frame.
+          if (previousBehavior) {
+            container.style.scrollBehavior = previousBehavior;
+          } else {
+            container.style.removeProperty('scroll-behavior');
           }
         });
       });
