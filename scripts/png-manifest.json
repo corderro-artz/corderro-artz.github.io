@@ -1,0 +1,162 @@
+{
+  "note": "Written by scripts/render-brand-png.mjs. sha256 is of the SVG at render time; check-palette.mjs fails when a source has moved on from its PNG.",
+  "rendered": {
+    "public/brand/akira/akira-favicon-light.svg": {
+      "sha256": "91f72d4a336d356896864b636976965fcddd9df61734ab0486398cb05d2b6864",
+      "png": {
+        "public/brand/akira/png/akira-favicon-light.png": "d76a21fdeefa13dc0266b78f2bd305a3f9ff67c73684700371dd88bf76b1bac7"
+      }
+    },
+    "public/brand/akira/akira-favicon.svg": {
+      "sha256": "5399643c80db0784fb084eeadffbc4fc5ddb6faaa2202c2ae6c06bf72615fd5f",
+      "png": {
+        "public/brand/akira/png/akira-favicon.png": "228e88e00a40e508bc5c30f7e5be23a2da0047bd02c49e0c4bc9e169ec2a9e30"
+      }
+    },
+    "public/brand/akira/akira-icon-light.svg": {
+      "sha256": "f63805a3f5e99119eb7030f2e8117f26490f286e5d286adb995b4d94ccadd48f",
+      "png": {
+        "public/brand/akira/png/akira-icon-light.png": "6d49ab32e0b074c330366b60dfc753aeb59020979dbcf5b5489e053ce601a4a9"
+      }
+    },
+    "public/brand/akira/akira-icon.svg": {
+      "sha256": "ef23a6f56096b15968e1f420a11ae1f7f38e13bda6ce79a1b6f794e1ffd2efdb",
+      "png": {
+        "public/brand/akira/png/akira-icon.png": "276bed0aa03828945c1876bfa11ed8a43b0750e0a27c6cb280739376615901be"
+      }
+    },
+    "public/brand/crispr/crispr-favicon-light.svg": {
+      "sha256": "664bf828b0ec45b64af1f2dd18e577b3035bc0fe6ae504b7e521e8f87179a70b",
+      "png": {
+        "public/brand/crispr/png/crispr-favicon-light.png": "241a98b7166ad448ad0d3a7ddcbbbea5997ff816005656ec80441957e5370c2c"
+      }
+    },
+    "public/brand/crispr/crispr-favicon.svg": {
+      "sha256": "b2cf0c5ef02491d8d268a2c31b02c93d38b9be9d22c614e22e3faf71c6f4c88b",
+      "png": {
+        "public/brand/crispr/png/crispr-favicon.png": "5819b998285abd4f3a1c7ededdb988a3f42ecc0aeca3ea54b26eae76e0a040eb"
+      }
+    },
+    "public/brand/crispr/crispr-icon-light.svg": {
+      "sha256": "e918af585c364b645df92936a7cac62cf1d79aa987edba99063d2fd070136fa0",
+      "png": {
+        "public/brand/crispr/png/crispr-icon-light.png": "f9a5d65698697fc8314f35d20b306f87fa00606189ed18f2e4ee32b8ffb87008"
+      }
+    },
+    "public/brand/crispr/crispr-icon.svg": {
+      "sha256": "5f7c1dd9fdaf402e8e46fcf9c13100d23c3d34e900ab1d79005dc143b1981266",
+      "png": {
+        "public/brand/crispr/png/crispr-icon.png": "a0db359886d2bfa3b8b4c868a2dd8732d97913471df57676509b7203dac37205"
+      }
+    },
+    "public/brand/kata/kata-favicon-light.svg": {
+      "sha256": "0e2393665b3950c966775904d5b92aeb88568e2a47f4d5708a082a0aa5064ef4",
+      "png": {
+        "public/brand/kata/png/kata-favicon-light.png": "88752fd901e78689e0a0cd7d6be9d71ec29f959499c46d5418daccfe33c1a688"
+      }
+    },
+    "public/brand/kata/kata-favicon.svg": {
+      "sha256": "d1998fcc37a25c734bf39a0b559814364a4694210085f722129742db3744d2f2",
+      "png": {
+        "public/brand/kata/png/kata-favicon.png": "5632876e1b44af4495f35cfc9e4a91f242e10a2c15ced2ffc3a457107703bdc9"
+      }
+    },
+    "public/brand/kata/kata-icon-light.svg": {
+      "sha256": "3a96fd22617318cd6efc5bee5502de69ede597aee9393d121dfb43429c1514aa",
+      "png": {
+        "public/brand/kata/png/kata-icon-light.png": "dec67c494aa4c19f31942f789a525a21f31edde0235288c1b096553d1c5d929c"
+      }
+    },
+    "public/brand/kata/kata-icon.svg": {
+      "sha256": "2a8629a70d26948c4aa0f3ea12c486af3741d27bfac638f460134b7cebd5c722",
+      "png": {
+        "public/brand/kata/png/kata-icon.png": "bceb56344f4dd0ea43d9de596347e935a994721d56673506aae5c3604e5ce775"
+      }
+    },
+    "public/brand/nfty/nfty-favicon-light.svg": {
+      "sha256": "f2a40362496157cb4eae28e80a6b7d43e66f1d83194a122fea2bdfba2a7df4ee",
+      "png": {
+        "public/brand/nfty/png/nfty-favicon-light.png": "b044c24b59f54cc0df0ea3d46b27d907379570c9bf7ae8bceb16a4a2fd7dc512"
+      }
+    },
+    "public/brand/nfty/nfty-favicon.svg": {
+      "sha256": "531c0b9d489572731bd2654af2659baffbd1c4b05cc8e101d188ba9ddac20201",
+      "png": {
+        "public/brand/nfty/png/nfty-favicon.png": "dc11ae21296c9849696802366b2f78e0c17ca202d884d134dc5df18386387830"
+      }
+    },
+    "public/brand/nfty/nfty-icon-light.svg": {
+      "sha256": "e0174ac1d29281b6492866b555734d08dea9edf5153ce9a1d30e64971a3f661a",
+      "png": {
+        "public/brand/nfty/png/nfty-icon-light.png": "9e8ae372649f8e32592fccae6ff65c997bd3daa091a639874c62dc9997221b28"
+      }
+    },
+    "public/brand/nfty/nfty-icon.svg": {
+      "sha256": "18f05c5669367ff34361d7ecc1f807d6a04770e3c19bff3c76e45b9caf2dd9e7",
+      "png": {
+        "public/brand/nfty/png/nfty-icon.png": "f52548050b3dd6bf874bc57864892adc6cb600df650d47a58d563df03bb6a731"
+      }
+    },
+    "public/brand/sen/sen-favicon-light.svg": {
+      "sha256": "105de39f992f6fec90d89a11c9b2690750c3bcdc2ee687eda10c6b8b422a440c",
+      "png": {
+        "public/brand/sen/png/sen-favicon-light.png": "1df7f1a87f0dfa105723eb09a154ffebe3c234be8096abb280c06467cac330b7"
+      }
+    },
+    "public/brand/sen/sen-favicon.svg": {
+      "sha256": "ec792383515c79a943f97c201c61224f21d8fd08faa22c36837b53fd065240b6",
+      "png": {
+        "public/brand/sen/png/sen-favicon.png": "c2d3bd0395c36f8e69c39b1bf2c55fddce6069992fb199a6e80b052cb70b5fe9"
+      }
+    },
+    "public/brand/sen/sen-icon-light.svg": {
+      "sha256": "55bb6dbfdd12c3d11318e83091c8eaae9a3bfc2a8af76675a3d5ab87a36648d1",
+      "png": {
+        "public/brand/sen/png/sen-icon-light.png": "1ba5fe6aa81314569d62d3ca819012c0992ebb0876f89099f6a4000571c6f662"
+      }
+    },
+    "public/brand/sen/sen-icon.svg": {
+      "sha256": "86df8697844ca864d6db669c97852fb4bf8ab731b7c3de0e69d32a74fb207313",
+      "png": {
+        "public/brand/sen/png/sen-icon.png": "4e8fff069f227e679e996619f565b20697a19a626a4d42d6f2f09532af88e73d"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-banner-light.svg": {
+      "sha256": "1ce6389c8514be2f7f92fb2f20f81c09117d8578da88a241dd363aa89d1a8bc6",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-banner-light.png": "9cedae8a155014bdbc7cdbbdbb5e6de2b1f97842dbfff5d97a40335f8d5f431e"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-banner.svg": {
+      "sha256": "83e3fe5002886c82fe8238bda8bbb68b0a2ce2f51947e9d8303b41e0b210da5b",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-banner.png": "477f74f54a2eb4cb8362c81bc0b722530f361f4563deefa0389948e35e7f7ba9"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-favicon-light.svg": {
+      "sha256": "0ab437fb3adfe8341f8884ab418469726013bd1b9abd667a0cb841fcdf96b8c0",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-favicon-light.png": "a6ca4388a1a55e5b0413091b6d48ba9efce855e8bc875ad7c04f36034047faae"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-favicon.svg": {
+      "sha256": "7a7a1337af8b6ab0a27916960d0a9b774b2b0250444d8b0ed3ad4ffa0c25c907",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-favicon.png": "8ee4d06711ac6b8b8cd54d63015bf45cf97048f051b3b1d907154a0734ec034c",
+        "public/brand/vaporsoft/vaporsoft-favicon-256.png": "cf38488086f7b9a2fb0f67a9706ac53d218c102a8f8ad2e843d80e631532e133"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-logo-light.svg": {
+      "sha256": "776d67d7fd2c5df009d3069e504d4d5a1e298b0c64742a52a9f95a49aebcff9b",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-logo-light.png": "e1b76da6d66f99c1eb6bb9d5d5c487c26332d4e8f473ac877cc3748279dc97ef"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-logo.svg": {
+      "sha256": "676c23524738a5538ca960b6cf8521fb0f101bac378a3a0270f1d6beec2d85c0",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-logo.png": "d3de456f71c1171d7c418c8011a96229368cab5e7cd0e74d4dbc3fb17aa79f73"
+      }
+    }
+  }
+}

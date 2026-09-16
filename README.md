@@ -32,6 +32,23 @@ shadows any top-level directory of the same name — `/nfty/` and `/kata/`
 already do. Assets kept at the top level are silently unreachable, or worse,
 answered by the other site.
 
+### Palette
+
+[`public/brand/PALETTE.md`](public/brand/PALETTE.md) is the reference for every
+colour the brand ships — the core values, both themes, the ramp, measured
+contrast, and the values that are retired. [`palette.json`](public/brand/palette.json)
+is the same thing machine-readable, for anything outside this repository:
+
+```
+https://www.vaporsoft.dev/brand/palette.json
+```
+
+`src/styles/global.css` remains authoritative; `npm run brand:check` fails if the
+two disagree, if a retired value reappears, if a brand SVG strays outside the
+palette, or if a PNG no longer matches the SVG it was rendered from. It runs on
+every pull request. PNGs are generated, never hand-edited — after changing an
+SVG, run `npm run brand:png`.
+
 ## Stack
 
 - Astro (static output)

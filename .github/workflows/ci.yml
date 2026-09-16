@@ -55,6 +55,30 @@ jobs:
           done
           echo "All expected pages present."
 
+  brand:
+    name: Brand palette
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check the palette and the rendered marks
+        # Compares palette.json against global.css, rejects retired values, and
+        # verifies every PNG still matches the SVG it was rendered from. It does
+        # not re-render: the marks set Japanese text in fonts this runner does
+        # not have, so a Linux rasterisation would differ from the committed
+        # files for reasons that have nothing to do with the palette.
+        run: npm run brand:check
+
   audit:
     name: Dependency audit
     runs-on: ubuntu-latest

@@ -68,12 +68,12 @@
   <rect x="172.57" y="131.57" width="4.86" height="4.86" fill="#c3777e" fill-opacity="0.94"/>
   <rect x="172.76" y="137.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
   <rect x="172.76" y="143.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
-  <rect x="178.95" y="107.95" width="4.1" height="4.1" fill="#a42839" fill-opacity="0.98"/>
+  <rect x="178.95" y="107.95" width="4.1" height="4.1" fill="#a11f31" fill-opacity="0.98"/>
   <rect x="178.76" y="113.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
   <rect x="178.76" y="119.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
   <rect x="178.76" y="125.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
   <rect x="178.76" y="131.76" width="4.48" height="4.48" fill="#b44f5b" fill-opacity="0.96"/>
-  <rect x="178.95" y="137.95" width="4.1" height="4.1" fill="#a42839" fill-opacity="0.98"/>
+  <rect x="178.95" y="137.95" width="4.1" height="4.1" fill="#a11f31" fill-opacity="0.98"/>
   </g>
   <rect x="106" y="180" width="72" height="1" fill="#f2ede6" fill-opacity="0.08"/>
   <text x="142" y="208" text-anchor="middle" font-size="18" letter-spacing="3.6" fill="#f2ede6" fill-opacity="0.55" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">CRISP<tspan fill="#a11f31">R</tspan></text>

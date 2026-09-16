@@ -1,11 +1,11 @@
 <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="256" height="256" rx="12" fill="#f4efe8"/>
-  <rect x="20" y="20" width="216" height="216" rx="8" stroke="#121418" stroke-opacity="0.12"/>
+  <rect x="20" y="20" width="216" height="216" rx="8" stroke="#121318" stroke-opacity="0.12"/>
   <rect x="40" y="48" width="8" height="160" fill="#a11f31"/>
   <path d="M110 94 L142 83 L174 94 L142 105 Z" fill="#a11f31"/>
-  <path d="M110 124 L142 113 L174 124 L142 135 Z" fill="none" stroke="#121418" stroke-opacity="0.85" stroke-width="4"/>
-  <path d="M110 154 L142 143 L174 154 L142 165 Z" fill="none" stroke="#121418" stroke-opacity="0.6" stroke-width="4"/>
-  <rect x="106" y="180" width="72" height="1" fill="#121418" fill-opacity="0.12"/>
-  <text x="142" y="208" text-anchor="middle" font-size="18" letter-spacing="3.6" fill="#121418" fill-opacity="0.55" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">NFT<tspan fill="#a11f31">Y</tspan></text>
+  <path d="M110 124 L142 113 L174 124 L142 135 Z" fill="none" stroke="#121318" stroke-opacity="0.85" stroke-width="4"/>
+  <path d="M110 154 L142 143 L174 154 L142 165 Z" fill="none" stroke="#121318" stroke-opacity="0.6" stroke-width="4"/>
+  <rect x="106" y="180" width="72" height="1" fill="#121318" fill-opacity="0.12"/>
+  <text x="142" y="208" text-anchor="middle" font-size="18" letter-spacing="3.6" fill="#121318" fill-opacity="0.55" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">NFT<tspan fill="#a11f31">Y</tspan></text>
   <rect x="200" y="48" width="16" height="16" fill="#a11f31"/>
 </svg>
