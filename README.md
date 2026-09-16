@@ -8,6 +8,30 @@ Static site for www.vaporsoft.dev — minimal landing page, product showcase, co
 - **/components/** — Design system component reference
 - **/contact/** — Business inquiry form
 
+## Brand assets
+
+Other repositories embed the brand marks from here, so `public/brand/` is a
+public contract: **do not move, rename, or delete anything under it.** Add new
+brands as `public/brand/<name>/`.
+
+Reference them from another repository by tracking `main`:
+
+```
+https://raw.githubusercontent.com/corderro-artz/corderro-artz.github.io/main/public/brand/<name>/<name>-icon.svg
+```
+
+or, where a served URL is needed (HTML email, for example):
+
+```
+https://www.vaporsoft.dev/brand/<name>/<name>-icon.svg
+```
+
+The `brand/` prefix is not cosmetic. This is a *user* Pages site, so a
+repository that publishes its own Pages site is served at `/<repo>/` and
+shadows any top-level directory of the same name — `/nfty/` and `/kata/`
+already do. Assets kept at the top level are silently unreachable, or worse,
+answered by the other site.
+
 ## Stack
 
 - Astro (static output)
