@@ -10,6 +10,13 @@ permissions:
   pages: write
   id-token: write
 
+# One Pages deployment at a time. Without this, two pushes in quick succession
+# race and the older build can land last, publishing stale output. Queued runs
+# are not cancelled, so every commit still gets deployed, just in order.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
