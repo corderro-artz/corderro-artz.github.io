@@ -2,6 +2,99 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 
+/**
+ * Product catalogue.
+ *
+ * The page renders entirely from this structure, so adding a listing is a data
+ * edit rather than a markup edit. Categories render as the upper toggle, the
+ * products inside a category render as that category's tab rail, and each
+ * product renders one panel.
+ *
+ * A product is either a stack (`surfaces` built on top of a `base`, with
+ * connectors drawn between the tiers) or a single card (`base` only).
+ *
+ * Both rails stay usable as listings grow: they wrap on wide viewports and
+ * become horizontally scrollable rails on narrow ones.
+ */
+const catalog = [
+  {
+    id: 'developer',
+    label: 'Developer',
+    products: [
+      {
+        id: 'akira',
+        label: 'Akira',
+        base: {
+          name: 'Akira',
+          description:
+            'A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.',
+          icon: 'akira',
+          href: 'https://github.com/corderro-artz/akira',
+          label: 'FABRIC',
+          variant: 'foundation'
+        },
+        surfaces: [
+          {
+            name: 'Akira MCP Server',
+            description: 'An MCP server built on Akira, exposing Akira tooling through MCP.',
+            icon: 'akira',
+            label: 'SURFACE',
+            variant: 'surface'
+          },
+          {
+            name: '[Future]',
+            description: 'Another system in the pipeline — same foundation, new surface.',
+            label: 'SURFACE',
+            variant: 'future'
+          }
+        ]
+      },
+      {
+        id: 'kata',
+        label: 'Kata',
+        base: {
+          name: 'Kata',
+          description:
+            'A local-first structured text parser and visualizer. Parse, inspect, compare, and export structured text entirely in-browser.',
+          icon: 'kata',
+          href: 'https://github.com/corderro-artz/kata',
+          label: 'SURFACE',
+          variant: 'standalone'
+        },
+        surfaces: []
+      }
+    ]
+  },
+  {
+    id: 'designer',
+    label: 'Designer',
+    products: [
+      {
+        id: 'nfty',
+        label: 'NFTY',
+        base: {
+          name: 'NFTY',
+          description:
+            'A deterministic generator and pixel editor for layered asset collections. Grayscale value-maps colorized at generation time, with OpenSea metadata built in.',
+          icon: 'nfty',
+          href: 'https://github.com/corderro-artz/nfty',
+          label: 'DESIGN',
+          variant: 'standalone'
+        },
+        surfaces: []
+      }
+    ]
+  }
+];
+
+const defaultCategoryId = catalog[0].id;
+const flatProducts = catalog.flatMap((category) =>
+  category.products.map((product) => ({ ...product, categoryId: category.id }))
+);
+const defaultProductByCategory = Object.fromEntries(
+  catalog.map((category) => [category.id, category.products[0] ? category.products[0].id : ''])
+);
+
 const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
 const homePageStructuredData = [
   {
@@ -18,46 +111,28 @@ const homePageStructuredData = [
     mainEntity: {
       '@type': 'ItemList',
       name: 'Vaporsoft products',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'Akira',
-          url: 'https://github.com/corderro-artz/akira'
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Kata',
-          url: 'https://github.com/corderro-artz/kata'
-        }
-      ]
+      itemListElement: flatProducts.map((product, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: product.base.name,
+        ...(product.base.href ? { url: product.base.href } : {})
+      }))
     }
   },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareSourceCode',
-    name: 'Akira',
-    url: 'https://github.com/corderro-artz/akira',
-    codeRepository: 'https://github.com/corderro-artz/akira',
-    author: {
-      '@type': 'Organization',
-      name: 'Vaporsoft'
-    },
-    description: 'A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.'
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareSourceCode',
-    name: 'Kata',
-    url: 'https://github.com/corderro-artz/kata',
-    codeRepository: 'https://github.com/corderro-artz/kata',
-    author: {
-      '@type': 'Organization',
-      name: 'Vaporsoft'
-    },
-    description: 'A local-first structured text parser and visualizer for inspecting, comparing, and exporting structured text entirely in-browser.'
-  }
+  ...flatProducts
+    .filter((product) => Boolean(product.base.href))
+    .map((product) => ({
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareSourceCode',
+      name: product.base.name,
+      url: product.base.href,
+      codeRepository: product.base.href,
+      author: {
+        '@type': 'Organization',
+        name: 'Vaporsoft'
+      },
+      description: product.base.description
+    }))
 ];
 ---
 
@@ -72,6 +147,7 @@ const homePageStructuredData = [
     'digital tools',
     'Akira',
     'Kata',
+    'NFTY',
     'cross-platform telemetry',
     'local-first tools'
   ]}
@@ -129,7 +205,7 @@ const homePageStructuredData = [
         <div class="vapor-noise vapor-noise--arch"></div>
 
         <header class="vapor-arch-header">
-          <p class="vapor-kicker">Fabric & Surface</p>
+          <p class="vapor-kicker">Fabric &amp; Surface</p>
           <h2 class="vapor-title">A single loom</h2>
           <div class="vapor-rule vapor-rule--compact">
             <span></span>
@@ -138,76 +214,94 @@ const homePageStructuredData = [
           </div>
           <h2 class="vapor-title">to spin many threads</h2>
           <p class="vapor-intro vapor-arch-summary">
-            Explore the Vaporsoft product catalog: Akira for cross-platform system telemetry, Kata for local-first structured text parsing, and MCP surfaces built on the same technical foundation.
+            Explore the Vaporsoft catalog — engineering work under Developer, design work under Designer, each built on the same technical foundation.
           </p>
         </header>
 
-        <nav class="vapor-product-nav" aria-label="Product navigation">
-          <button type="button" class="vapor-product-tab" data-product="akira" aria-selected="true">Akira</button>
-          <button type="button" class="vapor-product-tab" data-product="kata" aria-selected="false">Kata</button>
-        </nav>
+        <!-- Tier 1 · category toggle -->
+        <div class="vapor-category-nav" role="tablist" aria-label="Product categories">
+          {catalog.map((category) => (
+            <button
+              type="button"
+              class="vapor-category-tab"
+              role="tab"
+              id={`category-tab-${category.id}`}
+              data-category={category.id}
+              aria-selected={category.id === defaultCategoryId ? 'true' : 'false'}
+              aria-controls={`product-rail-${category.id}`}
+              tabindex={category.id === defaultCategoryId ? 0 : -1}
+            >{category.label}</button>
+          ))}
+        </div>
+
+        <!-- Tier 2 · product rail, one per category -->
+        <div class="vapor-product-rails">
+          {catalog.map((category) => (
+            <div
+              class="vapor-product-rail"
+              role="tablist"
+              id={`product-rail-${category.id}`}
+              aria-labelledby={`category-tab-${category.id}`}
+              data-product-rail={category.id}
+              hidden={category.id !== defaultCategoryId}
+            >
+              {category.products.map((product, index) => (
+                <button
+                  type="button"
+                  class="vapor-product-tab"
+                  role="tab"
+                  id={`product-tab-${product.id}`}
+                  data-product={product.id}
+                  data-category-of={category.id}
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  aria-controls={`product-panel-${product.id}`}
+                  tabindex={index === 0 ? 0 : -1}
+                >{product.label}</button>
+              ))}
+            </div>
+          ))}
+        </div>
 
         <div class="vapor-product-panels">
+          {flatProducts.map((product) => {
+            const isDefault =
+              product.categoryId === defaultCategoryId &&
+              defaultProductByCategory[product.categoryId] === product.id;
+            return (
+              <div
+                class:list={['vapor-product-panel', isDefault && 'vapor-product-panel--active']}
+                role="tabpanel"
+                id={`product-panel-${product.id}`}
+                aria-labelledby={`product-tab-${product.id}`}
+                data-product-panel={product.id}
+                data-category-of={product.categoryId}
+                aria-hidden={isDefault ? 'false' : 'true'}
+                hidden={!isDefault}
+              >
+                <div class="vapor-arch-stack">
+                  {product.surfaces.length > 0 && (
+                    <>
+                      <div class="vapor-arch-tier vapor-arch-tier--upper">
+                        {product.surfaces.map((surface) => (
+                          <ProductCard {...surface} />
+                        ))}
+                      </div>
 
-          <!-- Akira ecosystem -->
-          <div class="vapor-product-panel vapor-product-panel--active" data-product-panel="akira" aria-hidden="false">
-            <div class="vapor-arch-stack">
+                      <div class="vapor-arch-connectors" aria-hidden="true">
+                        <div class="vapor-arch-connector vapor-arch-connector--left"></div>
+                        <div class="vapor-arch-connector vapor-arch-connector--right"></div>
+                        <div class="vapor-arch-connector-trunk"></div>
+                      </div>
+                    </>
+                  )}
 
-              <!-- Upper tier: surfaces -->
-              <div class="vapor-arch-tier vapor-arch-tier--upper">
-                <ProductCard
-                  name="Akira MCP Server"
-                  description="An MCP server built on Akira, exposing Akira tooling through MCP."
-                  icon="akira"
-                  label="SURFACE"
-                  variant="surface"
-                />
-                <ProductCard
-                  name="[Future]"
-                  description="Another system in the pipeline — same foundation, new surface."
-                  label="SURFACE"
-                  variant="future"
-                />
+                  <div class="vapor-arch-tier vapor-arch-tier--base">
+                    <ProductCard {...product.base} />
+                  </div>
+                </div>
               </div>
-
-              <!-- Connector lines -->
-              <div class="vapor-arch-connectors" aria-hidden="true">
-                <div class="vapor-arch-connector vapor-arch-connector--left"></div>
-                <div class="vapor-arch-connector vapor-arch-connector--right"></div>
-                <div class="vapor-arch-connector-trunk"></div>
-              </div>
-
-              <!-- Base tier: fabric -->
-              <div class="vapor-arch-tier vapor-arch-tier--base">
-                <ProductCard
-                  name="Akira"
-                  description="A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS."
-                  icon="akira"
-                  href="https://github.com/corderro-artz/akira"
-                  label="FABRIC"
-                  variant="foundation"
-                />
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Kata standalone -->
-          <div class="vapor-product-panel" data-product-panel="kata" aria-hidden="true" hidden>
-            <div class="vapor-arch-stack">
-              <div class="vapor-arch-tier vapor-arch-tier--base">
-                <ProductCard
-                  name="Kata"
-                  description="A local-first structured text parser and visualizer. Parse, inspect, compare, and export structured text entirely in-browser."
-                  icon="kata"
-                  href="https://github.com/corderro-artz/kata"
-                  label="SURFACE"
-                  variant="standalone"
-                />
-              </div>
-            </div>
-          </div>
-
+            );
+          })}
         </div>
 
         <footer class="vapor-landing-footer">
@@ -218,7 +312,7 @@ const homePageStructuredData = [
 
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ defaultProductByCategory }}>
     (function(){
       var scrollTargets = document.querySelectorAll('[data-scroll-target]');
       scrollTargets.forEach(function(trigger) {
@@ -231,29 +325,93 @@ const homePageStructuredData = [
         });
       });
 
-      // Product navigation
-      var tabs = document.querySelectorAll('[data-product]');
-      var panels = document.querySelectorAll('[data-product-panel]');
-      if (tabs.length && panels.length) {
+      var categoryTabs = Array.prototype.slice.call(document.querySelectorAll('[data-category]'));
+      var rails = Array.prototype.slice.call(document.querySelectorAll('[data-product-rail]'));
+      var productTabs = Array.prototype.slice.call(document.querySelectorAll('[data-product]'));
+      var panels = Array.prototype.slice.call(document.querySelectorAll('[data-product-panel]'));
+      if (!categoryTabs.length || !panels.length) return;
+
+      // The last product the visitor opened in each category, so switching back
+      // and forth between categories does not throw away their place.
+      var lastProduct = {};
+      Object.keys(defaultProductByCategory).forEach(function(key) {
+        lastProduct[key] = defaultProductByCategory[key];
+      });
+
+      function setTabState(tab, selected) {
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+        tab.setAttribute('tabindex', selected ? '0' : '-1');
+      }
+
+      // Each rail is its own tablist, so selection is updated only within the
+      // rail that owns the product — every rail keeps exactly one selected tab,
+      // including the ones currently hidden behind another category.
+      function showProduct(categoryId, productId) {
+        productTabs.forEach(function(tab) {
+          if (tab.getAttribute('data-category-of') !== categoryId) return;
+          setTabState(tab, tab.getAttribute('data-product') === productId);
+        });
+        panels.forEach(function(panel) {
+          var active = panel.getAttribute('data-product-panel') === productId;
+          panel.classList.toggle('vapor-product-panel--active', active);
+          panel.hidden = !active;
+          panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+      }
+
+      function showCategory(categoryId) {
+        categoryTabs.forEach(function(tab) {
+          setTabState(tab, tab.getAttribute('data-category') === categoryId);
+        });
+        rails.forEach(function(rail) {
+          rail.hidden = rail.getAttribute('data-product-rail') !== categoryId;
+        });
+        showProduct(categoryId, lastProduct[categoryId]);
+      }
+
+      // Roving-tabindex arrow navigation, per WAI-ARIA tabs pattern.
+      function wireArrowKeys(tabs, activate) {
         tabs.forEach(function(tab) {
-          tab.addEventListener('click', function() {
-            var product = tab.getAttribute('data-product');
-            tabs.forEach(function(t) { t.setAttribute('aria-selected', 'false'); });
-            tab.setAttribute('aria-selected', 'true');
-            panels.forEach(function(p) {
-              if (p.getAttribute('data-product-panel') === product) {
-                p.classList.add('vapor-product-panel--active');
-                p.hidden = false;
-                p.setAttribute('aria-hidden', 'false');
-              } else {
-                p.classList.remove('vapor-product-panel--active');
-                p.hidden = true;
-                p.setAttribute('aria-hidden', 'true');
-              }
+          tab.addEventListener('keydown', function(event) {
+            var visible = tabs.filter(function(candidate) {
+              return candidate.offsetParent !== null;
             });
+            var index = visible.indexOf(tab);
+            if (index === -1) return;
+            var next = null;
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = visible[(index + 1) % visible.length];
+            else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = visible[(index - 1 + visible.length) % visible.length];
+            else if (event.key === 'Home') next = visible[0];
+            else if (event.key === 'End') next = visible[visible.length - 1];
+            if (!next) return;
+            event.preventDefault();
+            activate(next);
+            next.focus();
           });
         });
       }
+
+      categoryTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          showCategory(tab.getAttribute('data-category'));
+        });
+      });
+      wireArrowKeys(categoryTabs, function(tab) {
+        showCategory(tab.getAttribute('data-category'));
+      });
+
+      function selectProductTab(tab) {
+        var categoryId = tab.getAttribute('data-category-of');
+        lastProduct[categoryId] = tab.getAttribute('data-product');
+        showProduct(categoryId, lastProduct[categoryId]);
+      }
+
+      productTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          selectProductTab(tab);
+        });
+      });
+      wireArrowKeys(productTabs, selectProductTab);
     })();
   </script>
 </BaseLayout>

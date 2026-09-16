@@ -1296,6 +1296,7 @@ body.vapor-light::before {
 
 .vapor-snap-container {
   height: 100vh;
+  height: 100svh;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -1313,6 +1314,7 @@ body.vapor-light::before {
   scroll-snap-align: start;
   scroll-snap-stop: always;
   min-height: 100vh;
+  min-height: 100svh;
   position: relative;
 }
 
@@ -1371,6 +1373,7 @@ body.vapor-light::before {
   gap: 2rem;
   padding: 3rem 0 2rem;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 .vapor-arch-header {
@@ -1567,18 +1570,93 @@ body.vapor-light::before {
   letter-spacing: 0.1em;
 }
 
-/* ── Product navigation ── */
+/* ── Category navigation (tier 1) ── */
 
-.vapor-product-nav {
+/* The discipline toggle. Read as a heavier tier than the product rail below
+   it: no chrome, wider tracking, and a carmine underline on the active item. */
+.vapor-category-nav {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.75rem;
   opacity: 0;
   transform: translateY(12px);
-  animation: vapor-reveal 0.72s ease 0.18s forwards;
+  animation: vapor-reveal 0.72s ease 0.16s forwards;
+}
+
+.vapor-category-tab {
+  position: relative;
+  padding: 0.35rem 0.15rem 0.6rem;
+  border: 0;
+  background: transparent;
+  color: var(--theme-muted);
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.vapor-category-tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.25rem;
+  height: 1px;
+  background: var(--vapor-carmine);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+.vapor-category-tab[aria-selected="true"] {
+  color: var(--theme-text);
+}
+
+.vapor-category-tab[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.vapor-category-tab:hover,
+.vapor-category-tab:focus-visible {
+  color: var(--theme-text);
+  outline: none;
+}
+
+.vapor-category-tab:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 0.6;
+}
+
+/* ── Product rail (tier 2) ── */
+
+.vapor-product-rails {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: vapor-reveal 0.72s ease 0.22s forwards;
+}
+
+/* Wraps on wide viewports and turns into a swipeable rail on narrow ones, so
+   the tier reads the same whether the category holds two listings or twelve. */
+.vapor-product-rail {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+.vapor-product-rail[hidden] {
+  display: none;
 }
 
 .vapor-product-tab {
+  flex: 0 0 auto;
   padding: 0.4rem 1rem;
   border: 1px solid var(--theme-line);
   background: transparent;
@@ -1597,9 +1675,11 @@ body.vapor-light::before {
   color: var(--theme-text);
 }
 
-.vapor-product-tab:hover {
+.vapor-product-tab:hover,
+.vapor-product-tab:focus-visible {
   border-color: rgba(var(--vapor-carmine-rgb), 0.4);
   color: var(--theme-text);
+  outline: none;
 }
 
 /* ── Product panels ── */
@@ -1894,6 +1974,15 @@ body.vapor-light::before {
     padding: 0.25rem 0.75rem;
   }
 
+  .vapor-category-tab {
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+  }
+
+  .vapor-category-nav {
+    gap: 0.25rem 1.1rem;
+  }
+
   .vapor-landing-footer {
     font-size: 0.5rem;
     padding-bottom: 0.25rem;
@@ -1903,10 +1992,57 @@ body.vapor-light::before {
 @media (prefers-reduced-motion: reduce) {
   .vapor-scroll-cue-line,
   .vapor-arch-header,
-  .vapor-product-nav,
+  .vapor-category-nav,
+  .vapor-product-rails,
   .vapor-product-panel--active {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ── Rail overflow: many listings on a narrow viewport ── */
+
+@media (max-width: 819px) {
+  .vapor-product-rails {
+    width: 100%;
+  }
+
+  .vapor-product-rail {
+    flex-wrap: nowrap;
+    /* `safe` keeps a short rail centred but falls back to start-alignment once
+       it overflows, so the first tab is never scrolled off the left edge. */
+    justify-content: safe center;
+    width: 100%;
+    padding: 0.15rem 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;   /* never hand a swipe to browser back-nav */
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    /* Fade the cut edges so an overflowing rail reads as scrollable. */
+    mask-image: linear-gradient(90deg, transparent, #000 1rem, #000 calc(100% - 1rem), transparent);
+  }
+
+  .vapor-product-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vapor-product-tab {
+    scroll-snap-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Only the transition is dropped. The underline's scaleX(0) is what hides it
+     on unselected tabs, so `transform: none` here would reveal all of them. */
+  .vapor-category-tab::after,
+  .vapor-product-tab {
+    transition: none;
+  }
+
+  .vapor-product-rail {
+    scroll-behavior: auto;
   }
 }

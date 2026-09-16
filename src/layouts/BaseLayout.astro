@@ -145,12 +145,6 @@ const structuredDataNodes = [
         var noiseLand=document.querySelector('.vapor-noise--landing');
         var noiseArch=document.querySelector('.vapor-noise--arch');
         var scrollCue=document.querySelector('.vapor-scroll-cue');
-        if(scrollCue){
-          scrollCue.addEventListener('animationend',function(){
-            scrollCue.style.animation='none';
-            scrollCue.style.opacity='1';
-          },{once:true});
-        }
         if(snap&&noiseLand){
           var ticking=false;
           function onScroll(){
@@ -176,19 +170,44 @@ const structuredDataNodes = [
           snap.addEventListener('scroll',onScroll,{passive:true});
           updateGlow();
 
-          // Snap enforcement — debounced scroll-end detection
+          if(scrollCue){
+            // The intro reveal finishes ~1.3s in, which can be after the reader
+            // has already scrolled to page two. Drop the animation and hand
+            // opacity straight back to the scroll position, otherwise the cue
+            // flashes back on and sits over the product cards.
+            scrollCue.addEventListener('animationend',function(){
+              scrollCue.style.animation='none';
+              updateGlow();
+            },{once:true});
+          }
+
+          // Snap enforcement — debounced scroll-end detection.
+          // A page taller than the viewport owns an interior scroll range; while the
+          // viewport rests anywhere inside that range the reader is legitimately parked
+          // and must not be pulled back to the page top. Only pages that fit the
+          // viewport get re-snapped, so short pages keep the crisp snap and tall ones
+          // stay readable on small screens.
           var snapPages=snap.querySelectorAll('.vapor-snap-page');
           var snapTimer=null;
           function enforceSnap(){
             clearTimeout(snapTimer);
             snapTimer=setTimeout(function(){
               var scrollTop=snap.scrollTop;
+              var viewportH=snap.clientHeight;
+              var maxScroll=snap.scrollHeight-viewportH;
               var closest=null;
               var minDist=Infinity;
-              snapPages.forEach(function(page){
-                var dist=Math.abs(page.offsetTop-scrollTop);
+              var resting=false;
+              for(var i=0;i<snapPages.length;i++){
+                var page=snapPages[i];
+                var top=page.offsetTop;
+                var restEnd=top+page.offsetHeight-viewportH;
+                if(scrollTop>top+2&&scrollTop<=restEnd+2){resting=true;break;}
+                var dist=Math.abs(top-scrollTop);
                 if(dist<minDist){minDist=dist;closest=page;}
-              });
+              }
+              if(resting)return;
+              if(scrollTop>=maxScroll-2)return;
               if(closest&&minDist>2){
                 closest.scrollIntoView({behavior:'smooth'});
               }
