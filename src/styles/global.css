@@ -1459,11 +1459,16 @@ body.vapor-light::before {
 
 /* ── Cards ── */
 
+/* Every card centres its own contents, including the branched upper tier, so a
+   stack reads as one column rather than a centred base under left-aligned
+   surfaces. */
 .vapor-arch-card {
   display: grid;
   gap: 0.5rem;
   padding: 2rem;
   align-content: start;
+  justify-items: center;
+  text-align: center;
   box-shadow: none;
 }
 
@@ -1494,11 +1499,6 @@ body.vapor-light::before {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 1.1rem;
-}
-
-.vapor-arch-card--foundation {
-  text-align: center;
-  justify-items: center;
 }
 
 .vapor-arch-card--foundation h3 {
@@ -1559,11 +1559,6 @@ body.vapor-light::before {
 }
 
 /* ── Standalone card ── */
-
-.vapor-arch-card--standalone {
-  text-align: center;
-  justify-items: center;
-}
 
 .vapor-arch-card--standalone h3 {
   font-size: 1.4rem;

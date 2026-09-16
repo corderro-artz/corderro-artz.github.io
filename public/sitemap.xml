@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.vaporsoft.dev/</loc>
-    <lastmod>2026-04-04</lastmod>
+    <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -20,10 +20,20 @@
       <image:title>Kata Icon</image:title>
       <image:caption>Kata local-first structured text tool icon.</image:caption>
     </image:image>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/nfty/nfty-icon.svg</image:loc>
+      <image:title>NFTY Icon</image:title>
+      <image:caption>NFTY deterministic layered asset generator icon.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/crispr/crispr-icon.svg</image:loc>
+      <image:title>CRISPR Icon</image:title>
+      <image:caption>CRISPR lossless SVG to PNG rasterizer icon.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://www.vaporsoft.dev/components/</loc>
-    <lastmod>2026-04-04</lastmod>
+    <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <image:image>
@@ -34,7 +44,7 @@
   </url>
   <url>
     <loc>https://www.vaporsoft.dev/contact/</loc>
-    <lastmod>2026-04-04</lastmod>
+    <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
