@@ -7,7 +7,8 @@
  * @prop {string}  [icon]      – Icon base name (e.g. "akira" → /brand/akira/akira-icon.svg & /brand/akira/akira-icon-light.svg).
  *                               Brand assets live under /brand/ because this is a user Pages site: a repository with its
  *                               own Pages site is served at /<repo>/ and shadows any top-level directory of the same name.
- * @prop {string}  [href]      – GitHub or external link. When set, renders as <a>.
+ * @prop {string}  [href]      – Where the card leads. When set, renders as <a>. A site-relative
+ *                               path stays in the tab; an absolute URL opens a new one.
  * @prop {string}  label       – Category label (FABRIC, SURFACE, etc.).
  * @prop {'foundation'|'surface'|'standalone'|'future'} [variant='surface'] – Card presentation variant.
  */
@@ -21,6 +22,12 @@ interface Props {
 }
 
 const { name, description, icon, href, label, variant = 'surface' } = Astro.props;
+
+// The product pages live on this site now, so most cards no longer leave it.
+// Sending an in-site navigation to a new tab is the behaviour the repository
+// pages exist to stop.
+const isExternal = Boolean(href && /^https?:/i.test(href));
+const linkLabel = isExternal ? `Open ${name} on GitHub` : `Open the ${name} page`;
 
 const isFoundation = variant === 'foundation';
 const isStandalone = variant === 'standalone';
@@ -36,7 +43,13 @@ const classes = [
 ---
 
 {href ? (
-  <a class={classes} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Open ${name} on GitHub`}>
+  <a
+    class={classes}
+    href={href}
+    target={isExternal ? '_blank' : undefined}
+    rel={isExternal ? 'noopener noreferrer' : undefined}
+    aria-label={linkLabel}
+  >
     <div class="vapor-arch-card-icon">
       {icon ? (
         <>

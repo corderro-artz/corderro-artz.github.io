@@ -29,7 +29,7 @@ const catalog = [
           description:
             'A cross-platform system introspection library providing unified hardware and OS telemetry across Windows, Linux, and macOS.',
           icon: 'akira',
-          href: 'https://github.com/corderro-artz/akira',
+          href: '/akira/',
           label: 'FABRIC',
           variant: 'foundation'
         },
@@ -57,7 +57,7 @@ const catalog = [
           description:
             'A local-first structured text parser and visualizer. Parse, inspect, compare, and export structured text entirely in-browser.',
           icon: 'kata',
-          href: 'https://github.com/corderro-artz/kata',
+          href: '/kata/',
           label: 'SURFACE',
           variant: 'standalone'
         },
@@ -77,7 +77,7 @@ const catalog = [
           description:
             'A deterministic generator and pixel editor for layered asset collections. Grayscale value-maps colorized at generation time, with OpenSea metadata built in.',
           icon: 'nfty',
-          href: 'https://github.com/corderro-artz/nfty',
+          href: '/nfty/',
           label: 'DESIGN',
           variant: 'standalone'
         },
@@ -91,7 +91,7 @@ const catalog = [
           description:
             'Lossless SVG to PNG, rasterized by a real browser engine. Detects and repairs font substitution.',
           icon: 'crispr',
-          href: 'https://github.com/corderro-artz/crispr',
+          href: '/crispr/',
           label: 'DESIGN',
           variant: 'standalone'
         },
@@ -129,7 +129,7 @@ const homePageStructuredData = [
         '@type': 'ListItem',
         position: index + 1,
         name: product.base.name,
-        ...(product.base.href ? { url: product.base.href } : {})
+        ...(product.base.href ? { url: new URL(product.base.href, siteUrl).href } : {})
       }))
     }
   },
@@ -139,8 +139,8 @@ const homePageStructuredData = [
       '@context': 'https://schema.org',
       '@type': 'SoftwareSourceCode',
       name: product.base.name,
-      url: product.base.href,
-      codeRepository: product.base.href,
+      url: new URL(product.base.href, siteUrl).href,
+      codeRepository: `https://github.com/corderro-artz/${product.id}`,
       author: {
         '@type': 'Organization',
         name: 'Vaporsoft'

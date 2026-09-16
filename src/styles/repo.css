@@ -1,0 +1,1108 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Repository page.
+
+   Loaded only by src/pages/[repo].astro, which is why the rules on html and
+   body are safe to write unqualified here.
+
+   The page is one instrument: a single frame, divided by hairlines, that fills
+   the viewport exactly and never grows past it. Reading a long document is the
+   one place a scroll is the obvious gesture, so that is the one place it
+   happens — inside the document's own pane, with a standing index beside it.
+   Everything else is reached by a tab.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── The shell ──
+   html and body are sized to the viewport and clipped. A section that wants
+   more room takes it from a sibling or scrolls inside its own box; it never
+   lengthens the page. That is what keeps the layout identical on a phone —
+   there is no "tall" state to fall into.
+
+   box-sizing: border-box is already global, so height:100% includes any
+   padding rather than overflowing past it. */
+html,
+body.vapor-repo-body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.vapor-repo-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.rp-shell {
+  flex: 1;
+  min-height: 0;
+  width: min(100% - 2rem, var(--vapor-max-width));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 1.1rem;
+}
+
+/* A grid or flex child defaults to `min-width: auto` and so refuses to be
+   narrower than its own min-content. A readme's min-content is set by its
+   widest code line, which would inflate every wrapper up to the page grid.
+   Code and tables scroll inside their own boxes instead. */
+.rp-console > *,
+.rp-head > *,
+.rp-blocks > *,
+.rp-hero-copy,
+.rp-readme,
+.rp-cmd code,
+.rp-metric,
+.rp-block,
+.rp-block-body,
+.rp-rail,
+.rp-rail-btn,
+.rp-toc,
+.rp-toc a {
+  min-width: 0;
+}
+
+/* ── The console ──
+   One framed object with one set of corner brackets. Every division inside it
+   is a hairline, not another border with another shadow — a page of stacked
+   slabs reads as heavy no matter how thin each slab's rule is.
+
+   --rp-pad is the single inset the whole instrument is measured from. The
+   breadcrumb, the first ledger figure, the first tab and the first column of
+   every panel all begin on that one vertical line. */
+.rp-console {
+  --rp-pad: 1.8rem;
+  flex: 0 1 auto;
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rp-console > * {
+  flex: none;
+}
+
+/* ── Head ──
+   cols  1–7   the name block, hard left
+   cols  1–6   the clone line — exactly half the band
+   cols  8–10  the mark
+   cols 11–12  the action rail, hard right, with room to open into */
+.rp-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    'copy copy copy copy copy copy copy mark mark mark rail rail'
+    'cmd  cmd  cmd  cmd  cmd  cmd  .    mark mark mark rail rail';
+  gap: 1.1rem 1rem;
+  align-items: center;
+  padding: 1.5rem var(--rp-pad);
+  border-bottom: 1px solid var(--theme-line);
+}
+
+.rp-hero-copy {
+  grid-area: copy;
+  display: grid;
+  gap: 0.7rem;
+  align-content: center;
+}
+
+.rp-hero-cmd { grid-area: cmd; align-self: end; }
+.rp-hero-mark { grid-area: mark; justify-self: end; align-self: center; }
+.rp-hero-rail { grid-area: rail; justify-self: end; align-self: center; }
+
+/* The crumb on the left, the theme control on the right edge of the name
+   column — a grid line the rest of the head is already measured from. */
+.rp-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--theme-muted);
+}
+
+.rp-path > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rp-path .vapor-theme-toggle { flex: none; font-size: 0.55rem; padding: 0.28rem 0.55rem; }
+
+.rp-path a { border-bottom: 1px solid transparent; }
+.rp-path a:hover { color: var(--theme-text); border-bottom-color: rgba(var(--vapor-carmine-rgb), 0.5); }
+.rp-path b { font-weight: 400; color: var(--vapor-carmine); }
+.rp-path em { font-style: normal; color: var(--theme-text); }
+
+/* The repository name is set the way the wordmark is: Syncopate at its light
+   weight, widely tracked. The display face at 500 read as a headline on a blog
+   rather than as a name plate. */
+.rp-head h1 {
+  margin: 0;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  line-height: 1.08;
+  font-size: clamp(1.5rem, 3.1vw, 2.35rem);
+}
+
+.rp-lede {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--theme-muted);
+  max-width: 34rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* Sized off the band and off the viewport's height together, so a short
+   desktop window spends its pixels on the reading pane rather than on the
+   mark, and the proportion to the name holds at every width. */
+.rp-mark {
+  display: block;
+  width: clamp(5.5rem, min(14vw, 21vh), 12.5rem);
+  height: auto;
+}
+
+.rp-mark--light { display: none; }
+.vapor-light .rp-mark--dark { display: none; }
+.vapor-light .rp-mark--light { display: block; }
+
+.rp-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+.rp-tag {
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.24rem 0.5rem;
+  border: 1px solid var(--theme-line);
+  color: var(--theme-muted);
+  white-space: nowrap;
+}
+
+.rp-tag--live { border-color: rgba(46, 164, 79, 0.45); color: var(--theme-text); }
+.rp-tag--pre { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-carmine); }
+
+.rp-dot-live {
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  background: #2ea44f;
+  margin-right: 0.4rem;
+  vertical-align: 0.05rem;
+}
+
+.rp-cmd {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--theme-line);
+  background: var(--theme-surface);
+  padding: 0.5rem 0.75rem;
+  min-width: 0;
+}
+
+.rp-cmd code {
+  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-size: 0.74rem;
+  color: var(--theme-text);
+  overflow-x: auto;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.rp-cmd code::before { content: '$ '; color: var(--vapor-carmine); }
+
+.rp-copy {
+  flex: none;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+  padding: 0.2rem;
+}
+
+.rp-copy:hover { color: var(--vapor-carmine); }
+.rp-copy:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
+
+/* ── The action rail ──
+   The site has one button: 2.75rem tall, wide padding, a full text label. It
+   is right for a hero call to action and too heavy for a row of four
+   repository links. This is a lighter member of the same family, built from
+   the same border and the same Syncopate label: square at rest, opening
+   leftward on hover or focus to name itself. The label is width-animated
+   rather than display-toggled, so it is always in the accessibility tree and
+   always reachable by keyboard. */
+.rp-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.rp-rail-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 2.25rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--theme-line);
+  background-color: var(--theme-canvas);
+  background-image: var(--theme-surface);
+  color: var(--theme-text);
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.rp-rail-btn svg { width: 1rem; height: 1rem; flex: none; display: block; }
+
+.rp-rail-btn .rp-rail-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  transition: max-width 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 180ms ease,
+    margin-right 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The label sits to the left of the glyph, so the space between them is the
+   label's right margin. */
+.rp-rail-btn:hover .rp-rail-label,
+.rp-rail-btn:focus-visible .rp-rail-label {
+  max-width: 7rem;
+  opacity: 1;
+  margin-right: 0.95rem;
+}
+
+.rp-rail-btn:hover,
+.rp-rail-btn:focus-visible {
+  border-color: rgba(var(--vapor-carmine-rgb), 0.55);
+  background-color: var(--theme-canvas);
+  background-image: linear-gradient(
+    180deg,
+    rgba(var(--vapor-carmine-rgb), 0.14),
+    rgba(var(--vapor-carmine-rgb), 0.1)
+  );
+}
+
+.rp-rail-btn:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
+.rp-rail-btn--accent { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-carmine); }
+
+/* A touch reader gets no hover, so the rail opens and stays open there. */
+@media (hover: none) {
+  .rp-rail { flex-direction: row; flex-wrap: nowrap; align-items: center; }
+  .rp-rail-btn .rp-rail-label { max-width: 7rem; opacity: 1; margin-right: 0.95rem; }
+}
+
+/* ── Ledger ──
+   Figures on equal columns, hairline-divided, so the strip is symmetric
+   whatever the numbers are. Only counts the API answers exactly; a figure that
+   is zero is left out rather than printed, because a row of zeros reads as a
+   dead project, which is not what the data says. */
+.rp-ledger-strip {
+  display: grid;
+  grid-template-columns: repeat(var(--rp-cells, 4), minmax(0, 1fr));
+  border-bottom: 1px solid var(--theme-line);
+}
+
+.rp-metric {
+  padding: 0.8rem var(--rp-pad);
+  border-left: 1px solid var(--theme-line);
+  display: grid;
+  gap: 0.25rem;
+  align-content: center;
+}
+
+.rp-metric:first-child { border-left: 0; }
+
+.rp-metric b {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-metric span {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.52rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+}
+
+/* ── Tabs ──
+   The front page's own category rail: no box, no fill, a carmine underline
+   that scales in. Reused rather than reinvented, so the two pages share a
+   gesture. */
+.rp-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 0 var(--rp-pad);
+  border-bottom: 1px solid var(--theme-line);
+  overflow-x: auto;
+}
+
+.rp-tab {
+  position: relative;
+  flex: none;
+  padding: 0.85rem 0.1rem;
+  border: 0;
+  background: transparent;
+  color: var(--theme-muted);
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 180ms ease;
+}
+
+.rp-tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--vapor-carmine);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rp-tab[aria-selected='true'] { color: var(--theme-text); }
+.rp-tab[aria-selected='true']::after { transform: scaleX(1); }
+.rp-tab:hover,
+.rp-tab:focus-visible { color: var(--theme-text); outline: none; }
+.rp-tab:focus-visible::after { transform: scaleX(1); opacity: 0.55; }
+
+.rp-tab-count {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  color: var(--theme-muted);
+  margin-left: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+/* ── Panels ──
+   The panel region takes a stated height rather than an inherited one, so
+   switching tabs never moves the frame and a tall monitor gets a centred
+   instrument rather than five rows of facts stretched over 900px. It is a flex
+   basis and not a fixed height, so a short window shrinks it instead of
+   pushing the frame past the viewport. */
+.rp-panels {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 30rem;
+}
+
+.rp-panel {
+  display: none;
+  height: 100%;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rp-panel.is-on { display: flex; }
+
+.rp-blocks {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+}
+
+.rp-blocks--2 { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.rp-blocks--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.rp-blocks--doc { grid-template-columns: 15.5rem minmax(0, 1fr); }
+
+/* A column is a full-height cell divided by the same hairline as everything
+   else, so adjacent columns are the same height by construction and the rule
+   between them is visibly true from the top edge to the bottom. */
+.rp-block {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  min-height: 0;
+  padding: 1.2rem var(--rp-pad);
+  border-left: 1px solid var(--theme-line);
+}
+
+.rp-block:first-child { border-left: 0; }
+
+.rp-block-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.57rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--theme-muted);
+}
+
+/* The accent moves off the whole label and onto one glyph. A line of carmine
+   Syncopate at 700 on every heading was where most of the page's weight came
+   from. */
+.rp-block-title i {
+  font-style: normal;
+  flex: none;
+  font-family: 'Zen Kaku Gothic New', 'Manrope', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--vapor-carmine);
+}
+
+.rp-block-title::after { content: ''; flex: 1; height: 1px; background: var(--theme-line); }
+
+.rp-block-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  display: grid;
+  align-content: start;
+}
+
+/* A short block spreads over the height its column was given instead of
+   sitting at the top with the rest of the column empty beneath it. */
+.rp-block-body--fill { align-content: stretch; }
+.rp-block-body--fill > * { min-height: 100%; }
+
+/* The second tier, for widths where three columns cannot be three columns.
+   Hidden at desktop widths, where the columns are all on screen at once. */
+.rp-subtabs { display: none; }
+
+.rp-note { font-size: 0.85rem; line-height: 1.8; color: var(--theme-muted); max-width: 44rem; }
+
+/* ── Specification ──
+   The rows are grid, not flex: a flex row aligned on the baseline puts its
+   text at the top of whatever height the track was given and lets all the
+   growth fall below it, so the rule under each row sat far from the row it
+   belonged to and close to the next one. An even set of tracks looked uneven.
+
+   The leader is the second of three tracks, and that middle track is a share
+   of the row rather than whatever the label and value leave over, so every
+   leader in the column is the same length and starts at the same place. At
+   this column width a label and its value are 300px apart with four other
+   pairs stacked under them; without it the eye has to guess which value
+   belongs to which label. */
+.rp-kv { display: grid; gap: 0; grid-auto-rows: minmax(2.4rem, 1fr); }
+
+.rp-kv-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(2rem, 26%, 8rem) minmax(0, 1fr);
+  align-content: center;
+  align-items: baseline;
+  gap: 0 0.9rem;
+  min-height: 2.4rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--theme-line);
+  font-size: 0.8rem;
+}
+
+.rp-kv-row:first-child { border-top: 0; }
+
+.rp-kv-row i {
+  height: 1px;
+  align-self: center;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--vapor-carmine-rgb), 0.4) 18%,
+    rgba(var(--vapor-carmine-rgb), 0.4) 82%,
+    transparent
+  );
+}
+
+.rp-kv-row > span:first-child {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.55rem;
+  font-weight: 400;
+  color: var(--theme-muted);
+}
+
+.rp-kv-row > span:last-child {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Composition ──
+   A proportion bar has nothing to say when there is one language: it is a
+   solid stripe beside an empty column, and the reader learns only what the
+   number already told them. A hundred cells says the same thing as a quantity
+   you can count — one language fills the field, two divide it visibly, five
+   read as a mosaic — and it occupies the column at any count.
+
+   The plot takes what the key leaves, but not less than the floor: a short
+   window with four languages listed underneath left the field 17px tall, which
+   is a smear rather than a measurement. Below the floor the column scrolls,
+   the way every other block body does. */
+.rp-lang { display: grid; grid-template-rows: minmax(8rem, 1fr) auto; gap: 1.2rem; }
+
+/* Sizing a square to the shorter of the column's two axes needs the plot's
+   height as a length, which is what a size container gives; without it an
+   aspect-ratio box can only be driven by width and would overflow. */
+.rp-lang-plot {
+  min-height: 0;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+.rp-lang-grid {
+  width: min(100%, 100cqh, 17rem);
+  max-height: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 2px;
+  /* A field at full strength is the loudest thing on a page whose subject is a
+     document — a single-language repository would paint a 340px carmine wall.
+     Held back, it reads as a tint the ground shows through, and the key's
+     swatches stay at full strength so the ramp is still stated somewhere. */
+  opacity: 0.72;
+}
+
+/* The same hold-back takes more out of the ramp's pale end over paper than it
+   does over ink, where the tints are already lifting off the ground. */
+.vapor-light .rp-lang-grid { opacity: 0.85; }
+.rp-lang-grid i { display: block; }
+
+.rp-lang-key { display: grid; gap: 0.55rem; min-height: 0; }
+
+/* Baseline alignment across a number, a name and a size builds a box far
+   taller than the line, and a swatch centred in that box drops below the text
+   as though it had wrapped. Centred as one row. */
+.rp-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--theme-line);
+}
+
+.rp-lang-item:first-child { padding-top: 0; border-top: 0; }
+.rp-lang-item i { width: 0.5rem; height: 0.5rem; flex: none; }
+
+.rp-lang-item b {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 0.92rem;
+  color: var(--theme-text);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.1rem;
+}
+
+.rp-lang-item span { font-size: 0.76rem; color: var(--theme-muted); flex: 1; min-width: 0; }
+.rp-lang-item em { font-style: normal; font-size: 0.68rem; color: var(--theme-muted); opacity: 0.7; }
+
+/* ── Project ──
+   The contributors and the community files were two lists of different shapes
+   stacked with a gap between them. One register, on the row rhythm the
+   Specification column uses, so the two columns read as one table divided. */
+.rp-team { display: grid; grid-auto-rows: minmax(2.1rem, 1fr); }
+.rp-team > * { border-top: 1px solid var(--theme-line); }
+.rp-team > :first-child { border-top: 0; }
+
+.rp-person { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; }
+
+.rp-person span {
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: none;
+  border: 1px solid var(--theme-line);
+  display: grid;
+  place-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  color: var(--theme-muted);
+}
+
+.rp-person b { font-weight: 400; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.rp-person em { font-style: normal; color: var(--theme-muted); font-variant-numeric: tabular-nums; }
+.rp-person:hover b { color: var(--vapor-carmine); }
+
+.rp-file { display: flex; gap: 0.7rem; align-items: center; font-size: 0.78rem; color: var(--theme-muted); }
+.rp-file i { font-style: normal; flex: none; width: 0.9rem; }
+.rp-file.yes { color: var(--theme-text); }
+.rp-file.yes i { color: #2ea44f; }
+.rp-file.no { opacity: 0.55; }
+
+/* ── Releases ── */
+.rp-rel { display: grid; gap: 0; }
+
+.rp-rel-item {
+  border-top: 1px solid var(--theme-line);
+  padding: 1rem 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.rp-rel-item:first-child { border-top: 0; padding-top: 0; }
+.rp-rel-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.85rem; }
+
+.rp-rel-head h4 {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
+}
+
+.rp-rel-date { font-size: 0.7rem; color: var(--theme-muted); margin-left: auto; }
+.rp-rel-notes { font-size: 0.82rem; line-height: 1.7; color: var(--theme-muted); }
+
+.rp-rel-notes h4 {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--theme-text);
+  margin: 0.8rem 0 0.35rem;
+  font-weight: 400;
+}
+
+.rp-rel-notes p,
+.rp-rel-notes ul { margin: 0 0 0.45rem; }
+.rp-rel-notes ul { padding-left: 1.05rem; }
+.rp-rel-notes li::marker { color: var(--vapor-carmine); }
+.rp-rel-notes strong { color: var(--theme-text); font-weight: 600; }
+.rp-rel-notes code { font-family: ui-monospace, Menlo, monospace; font-size: 0.82em; color: var(--vapor-carmine); }
+
+.rp-rel-notes table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5rem 0 0.7rem;
+  font-size: 0.76rem;
+  display: block;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.rp-rel-notes th,
+.rp-rel-notes td {
+  border: 1px solid var(--theme-line);
+  padding: 0.32rem 0.6rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.rp-rel-notes th {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.52rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+}
+
+.rp-rel-more { border-top: 1px solid var(--theme-line); padding-top: 0.9rem; margin: 0; font-size: 0.78rem; }
+.rp-rel-more a { border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.4); }
+.rp-rel-more a:hover { color: var(--vapor-carmine); }
+
+.rp-assets { display: grid; gap: 0; }
+
+.rp-asset {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.4rem 0;
+  border-top: 1px dashed var(--theme-line);
+  font-size: 0.75rem;
+}
+
+.rp-asset a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.rp-asset a:hover { color: var(--vapor-carmine); }
+
+.rp-asset em {
+  font-style: normal;
+  color: var(--theme-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── Commits ── */
+.rp-commits { display: grid; gap: 0; }
+
+.rp-commit {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.2rem 0.8rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--theme-line);
+  font-size: 0.79rem;
+}
+
+.rp-commit:first-child { border-top: 0; padding-top: 0; }
+.rp-commit code { font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem; color: var(--vapor-carmine); }
+.rp-commit > span { min-width: 0; overflow-wrap: anywhere; }
+.rp-commit time { grid-column: 2; color: var(--theme-muted); font-size: 0.68rem; }
+.rp-commit:hover > span { color: var(--theme-text); }
+
+/* ── Documentation ──
+   The index is a standing column, not a list buried in the prose. It is built
+   from the document's own headings, so it exists whether or not the readme
+   happens to carry a hand-written contents section — and where it does carry
+   one, that copy is removed rather than shown twice. */
+.rp-toc { display: grid; gap: 0; align-content: start; font-size: 0.76rem; }
+
+.rp-toc a {
+  display: block;
+  padding: 0.42rem 0.6rem 0.42rem 0.7rem;
+  color: var(--theme-muted);
+  border-left: 1px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.rp-toc a:hover { color: var(--theme-text); border-left-color: rgba(var(--vapor-carmine-rgb), 0.45); }
+.rp-toc a.is-here { color: var(--theme-text); border-left-color: var(--vapor-carmine); }
+.rp-toc a.lv3 { padding-left: 1.6rem; font-size: 0.72rem; opacity: 0.8; }
+.rp-doc-body { padding-right: 0.9rem; }
+
+/* ── Readme — GitHub's markup, set in the page's own type ── */
+.rp-readme {
+  font-size: 0.87rem;
+  line-height: 1.78;
+  color: var(--theme-muted);
+  overflow-wrap: break-word;
+  max-width: 46rem;
+}
+
+.rp-readme h1,
+.rp-readme h2,
+.rp-readme h3,
+.rp-readme h4 {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--theme-text);
+  text-wrap: balance;
+  margin: 2rem 0 0.8rem;
+}
+
+.rp-readme :where(h1, h2, h3, h4) { scroll-margin-top: 0.8rem; }
+.rp-readme h1 { font-size: 1.28rem; }
+.rp-readme h2 { font-size: 1.02rem; padding-bottom: 0.45rem; border-bottom: 1px solid var(--theme-line); }
+.rp-readme h3 { font-size: 0.9rem; }
+.rp-readme h4 { font-size: 0.8rem; letter-spacing: 0.11em; color: var(--theme-muted); }
+.rp-readme > :first-child { margin-top: 0; }
+
+.rp-readme p,
+.rp-readme ul,
+.rp-readme ol,
+.rp-readme blockquote,
+.rp-readme table,
+.rp-readme pre { margin: 0 0 0.95rem; }
+
+.rp-readme ul,
+.rp-readme ol { padding-left: 1.15rem; }
+.rp-readme li { margin-bottom: 0.3rem; }
+.rp-readme li::marker { color: var(--vapor-carmine); }
+.rp-readme a { color: var(--theme-text); border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.4); }
+.rp-readme a:hover { color: var(--vapor-carmine); }
+.rp-readme strong { color: var(--theme-text); font-weight: 600; }
+
+.rp-readme code {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  font-size: 0.85em;
+  color: var(--vapor-carmine);
+  background: rgba(var(--vapor-carmine-rgb), 0.08);
+  padding: 0.1em 0.35em;
+}
+
+/* GitHub emits a highlighted block as spans directly inside <pre>, with no
+   <code> element at all — only plain fenced blocks get one. The rules go on
+   `pre` itself, or every highlighted sample falls back to the browser default
+   size in the muted body colour. */
+.rp-readme pre {
+  border: 1px solid var(--theme-line);
+  background: var(--theme-surface);
+  padding: 0.85rem 0.95rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-size: 0.76rem;
+  line-height: 1.65;
+  color: var(--theme-text);
+  --rp-kw: #c3777e;
+  --rp-str: #d39ea1;
+  --rp-com: rgba(242, 237, 230, 0.45);
+}
+
+.vapor-light .rp-readme pre {
+  --rp-kw: #a11f31;
+  --rp-str: #801c2b;
+  --rp-com: rgba(var(--vapor-graphite-rgb), 0.5);
+}
+
+.rp-readme pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* GitHub's pl-* token classes ship in the markup carrying no colour of their
+   own. Four roles from the carmine ramp. Carmine itself is used only on the
+   light ground, where it measures 6.66:1; on ink it falls to 2.63:1, so the
+   dark theme takes the #c3777e tint at 5.97:1 instead. */
+.rp-readme .pl-k { color: var(--rp-kw); }
+.rp-readme .pl-s,
+.rp-readme .pl-pds,
+.rp-readme .pl-c1 { color: var(--rp-str); }
+.rp-readme .pl-c { color: var(--rp-com); font-style: italic; }
+.rp-readme .pl-en,
+.rp-readme .pl-smi { color: var(--theme-text); }
+.rp-readme .pl-kos { color: var(--theme-muted); }
+
+.rp-readme blockquote {
+  border-left: 2px solid rgba(var(--vapor-carmine-rgb), 0.45);
+  padding-left: 0.95rem;
+  color: var(--theme-muted);
+}
+
+.rp-readme img { max-width: 100%; height: auto; max-height: 20rem; }
+
+.rp-readme table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.79rem;
+  display: block;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.rp-readme th,
+.rp-readme td { border: 1px solid var(--theme-line); padding: 0.4rem 0.65rem; text-align: left; }
+
+.rp-readme th {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+  font-weight: 400;
+}
+
+.rp-readme hr { border: 0; border-top: 1px solid var(--theme-line); margin: 1.8rem 0; }
+
+/* A jump should be visible on arrival, not left for the reader to find. */
+.rp-readme :target { animation: rp-land 1.6s ease forwards; }
+
+@keyframes rp-land {
+  from { background: rgba(var(--vapor-carmine-rgb), 0.18); }
+  to { background: transparent; }
+}
+
+.rp-readme details { border: 1px solid var(--theme-line); padding: 0.65rem 0.85rem; margin-bottom: 0.95rem; }
+.rp-readme summary { cursor: pointer; color: var(--theme-text); }
+
+/* The readme's themed diagrams, switched by the page's theme class rather than
+   by the operating system. The same rule the brand marks use. */
+.rp-themed { display: block; max-width: 100%; height: auto; }
+.rp-themed--light { display: none; }
+.vapor-light .rp-themed--dark { display: none; }
+.vapor-light .rp-themed--light { display: block; }
+
+/* ── Sideways travel ──
+   A row that scrolls instead of wrapping is what keeps the head the same
+   height on every repository. The cost is a hard cut at the frame's edge,
+   which reads as a fault rather than as more content; the mask turns it into
+   a fade. Where the row does not reach the edge the mask falls on empty space
+   and nothing changes, so it needs no measurement to know when to apply. */
+.rp-chips,
+.rp-subtabs,
+.rp-tabs,
+.rp-cmd code {
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.2rem), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 2.2rem), transparent);
+}
+
+.rp-chips::-webkit-scrollbar,
+.rp-subtabs::-webkit-scrollbar,
+.rp-tabs::-webkit-scrollbar,
+.rp-cmd code::-webkit-scrollbar { display: none; }
+
+/* ══ Reflow ══
+   The instrument never grows. It re-divides: columns that no longer fit side
+   by side become a second tier of tabs inside the panel, so the panel's height
+   is the same at 360px as it is at 1440. Nothing is hidden at any width — the
+   same record, re-laid. */
+@media (max-width: 1180px) {
+  .rp-console { --rp-pad: 1.4rem; }
+
+  .rp-head {
+    grid-template-columns: minmax(0, 1fr) auto 10rem;
+    grid-template-areas:
+      'copy mark rail'
+      'cmd  mark rail';
+  }
+
+  .rp-blocks--doc { grid-template-columns: 13rem minmax(0, 1fr); }
+}
+
+@media (max-width: 900px), (max-height: 620px) {
+  .rp-console { --rp-pad: 1.15rem; }
+  .rp-head { padding-block: 1.1rem; gap: 0.9rem 0.8rem; }
+  .rp-lede { -webkit-line-clamp: 2; font-size: 0.8rem; }
+  .rp-mark { width: clamp(4rem, min(11vw, 13vh), 7.5rem); }
+  .rp-rail-btn { height: 2.05rem; }
+
+  /* One column, one block at a time, chosen from the panel's own rail. The
+     panel keeps the height it had; only its contents change. */
+  .rp-blocks,
+  .rp-blocks--2,
+  .rp-blocks--3,
+  .rp-blocks--doc { grid-template-columns: minmax(0, 1fr); }
+
+  .rp-block { display: none; border-left: 0; grid-template-rows: minmax(0, 1fr); }
+  .rp-block.is-on { display: grid; }
+
+  .rp-subtabs {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: none;
+    padding: 0.55rem var(--rp-pad);
+    border-bottom: 1px solid var(--theme-line);
+    overflow-x: auto;
+  }
+
+  .rp-subtab {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.32rem 0.7rem;
+    border: 1px solid var(--theme-line);
+    background: transparent;
+    color: var(--theme-muted);
+    cursor: pointer;
+    font-family: 'Syncopate', 'Manrope', sans-serif;
+    font-size: 0.54rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+    transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+  }
+
+  .rp-subtab i {
+    font-style: normal;
+    font-family: 'Zen Kaku Gothic New', 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--vapor-carmine);
+  }
+
+  .rp-subtab[aria-selected='true'] {
+    border-color: rgba(var(--vapor-carmine-rgb), 0.55);
+    background: rgba(var(--vapor-carmine-rgb), 0.1);
+    color: var(--theme-text);
+  }
+
+  .rp-subtab:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
+
+  /* The rail entry directly above says what this block is; the heading would
+     be the same words twice in the same column. */
+  .rp-block-title { display: none; }
+  .rp-doc-body { padding-right: 0; }
+}
+
+@media (max-width: 720px) {
+  .rp-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'copy mark'
+      'cmd  mark'
+      'rail rail';
+    align-items: center;
+  }
+
+  /* Flat, the rail ran wider than the frame — and it did not scroll, because
+     the frame clips its overflow, so the last action could not be reached.
+     Two columns fits, and reads as a block rather than a row that ran out. */
+  .rp-hero-rail { justify-self: stretch; min-width: 0; }
+  .rp-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+
+  /* An odd number of actions would leave the last one alone in half a row. */
+  .rp-rail-btn:nth-child(odd):last-child { grid-column: 1 / -1; }
+  .rp-rail-btn { justify-content: center; height: 2.3rem; }
+
+  /* Open from the start here, so nothing animates on load and no label is
+     caught mid-transition. */
+  .rp-rail-btn .rp-rail-label {
+    max-width: 7rem;
+    opacity: 1;
+    margin-right: 0.95rem;
+    transition: none;
+  }
+
+  /* A wrapping chip row changes the head's height as the data changes. It
+     travels sideways instead, so the head is the same height on every
+     repository. */
+  .rp-chips { flex-wrap: nowrap; overflow-x: auto; }
+  .rp-metric { padding-inline: 0.85rem; }
+  .rp-metric:first-child { padding-left: var(--rp-pad); }
+  .rp-tabs { gap: 1.25rem; }
+  .rp-tab { font-size: 0.6rem; letter-spacing: 0.16em; padding-block: 0.7rem; }
+}
+
+@media (max-width: 560px) {
+  .rp-ledger-strip { --rp-cells: 2 !important; }
+  .rp-metric { padding-inline: var(--rp-pad); }
+  .rp-metric:nth-child(odd) { border-left: 0; }
+  .rp-metric:nth-child(n + 3) { border-top: 1px solid var(--theme-line); }
+}
+
+@media (max-width: 480px) {
+  .rp-shell { width: 100%; padding-block: 0; }
+  .rp-console { border-left: 0; border-right: 0; }
+  .rp-head h1 { font-size: 1.35rem; }
+  .rp-lede { display: none; }
+  .rp-cmd code { font-size: 0.68rem; }
+  .rp-metric b { font-size: 1.05rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rp-tab::after,
+  .rp-rail-btn,
+  .rp-rail-btn .rp-rail-label,
+  .rp-toc a,
+  .rp-subtab { transition: none; }
+  .rp-readme :target { animation: none; }
+}

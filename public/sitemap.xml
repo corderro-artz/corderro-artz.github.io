@@ -32,6 +32,50 @@
     </image:image>
   </url>
   <url>
+    <loc>https://www.vaporsoft.dev/akira/</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/akira/akira-icon.svg</image:loc>
+      <image:title>Akira Icon</image:title>
+      <image:caption>Akira cross-platform telemetry library icon.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/kata/</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/kata/kata-icon.svg</image:loc>
+      <image:title>Kata Icon</image:title>
+      <image:caption>Kata local-first structured text tool icon.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/nfty/</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/nfty/nfty-icon.svg</image:loc>
+      <image:title>NFTY Icon</image:title>
+      <image:caption>NFTY deterministic layered asset generator icon.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/crispr/</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/crispr/crispr-icon.svg</image:loc>
+      <image:title>CRISPR Icon</image:title>
+      <image:caption>CRISPR lossless SVG to PNG rasterizer icon.</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://www.vaporsoft.dev/contact/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>

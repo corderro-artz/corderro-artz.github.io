@@ -1,0 +1,167 @@
+---
+/**
+ * One page per repository, at /<repo>/ — the same slug GitHub uses, so a
+ * reader who knows the project name can type the address.
+ *
+ * Everything on it is rendered here, at build time, from the payload
+ * scripts/fetch-repo-data.mjs committed — including the open panel and the
+ * contents index, so the page is complete before any script runs and stays
+ * complete if none ever does. The browser only switches panels, scrolls the
+ * document pane to a heading, and marks where in the document the reader is.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import repos from '../data/repos.json';
+import { renderRepoPage, repoStructuredData, displayName } from '../lib/repo-page.mjs';
+import '../styles/repo.css';
+
+export function getStaticPaths() {
+  return Object.keys(repos).map((slug) => ({ params: { repo: slug }, props: { slug } }));
+}
+
+const { slug } = Astro.props;
+const repo = repos[slug];
+const name = displayName(slug);
+const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
+
+const description = repo.description
+  || `${name}, an open-source project by Vaporsoft.`;
+
+const structuredData = [
+  repoStructuredData(repo, siteUrl),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Vaporsoft', item: new URL('/', siteUrl).href },
+      { '@type': 'ListItem', position: 2, name, item: new URL(`/${slug}/`, siteUrl).href }
+    ]
+  }
+];
+
+const keywords = [
+  name,
+  `${name} documentation`,
+  `${name} releases`,
+  'Vaporsoft',
+  'open source',
+  ...Object.keys(repo.languages)
+];
+---
+
+<BaseLayout
+  title={`${name} | Vaporsoft`}
+  description={description}
+  bodyClass="vapor-repo-body"
+  keywords={keywords}
+  ogType="article"
+  ogImage={`/brand/${slug}/png/${slug}-icon.png`}
+  structuredData={structuredData}
+>
+  <main class="rp-shell" set:html={renderRepoPage(repo)} />
+
+  <script is:inline>
+    (function () {
+      var stage = document.querySelector('.rp-shell');
+      if (!stage) return;
+
+      /* A tab rail: WAI-ARIA roving tabindex, so the arrow keys walk the rail
+         and only the selected tab is in the tab order. */
+      function wireRail(root, sel, attr, apply) {
+        var tabs = Array.prototype.slice.call(root.querySelectorAll(sel));
+        if (!tabs.length) return tabs;
+        function select(t) {
+          tabs.forEach(function (x) {
+            var on = x === t;
+            x.setAttribute('aria-selected', String(on));
+            x.setAttribute('tabindex', on ? '0' : '-1');
+          });
+          apply(t.getAttribute(attr));
+        }
+        tabs.forEach(function (t) {
+          t.addEventListener('click', function () { select(t); });
+          t.addEventListener('keydown', function (e) {
+            var i = tabs.indexOf(t);
+            var next = null;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+            else if (e.key === 'Home') next = tabs[0];
+            else if (e.key === 'End') next = tabs[tabs.length - 1];
+            if (!next) return;
+            e.preventDefault();
+            select(next);
+            next.focus();
+          });
+        });
+        return tabs;
+      }
+
+      var panels = Array.prototype.slice.call(stage.querySelectorAll('.rp-panel'));
+      wireRail(stage, '.rp-tab', 'data-tab', function (id) {
+        panels.forEach(function (p) { p.classList.toggle('is-on', p.dataset.panel === id); });
+      });
+      // Each panel's own rail, for the widths where its columns become pages.
+      panels.forEach(function (p) {
+        wireRail(p, '.rp-subtab', 'data-block', function (id) {
+          p.querySelectorAll('.rp-block').forEach(function (b) {
+            b.classList.toggle('is-on', b.dataset.block === id);
+          });
+        });
+      });
+
+      stage.querySelectorAll('[data-copy]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var src = document.getElementById(b.dataset.copy);
+          if (!src || !navigator.clipboard) return;
+          navigator.clipboard.writeText(src.textContent).then(function () {
+            b.textContent = 'Copied';
+            setTimeout(function () { b.textContent = 'Copy'; }, 1400);
+          }, function () {});
+        });
+      });
+
+      /* The index itself is rendered at build time; what is left for the
+         browser is making it move the right box, and saying where the reader
+         currently is. */
+      var nav = stage.querySelector('.rp-toc');
+      var body = stage.querySelector('.rp-doc-body');
+      var readme = body && body.querySelector('.rp-readme');
+      if (!nav || !readme) return;
+
+      var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+      var heads = links
+        .map(function (a) { return readme.querySelector('[id="' + a.dataset.to + '"]'); })
+        .filter(Boolean);
+      if (!heads.length) return;
+
+      links.forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          var h = readme.querySelector('[id="' + a.dataset.to + '"]');
+          if (!h) return;
+          e.preventDefault();
+          // The page itself does not scroll, so scrollIntoView would move the
+          // wrong box. The document's own pane is the scroller; move it by the
+          // difference between the heading's top and the pane's, which holds
+          // whatever the pane's current offset is.
+          body.scrollTop += h.getBoundingClientRect().top - body.getBoundingClientRect().top - 8;
+        });
+      });
+
+      // Which heading the reader is under, so the index says where they are
+      // and not only where they can go.
+      var queued = false;
+      function mark() {
+        queued = false;
+        var top = body.getBoundingClientRect().top + 14;
+        var current = heads[0];
+        heads.forEach(function (h) { if (h.getBoundingClientRect().top <= top) current = h; });
+        links.forEach(function (a) { a.classList.toggle('is-here', a.dataset.to === current.id); });
+      }
+      body.addEventListener('scroll', function () {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(mark);
+      }, { passive: true });
+      mark();
+    })();
+  </script>
+</BaseLayout>
