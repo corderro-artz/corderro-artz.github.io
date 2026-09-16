@@ -800,11 +800,6 @@ body.vapor-light::before {
   flex-shrink: 0;
 }
 
-.vapor-arch-summary {
-  max-width: 42rem;
-  color: var(--theme-muted);
-}
-
 .vapor-landing-nav {
   display: flex;
   flex-wrap: wrap;
