@@ -1746,20 +1746,53 @@ body.vapor-light::before {
 /* ── Responsive ── */
 
 /* Desktop: 1200px+ (widescreen) */
+/* A step up in the cards, paid for out of the page's own padding rather than
+   taken from the viewport: a two-tier stack already came within 32px of the
+   snap page's height at 1920x1080, and a bigger card that no longer fits is
+   not a bigger card, it is a scrollbar. Width costs nothing vertically, so
+   most of the increase is taken there. */
 @media (min-width: 1200px) {
   .vapor-arch-stack {
-    max-width: 60rem;
+    max-width: 66rem;
   }
 
   .vapor-arch {
-    gap: 2.5rem;
+    gap: 2rem;
+    padding-top: 2.2rem;
+  }
+
+  .vapor-arch-card {
+    padding: 2.05rem 2.4rem;
+  }
+
+  .vapor-arch-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .vapor-arch-card--foundation h3,
+  .vapor-arch-card--standalone h3 {
+    font-size: 1.5rem;
+  }
+
+  .vapor-arch-desc {
+    font-size: 0.92rem;
+  }
+}
+
+/* The icon steps up with the cards, and only where the cards did. Below this
+   the tiers are already tight against the snap page's height. */
+@media (min-width: 960px) {
+  .vapor-arch-icon,
+  .vapor-arch-placeholder-icon {
+    width: 80px;
+    height: 80px;
   }
 }
 
 /* Laptop/Tablet landscape: 960px - 1199px */
 @media (max-width: 1199px) and (min-width: 960px) {
   .vapor-arch-stack {
-    max-width: 50rem;
+    max-width: 54rem;
     padding: 0 1.5rem;
   }
 

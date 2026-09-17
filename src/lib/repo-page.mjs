@@ -47,6 +47,23 @@ const icon = (k) => '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="fals
   + 'stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
   + GLYPH[k] + '</svg>';
 
+/* The way back, the crumb and the theme control, on one hairline-ruled row
+   across the top of the instrument. The arrow is drawn on the same grid and
+   at the same stroke as the action rail's glyphs, and it steps left on hover
+   — the whole affordance, without a box around it. */
+function fBar(slug) {
+  return '<div class="rp-bar">'
+    + '<a class="rp-back" href="/">'
+    + '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" '
+    + 'stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
+    + '<path d="M13.4 8H2.6"/><path d="M6.6 3.9 2.5 8l4.1 4.1"/></svg>'
+    + '<span>Vaporsoft</span></a>'
+    + '<span class="rp-crumb"><b>/</b> ' + esc(slug) + '</span>'
+    + '<button type="button" class="vapor-theme-toggle rp-theme" data-theme-toggle aria-label="Toggle theme">'
+    + '<span class="vapor-theme-toggle-dot"></span><span data-theme-label>LIGHT</span></button>'
+    + '</div>';
+}
+
 /* The catalogue spells two of these as acronyms; GitHub spells every
    repository in lower case. The page's own heading is set in capitals either
    way, but the title tag, the breadcrumb and the structured data are not. */
@@ -158,12 +175,6 @@ function fHead(r) {
   const slug = r.name.toLowerCase();
   return '<header class="rp-head">'
     + '<div class="rp-hero-copy">'
-    + '<p class="rp-path"><span><a href="/">vaporsoft</a> <b>/</b> <em>' + esc(slug) + '</em></span>'
-    // The theme toggle lives on the landing page, which a reader who arrived
-    // here from a link or from search has never seen. Same component, same
-    // hook: BaseLayout's script wires [data-theme-toggle] wherever it is.
-    + '<button type="button" class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">'
-    + '<span class="vapor-theme-toggle-dot"></span><span data-theme-label>LIGHT</span></button></p>'
     + '<h1>' + esc(r.name) + '</h1>'
     + '<p class="rp-lede">' + esc(r.description) + '</p>'
     + fChips(r)
@@ -404,6 +415,7 @@ function fToc(html) {
 export function renderRepoPage(r) {
   const doc = stripHandWrittenToc(r.readmeHtml);
   return '<div class="rp-console vapor-frame">'
+    + fBar(r.name.toLowerCase())
     + fHead(r)
     + fLedger(r)
     + '<div class="rp-tabs" role="tablist" aria-label="' + esc(r.name) + '">'
