@@ -47,10 +47,13 @@ const icon = (k) => '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="fals
   + 'stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
   + GLYPH[k] + '</svg>';
 
-/* The way back, the crumb and the theme control, on one hairline-ruled row
-   across the top of the instrument. The arrow is drawn on the same grid and
-   at the same stroke as the action rail's glyphs, and it steps left on hover
-   — the whole affordance, without a box around it. */
+/* The way back, the crumb and the theme control, on one row ABOVE the frame.
+   Inside it, the arrow landed in the corner bracket — the bracket ends at
+   exactly the inset the content line starts at, so the two touched with no gap
+   and read as one broken glyph. Outside, there is nothing to collide with, and
+   it is the more honest place for it: getting back to the site is not part of
+   the repository's record. The arrow is drawn on the same grid and at the same
+   stroke as the action rail's glyphs, and steps left on hover. */
 function fBar(slug) {
   return '<div class="rp-bar">'
     + '<a class="rp-back" href="/">'
@@ -414,8 +417,8 @@ function fToc(html) {
  */
 export function renderRepoPage(r) {
   const doc = stripHandWrittenToc(r.readmeHtml);
-  return '<div class="rp-console vapor-frame">'
-    + fBar(r.name.toLowerCase())
+  return fBar(r.name.toLowerCase())
+    + '<div class="rp-console vapor-frame">'
     + fHead(r)
     + fLedger(r)
     + '<div class="rp-tabs" role="tablist" aria-label="' + esc(r.name) + '">'
