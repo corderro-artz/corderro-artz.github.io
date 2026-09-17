@@ -159,15 +159,15 @@
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-slim-light.svg": {
-      "sha256": "0d558d37a1c50b5b64ec459b6b2576857848e3505ae2c2ba7470c19181d54999",
+      "sha256": "97d6b5e0e9490e1caefddcae781eb0d24d06a4a5c1cc1b965ebd57b8d5273731",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-slim-light.png": "6979211c3071351b57d292c7f733443120f939091f3c43d46da37f42cde310aa"
+        "public/brand/vaporsoft/png/vaporsoft-header-slim-light.png": "c907d93575e06a1a1c19aa6dbb64fc24cdf4956129bd61a3c5a02d18490c30ad"
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-slim.svg": {
-      "sha256": "b8a417cee3423b583a8566b1b40224fb2ce61ebafb2fbab121263b25b66d4871",
+      "sha256": "07d29cdd72515ae6a686c6153c08d74c65e11900b3dede9c92e53e94bff7b7bd",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-slim.png": "2b77ade29b0ff7121c0eea8b28c93879fcad7937fc3eac797e4b278ebf52df84"
+        "public/brand/vaporsoft/png/vaporsoft-header-slim.png": "15c00ac5be0fcff99e7dc27159b76d5722a4ebba1315cf47cb9479a1d6d7b3fb"
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-wide-light.svg": {
@@ -195,15 +195,15 @@
       }
     },
     "public/brand/vaporsoft/vaporsoft-wallpaper-light.svg": {
-      "sha256": "08b8365b4a3ccb16397a83b5c96498ae6c1cb495a6cb4e32be50300f9baf2242",
+      "sha256": "f39b10516fd806e19124255f1960c335435652627979c09b8f6b565a16b596d6",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light.png": "51388e858ab4c69539705d2dfb242bea7c4de71c8a18dd9aa727a6ff5516eda3"
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light.png": "d63ed0f2e942c9ae2601a947b24117f1d25dfbe3f42908789a35f5d468a60fc0"
       }
     },
     "public/brand/vaporsoft/vaporsoft-wallpaper.svg": {
-      "sha256": "1b3c9e77aa76e8e04875cf9fee151de988c0f467450e7e89921d23e6f4f8fb6d",
+      "sha256": "0ae9aa57ae9dfaa59be6a8c1b6fd273a25ec3c0fc0801b7870c83b2a22abc9a8",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-wallpaper.png": "d5374ff20d3725fc6d3deea26c1e58a1f5a525c728c96aa2e949151c59a26e60"
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper.png": "6560b90888c6ab783206d76d6b2d993287ae6083df7c6e5cc3e7cfd9e2f68323"
       }
     }
   }

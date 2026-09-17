@@ -26,11 +26,10 @@
   <rect x="56" y="96" width="6" height="192" fill="#a11f31"/>
   <rect x="1844" y="48" width="16" height="16" fill="#a11f31"/>
 
-  <text x="112" y="216" font-size="72" font-weight="600" letter-spacing="8" fill="#121318" fill-opacity="0.9" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+  <text x="112" y="228" font-size="72" font-weight="600" letter-spacing="8" fill="#121318" fill-opacity="0.9" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
   <rect x="288" y="120" width="1" height="144" fill="#121318" fill-opacity="0.14"/>
-  <text x="328" y="200" font-size="30" letter-spacing="8" fill="#121318" fill-opacity="0.72" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
-  <rect x="330" y="224" width="300" height="1" fill="url(#hs-rule-carmine)"/>
-  <text x="330" y="256" font-size="13" letter-spacing="4.5" fill="#121318" fill-opacity="0.4" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">INDEPENDENT STUDIO</text>
+  <text x="328" y="188" font-size="30" letter-spacing="8" fill="#121318" fill-opacity="0.72" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <rect x="330" y="212" width="300" height="1" fill="url(#hs-rule-carmine)"/>
 
   <text x="1800" y="208" text-anchor="end" font-size="15" letter-spacing="5" fill="#121318" fill-opacity="0.5" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">NATIVE<tspan fill-opacity="0.24"> · </tspan>WEB<tspan fill-opacity="0.24"> · </tspan><tspan fill="#a11f31" fill-opacity="0.92">AI</tspan><tspan fill-opacity="0.24"> · </tspan><tspan fill="#a11f31" fill-opacity="0.92">ASSETS</tspan></text>
 </svg>
