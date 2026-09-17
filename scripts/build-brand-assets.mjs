@@ -285,6 +285,42 @@ function badge(key) {
 }
 
 // ---------------------------------------------------------------------------
+// A section mark: the same 256px plate every product icon is drawn on — frame,
+// rail, kanji, rule, wordmark with a carmine final letter, corner square — for
+// the parts of the site that are not products. The brand section's own pages
+// need marks, and a dashed placeholder box beside two real cards reads as a
+// missing image rather than as a choice.
+//
+// Only the rule adapts. A product's name is five or six letters and sits under
+// a 72px rule; PALETTE is seven, so the rule is measured from the word rather
+// than copied from AKIRA.
+function sectionMark({ kanji, word }, key) {
+  const t = THEME[key];
+  const F = word.length > 6 ? 16 : 18;
+  const ls = word.length > 6 ? 2.8 : 3.6;
+  const ink = 0.623 * F * word.length + ls * (word.length - 1);
+  const rule = r4(Math.max(72, ink + 16));
+  const body = word.slice(0, -1) + `<tspan fill="${CARMINE}">` + word.slice(-1) + '</tspan>';
+
+  return `<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="12" fill="${key === 'dark' ? t.ground : '#f4efe8'}"/>
+  <rect x="20" y="20" width="216" height="216" rx="8" stroke="${t.mark}" stroke-opacity="${t.frame}"/>
+  <rect x="40" y="48" width="8" height="160" fill="${CARMINE}"/>
+  <text x="142" y="152" text-anchor="middle" font-size="80" font-weight="600" fill="${t.mark}" fill-opacity="0.9" font-family="${JP}">${kanji}</text>
+  <rect x="${142 - rule / 2}" y="180" width="${rule}" height="1" fill="${t.mark}" fill-opacity="${t.frame}"/>
+  <text x="${n(mid(142, ls))}" y="208" text-anchor="middle" font-size="${F}" letter-spacing="${ls}" fill="${t.mark}" fill-opacity="0.55" font-family="${SANS}">${body}</text>
+  <rect x="200" y="48" width="16" height="16" fill="${CARMINE}"/>
+</svg>
+`;
+}
+
+/** The sections of the site that are not products but still need a mark. */
+const SECTION_MARKS = [
+  { name: 'mark-icons', kanji: '印', word: 'ICONS' },
+  { name: 'mark-palette', kanji: '色', word: 'PALETTE' }
+];
+
+// ---------------------------------------------------------------------------
 // Every asset, and the size its source is authored at. A source is authored at
 // the size whose 2x render is the largest standard size for its shape, so the 2x
 // PNG the rest of the brand directory expects is itself a real display size:
@@ -317,5 +353,12 @@ for (const asset of ASSETS) {
 for (const key of ['dark', 'light']) {
   await writeFile(join(OUT, `vaporsoft-badge${key === 'dark' ? '' : '-light'}.svg`), badge(key), 'utf8');
   count++;
+}
+for (const m of SECTION_MARKS) {
+  for (const key of ['dark', 'light']) {
+    const suffix = key === 'dark' ? '' : '-light';
+    await writeFile(join(OUT, `vaporsoft-${m.name}${suffix}.svg`), sectionMark(m, key), 'utf8');
+    count++;
+  }
 }
 console.log(`wrote ${count} sources into public/brand/vaporsoft/`);

@@ -200,12 +200,18 @@ its shape, so the PNG named after the source is itself a real display size.
 | `social-card` | 2400x1260 | 1200x630 | Open Graph, link previews |
 | `email-banner` | 1200x400 | 600x200 | email headers at the 600px standard |
 | `badge` | 260x40 | 130x20 | footers and READMEs, beside shields |
+| `mark-icons`, `mark-palette` | 512x512 | — | the brand section's own pages, on the product icons' plate |
 
 The two ultrawides are two shapes, not one. 3440x1440 is 43:18 and 2560x1080 is
 64:27; rendering the first at 2560 wide gives 2560x1072 and a letterbox.
 
 The wallpapers' lockup sits inside the 1546x423 area YouTube crops a channel
 banner to, so the 16:9 file serves both.
+
+All of it is listed, with a link to every file, at
+[vaporsoft.dev/brand](https://www.vaporsoft.dev/brand/). That page reads this
+directory at build time rather than keeping a list of its own, so an asset added
+here appears there by being added here.
 
 ### They are rendered by CRISPR, not by `brand:png`
 

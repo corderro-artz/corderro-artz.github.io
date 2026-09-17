@@ -100,6 +100,29 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.vaporsoft.dev/brand/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vaporsoft.dev/brand/vaporsoft/vaporsoft-logo.svg</image:loc>
+      <image:title>Vaporsoft Logo</image:title>
+      <image:caption>Vaporsoft brand assets: wallpapers, headers, a social card, an email banner and a badge.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/brand/icons/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.vaporsoft.dev/brand/palette/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.vaporsoft.dev/contact/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>

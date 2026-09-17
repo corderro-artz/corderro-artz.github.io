@@ -98,6 +98,60 @@ const catalog = [
         surfaces: []
       }
     ]
+  },
+  {
+    id: 'brand',
+    label: 'Brand',
+    products: [
+      {
+        id: 'assets',
+        label: 'Assets',
+        repo: false,
+        base: {
+          name: 'Brand',
+          description:
+            'Every mark the site serves, at every size it is drawn at. Wallpapers in three shapes, headers, a social card, an email banner and a badge — vector sources, with rasters rendered from them.',
+          iconSrc: '/brand/vaporsoft/vaporsoft-logo.svg',
+          iconSrcLight: '/brand/vaporsoft/vaporsoft-logo-light.svg',
+          href: '/brand/',
+          label: 'FABRIC',
+          variant: 'foundation'
+        },
+        surfaces: [
+          {
+            name: 'Icons',
+            description: 'Each product mark and favicon, as a vector and a raster, in both themes.',
+            iconSrc: '/brand/vaporsoft/vaporsoft-mark-icons.svg',
+            iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-icons-light.svg',
+            href: '/brand/icons/',
+            label: 'SURFACE',
+            variant: 'surface'
+          },
+          {
+            name: 'Palette',
+            description: 'Carmine, ink, paper, graphite, and the ramp built on carmine. The values the build enforces.',
+            iconSrc: '/brand/vaporsoft/vaporsoft-mark-palette.svg',
+            iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-palette-light.svg',
+            href: '/brand/palette/',
+            label: 'SURFACE',
+            variant: 'surface'
+          }
+        ]
+      },
+      {
+        id: 'merch',
+        label: 'Merch',
+        repo: false,
+        base: {
+          name: 'Merch',
+          description:
+            'Nothing to print yet. When there is, it comes off the same files — which is why they are drawn as vectors at every size first.',
+          label: 'SURFACE',
+          variant: 'future'
+        },
+        surfaces: []
+      }
+    ]
   }
 ];
 
@@ -134,7 +188,7 @@ const homePageStructuredData = [
     }
   },
   ...flatProducts
-    .filter((product) => Boolean(product.base.href))
+    .filter((product) => product.repo !== false && Boolean(product.base.href))
     .map((product) => ({
       '@context': 'https://schema.org',
       '@type': 'SoftwareSourceCode',

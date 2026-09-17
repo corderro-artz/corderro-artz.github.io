@@ -1,0 +1,150 @@
+---
+/**
+ * The brand console, rendered by every route that shows one.
+ *
+ * Three routes use it — /brand/ opens on Assets, /brand/icons/ on Icons,
+ * /brand/palette/ on Palette — so a link to the icons is a link to the icons
+ * rather than to a page the reader then has to click. Merch has no route,
+ * because there is nothing to link to yet.
+ *
+ * Like the repository console, every panel is in the markup at build time. The
+ * page is complete before any script runs and stays complete if none ever does;
+ * the browser only switches panels and rewrites the address to match.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { renderBrandPage } from '../lib/brand-page.mjs';
+import { presentationAssets, marks, sectionMarks, palette, totals } from '../lib/brand-inventory.mjs';
+import '../styles/brand.css';
+
+const { tab = 'assets' } = Astro.props;
+const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
+
+const inventory = {
+  assets: presentationAssets(),
+  marks: marks(),
+  sections: sectionMarks(),
+  palette: palette(),
+  totals: totals()
+};
+
+const TITLES = {
+  assets: 'Brand',
+  icons: 'Brand icons',
+  palette: 'Brand palette'
+};
+const DESCRIPTIONS = {
+  assets: 'Vaporsoft brand assets: wallpapers in 16:9, ultrawide and 4:3, headers, a social card, an email banner and a badge, in both themes.',
+  icons: 'Every Vaporsoft product mark and favicon, as vectors and rasters, in both themes.',
+  palette: 'The Vaporsoft palette: carmine, ink, paper and graphite, the carmine ramp, and the files that define them.'
+};
+const PATHS = { assets: '/brand/', icons: '/brand/icons/', palette: '/brand/palette/' };
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Vaporsoft brand',
+    url: new URL(PATHS[tab], siteUrl).href,
+    description: DESCRIPTIONS[tab],
+    isPartOf: { '@type': 'WebSite', name: 'Vaporsoft', url: siteUrl.href },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Vaporsoft brand assets',
+      itemListElement: inventory.assets.map((a, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${a.title}, ${a.shape}`,
+        url: new URL(a.svg, siteUrl).href
+      }))
+    }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Vaporsoft', item: new URL('/', siteUrl).href },
+      { '@type': 'ListItem', position: 2, name: 'Brand', item: new URL('/brand/', siteUrl).href },
+      ...(tab === 'assets'
+        ? []
+        : [{ '@type': 'ListItem', position: 3, name: TITLES[tab].replace('Brand ', ''),
+             item: new URL(PATHS[tab], siteUrl).href }])
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={`${TITLES[tab]} | Vaporsoft`}
+  description={DESCRIPTIONS[tab]}
+  bodyClass="vapor-repo-body"
+  keywords={['Vaporsoft brand', 'brand assets', 'wallpaper', 'icons', 'palette', 'press kit', 'carmine']}
+  ogImage="/brand/vaporsoft/png/vaporsoft-social-card.png"
+  structuredData={structuredData}
+>
+  <main class="rp-shell" set:html={renderBrandPage(inventory, tab)} />
+
+  <script is:inline>
+    (function () {
+      var stage = document.querySelector('.rp-shell');
+      if (!stage) return;
+
+      /* A tab rail: WAI-ARIA roving tabindex, so the arrow keys walk the rail
+         and only the selected tab is in the tab order. Same behaviour as the
+         repository console — the two rails are the same control. */
+      function wireRail(root, sel, attr, apply) {
+        var tabs = Array.prototype.slice.call(root.querySelectorAll(sel));
+        if (!tabs.length) return;
+        function select(t) {
+          tabs.forEach(function (x) {
+            var on = x === t;
+            x.setAttribute('aria-selected', String(on));
+            x.setAttribute('tabindex', on ? '0' : '-1');
+          });
+          apply(t.getAttribute(attr));
+        }
+        tabs.forEach(function (t) {
+          t.addEventListener('click', function () { select(t); });
+          t.addEventListener('keydown', function (e) {
+            var i = tabs.indexOf(t);
+            var next = null;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+            else if (e.key === 'Home') next = tabs[0];
+            else if (e.key === 'End') next = tabs[tabs.length - 1];
+            if (!next) return;
+            e.preventDefault();
+            select(next);
+            next.focus();
+          });
+        });
+      }
+
+      var panels = Array.prototype.slice.call(stage.querySelectorAll('.rp-panel'));
+
+      /* /brand/, whichever of its routes we were served from, so switching
+         tabs can rewrite the address to match what is on screen. replaceState
+         rather than pushState: the back button should leave the page, not walk
+         back through tabs the reader clicked past. */
+      var root = location.pathname.replace(/(icons|palette)\/?$/, '');
+      if (root.charAt(root.length - 1) !== '/') root += '/';
+
+      wireRail(stage, '.rp-tab', 'data-tab', function (id) {
+        panels.forEach(function (p) { p.classList.toggle('is-on', p.dataset.panel === id); });
+        var btn = stage.querySelector('.rp-tab[data-tab="' + id + '"]');
+        var next = root + (btn ? btn.dataset.url || '' : '');
+        if (next !== location.pathname && history.replaceState) {
+          try { history.replaceState(null, '', next + location.hash); } catch (e) {}
+        }
+      });
+
+      // Each panel's own rail, for the widths where its columns become pages.
+      panels.forEach(function (p) {
+        wireRail(p, '.rp-subtab', 'data-block', function (id) {
+          p.querySelectorAll('.rp-block').forEach(function (b) {
+            b.classList.toggle('is-on', b.dataset.block === id);
+          });
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

@@ -54,14 +54,14 @@ const icon = (k) => '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="fals
    it is the more honest place for it: getting back to the site is not part of
    the repository's record. The arrow is drawn on the same grid and at the same
    stroke as the action rail's glyphs, and steps left on hover. */
-function fBar(slug) {
+export function renderBar(crumb) {
   return '<div class="rp-bar">'
     + '<a class="rp-back" href="/">'
     + '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" '
     + 'stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
     + '<path d="M13.4 8H2.6"/><path d="M6.6 3.9 2.5 8l4.1 4.1"/></svg>'
     + '<span>Vaporsoft</span></a>'
-    + '<span class="rp-crumb"><b>/</b> ' + esc(slug) + '</span>'
+    + '<span class="rp-crumb"><b>/</b> ' + esc(crumb) + '</span>'
     + '<button type="button" class="vapor-theme-toggle rp-theme" data-theme-toggle aria-label="Toggle theme">'
     + '<span class="vapor-theme-toggle-dot"></span><span data-theme-label>LIGHT</span></button>'
     + '</div>';
@@ -459,7 +459,7 @@ const TABS = [
 export function renderRepoPage(r, open = 'overview') {
   const doc = stripHandWrittenToc(r.readmeHtml);
   const manual = EXTERNAL_DOCS[r.name.toLowerCase()] || null;
-  return fBar(r.name.toLowerCase())
+  return renderBar(r.name.toLowerCase())
     + '<div class="rp-console vapor-frame">'
     + fHead(r)
     + fLedger(r)

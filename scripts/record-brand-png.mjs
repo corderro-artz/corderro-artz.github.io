@@ -46,12 +46,19 @@ for (const product of await readdir(BRAND, { withFileTypes: true })) {
     // The base raster, plus any size-suffixed sibling. The suffix has to be a
     // real WxH or "-light" and "-crt" would be swept in as sizes of each other.
     const sized = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-\\d+x\\d+\\.png$`);
-    const found = pngs.filter((p) => p === `${base}.png` || sized.test(p)).map((p) => rel(join(pngDir, p)));
+    // Second guard: the stem a suffix makes must not be a source in its own
+    // right, or wallpaper-ultrawide claims the 64x27 wallpaper's raster as a
+    // size of itself — which it did, and both sources then pointed at one file.
+    const own = (p) => !files.includes(p.replace(/\.png$/, '.svg'));
+    const found = pngs.filter((p) => p === `${base}.png` || (sized.test(p) && own(p)))
+      .map((p) => rel(join(pngDir, p)));
 
     // Anything recorded earlier that is not discoverable by name — the 4x
-    // favicon is one — is kept as long as the file is still there.
+    // favicon is one — is kept as long as the file is still there. It still has
+    // to pass `own`, or a wrong entry recorded before that rule existed would
+    // survive every re-record by virtue of being in the file already.
     for (const old of Object.keys(manifest.rendered[key]?.png ?? {})) {
-      if (found.includes(old)) continue;
+      if (found.includes(old) || !own(old.split('/').pop())) continue;
       const bytes = await readFile(join(ROOT, old)).catch(() => null);
       if (bytes) found.push(old); else dropped++;
     }

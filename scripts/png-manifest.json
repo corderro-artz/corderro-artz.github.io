@@ -228,6 +228,30 @@
         "public/brand/vaporsoft/png/vaporsoft-logo.png": "d3de456f71c1171d7c418c8011a96229368cab5e7cd0e74d4dbc3fb17aa79f73"
       }
     },
+    "public/brand/vaporsoft/vaporsoft-mark-icons-light.svg": {
+      "sha256": "f02acf6f895f1fc90636a3296a574f27670ee12e78fb3138d3c741c0df0ce2dc",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-icons-light.png": "815ca7762a8d778ae1d4c8e558c655a9703b18f33757d44527f5e7ccea928714"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-icons.svg": {
+      "sha256": "c74f4865f842fc7723b4749ef88a8e0208fc5a4b96ff23e99b830975ece8cd99",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-icons.png": "6813bdd1fd4e52401a4e58e8cd6d62e539aab63696c26375d46bb189d87aa23f"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-palette-light.svg": {
+      "sha256": "b6c2ea0507cf9e6bdf6df0b83799547161e41840e622bf7ec442e9fec35bbc12",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-palette-light.png": "f2a968fb239627ce88fb7ad6e07271dfcfb8ae960e2f195f1bc5a39f2c1e981b"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-palette.svg": {
+      "sha256": "f29e24b1512ad3aecf93a9c641d519cfe06cc62ed4b721083d21ca55e2e97b9d",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-palette.png": "50ef7bf06c125499b9055a716fd5446d88d0c37179cda81ceba4d7a6a792ac75"
+      }
+    },
     "public/brand/vaporsoft/vaporsoft-social-card-light.svg": {
       "sha256": "c855a16fe731dca4813f149ba901c62b1109348001cff1ab294fad5f4780ade8",
       "png": {
@@ -289,7 +313,6 @@
     "public/brand/vaporsoft/vaporsoft-wallpaper-ultrawide.svg": {
       "sha256": "531bf7f3fdf93a74fb819772d8cb4f6ed50f4befa950af4cc82353db617ad927",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide-64x27.png": "04652fb70f4079fcf7a65223261424a2cfabf88ab64966d8c9b8842673359a68",
         "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide.png": "5eabea33688d2da6bdca380fd35fc39a00a49829182a3ec8ddc306ab851bd2a6"
       }
     },

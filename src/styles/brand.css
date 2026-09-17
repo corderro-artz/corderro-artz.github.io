@@ -1,0 +1,257 @@
+/* The brand console.
+   It borrows the repository console's shell — bar, frame, tab rail, columns,
+   and every rule about heights and reflow that comes with it — so this file
+   only describes what goes inside a column: rows of downloads, a grid of
+   marks, and the palette. */
+@import './repo.css';
+
+/* ── Head ──
+   The repository head carries a hero, a command and an action rail. This one
+   carries a sentence and the mark, so it is its own two-cell grid rather than
+   the four-area one with two areas left empty. */
+.bp-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.35rem var(--rp-pad) 1.15rem;
+  border-bottom: 1px solid var(--theme-line);
+}
+
+.bp-head-copy { min-width: 0; }
+
+.bp-head-copy h1 {
+  margin: 0 0 0.5rem;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 1.32rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.bp-head-mark { flex: none; line-height: 0; opacity: 0.9; }
+
+/* Width only. `display` belongs to .rp-mark--dark/--light, which is what swaps
+   the two files between themes; setting it here is more specific than those
+   rules and showed both marks stacked. */
+.bp-head-mark img { width: 4.6rem; height: 4.6rem; }
+
+/* ── Downloads ──
+   One asset is a heading, a sentence, and its files in two labelled rows. The
+   rows are a grid rather than two runs of inline links so the Dark and Light
+   sets line up with each other down the column: the sizes are the same on both
+   rows, and when they do not align the eye reads them as different sets. */
+.bp-assets { display: grid; gap: 1.15rem; align-content: start; }
+
+.bp-asset {
+  display: grid;
+  gap: 0.6rem;
+  padding-bottom: 1.05rem;
+  border-bottom: 1px solid var(--theme-line);
+}
+
+.bp-asset:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.bp-asset-head h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* The shape, not a second heading: same size as the label it sits beside, in
+   the muted colour, with the accent reserved for the glyph in the column
+   title. */
+.bp-asset-head h4 i {
+  font-style: normal;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  color: var(--theme-muted);
+}
+
+.bp-asset-head p {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--theme-muted);
+}
+
+.bp-links { display: grid; gap: 0.4rem; }
+
+.bp-links-row {
+  display: grid;
+  grid-template-columns: 2.9rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bp-links-label {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+}
+
+.bp-links-set { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+/* A chip is the smallest thing on the page that can be clicked, so it takes
+   the same hairline border and the same carmine on hover as the console's own
+   buttons rather than inventing a third treatment. */
+.bp-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.55rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--theme-line);
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--theme-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.bp-chip:hover,
+.bp-chip:focus-visible {
+  border-color: rgba(var(--vapor-carmine-rgb), 0.55);
+  color: var(--theme-text);
+}
+
+/* ── Marks ── */
+.bp-marks {
+  display: grid;
+  /* Wide enough for SVG, Light and PNG on one row: a tile whose chips wrap
+     leaves every other tile in the grid taller than its contents. */
+  grid-template-columns: repeat(auto-fill, minmax(9.75rem, 1fr));
+  gap: 1rem 0.9rem;
+  align-content: start;
+}
+
+.bp-mark {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.9rem 0.5rem;
+  border: 1px solid var(--theme-line);
+  text-align: center;
+}
+
+.bp-mark-art { line-height: 0; }
+.bp-mark-img { width: 3.4rem; height: 3.4rem; display: block; }
+.bp-mark-img--light { display: none; }
+.vapor-light .bp-mark-img--dark { display: none; }
+.vapor-light .bp-mark-img--light { display: block; }
+
+.bp-mark h4 {
+  margin: 0.15rem 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.bp-mark-size {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--theme-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Palette ── */
+.bp-swatches { display: grid; gap: 0.75rem; align-content: start; }
+.bp-swatches--tight { gap: 0.5rem; margin-top: 1rem; }
+
+.bp-swatch {
+  display: grid;
+  grid-template-columns: 1.6rem auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.2rem 0.7rem;
+}
+
+.bp-swatch i {
+  grid-row: span 2;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--theme-line);
+}
+
+.bp-swatch b {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.bp-swatch code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--theme-muted);
+}
+
+.bp-swatch span {
+  grid-column: 2 / -1;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  color: var(--theme-muted);
+  opacity: 0.8;
+}
+
+/* The ramp reads as one object, so the stops meet with no gaps between them
+   and the whole strip takes the single hairline. */
+.bp-ramp {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  height: 2.6rem;
+  border: 1px solid var(--theme-line);
+}
+
+.bp-ramp i { display: block; }
+
+.bp-file { color: inherit; text-decoration: none; border-bottom: 1px solid var(--theme-line); }
+.bp-file:hover, .bp-file:focus-visible { border-bottom-color: var(--vapor-carmine); }
+
+/* ── Merch ──
+   One block across the whole console, so the composition is centred in it
+   rather than sitting in the top-left of an otherwise empty panel. */
+.bp-merch {
+  display: grid;
+  gap: 1.35rem;
+  align-content: center;
+  justify-items: center;
+  width: min(100%, 44rem);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bp-merch-art { width: 100%; line-height: 0; border: 1px solid var(--theme-line); }
+/* Width only, for the same reason as the head mark. */
+.bp-merch-art img { width: 100%; height: auto; }
+.bp-merch-copy { display: grid; gap: 0.6rem; justify-items: center; }
+.bp-merch .rp-kv { width: 100%; text-align: left; }
+
+.bp-merch-lede {
+  margin: 0;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vapor-carmine);
+}
+
+/* A panel with one block still has a column, and that column is the width of
+   the console. */
+.rp-blocks--1 { grid-template-columns: minmax(0, 1fr); }
+
+@media (max-width: 900px), (max-height: 620px) {
+  .bp-head { grid-template-columns: minmax(0, 1fr); }
+  .bp-head-mark { display: none; }
+  .bp-links-row { grid-template-columns: 2.6rem minmax(0, 1fr); }
+}

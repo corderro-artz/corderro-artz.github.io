@@ -7,6 +7,9 @@
  * @prop {string}  [icon]      – Icon base name (e.g. "akira" → /brand/akira/akira-icon.svg & /brand/akira/akira-icon-light.svg).
  *                               Brand assets live under /brand/ because this is a user Pages site: a repository with its
  *                               own Pages site is served at /<repo>/ and shadows any top-level directory of the same name.
+ * @prop {string}  [iconSrc]   – An explicit mark, for a card whose icon is not a product icon under
+ *                               the /brand/<name>/<name>-icon.svg convention (the brand card uses the logo).
+ * @prop {string}  [iconSrcLight] – Its light-theme twin.
  * @prop {string}  [href]      – Where the card leads. When set, renders as <a>. A site-relative
  *                               path stays in the tab; an absolute URL opens a new one.
  * @prop {string}  label       – Category label (FABRIC, SURFACE, etc.).
@@ -16,12 +19,19 @@ interface Props {
   name: string;
   description: string;
   icon?: string;
+  iconSrc?: string;
+  iconSrcLight?: string;
   href?: string;
   label: string;
   variant?: 'foundation' | 'surface' | 'standalone' | 'future';
 }
 
-const { name, description, icon, href, label, variant = 'surface' } = Astro.props;
+const { name, description, icon, iconSrc, iconSrcLight, href, label, variant = 'surface' } = Astro.props;
+
+// An explicit pair wins over the naming convention, and either is drawn the
+// same way: one image per theme, swapped by the class the toggle sets.
+const markDark = iconSrc || (icon ? `/brand/${icon}/${icon}-icon.svg` : null);
+const markLight = iconSrcLight || (icon ? `/brand/${icon}/${icon}-icon-light.svg` : null);
 
 // The product pages live on this site now, so most cards no longer leave it.
 // Sending an in-site navigation to a new tab is the behaviour the repository
@@ -51,10 +61,10 @@ const classes = [
     aria-label={linkLabel}
   >
     <div class="vapor-arch-card-icon">
-      {icon ? (
+      {markDark ? (
         <>
-          <img src={`/brand/${icon}/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={`/brand/${icon}/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={markDark} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={markLight} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>
@@ -67,10 +77,10 @@ const classes = [
 ) : (
   <article class={classes}>
     <div class="vapor-arch-card-icon">
-      {icon ? (
+      {markDark ? (
         <>
-          <img src={`/brand/${icon}/${icon}-icon.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={`/brand/${icon}/${icon}-icon-light.svg`} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={markDark} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={markLight} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>
