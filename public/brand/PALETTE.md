@@ -131,6 +131,34 @@ anywhere in `src/` or `public/brand/`, if a brand SVG uses a colour outside the
 palette, or if any SVG has changed since the PNG beside it was rendered. It
 compares hashes, never pixels, so it gives the same answer on any machine.
 
+### The presentation assets are rendered by CRISPR, not by `brand:png`
+
+Four assets exist in both themes for use outside the site — a 16:9 wallpaper, a
+wide header, a slim header, and a footer badge:
+
+| Source | Size | For |
+|---|---|---|
+| `vaporsoft-wallpaper{,-light}.svg` | 1920x1080 | Desktop wallpaper, YouTube channel art |
+| `vaporsoft-header-wide{,-light}.svg` | 1500x500 | Profile and social headers, Discord |
+| `vaporsoft-header-slim{,-light}.svg` | 1920x384 | Page and README headers, cover images |
+| `vaporsoft-badge{,-light}.svg` | 146x20 | Footers, READMEs, alongside shields |
+
+The wallpaper's mark sits inside the 1546x423 safe area YouTube crops to, so the
+same file serves both.
+
+Their PNGs were rendered by CRISPR, which hands the file to headless Chromium and
+fetches the font the SVG actually asks for:
+
+```bash
+node path/to/crispr/dist/crispr.js public/brand/vaporsoft/<name>.svg   -o public/brand/vaporsoft/png --scale 2   --font "google:Noto Sans JP" --font "google:Noto Sans"
+```
+
+This matters at these sizes. `npm run brand:png` goes through librsvg, which
+substitutes a font it does not have rather than failing, so a machine without Yu
+Gothic renders the kanji in the wrong design and says nothing. Running it will
+overwrite these eight PNGs with that substituted output and re-record the hashes,
+so the check will still pass. Re-render them with CRISPR instead.
+
 `npm run brand:verify` additionally re-renders and compares bytes. That only
 means anything where Yu Gothic and Meiryo are installed, so it is local-only and
 deliberately not in CI.

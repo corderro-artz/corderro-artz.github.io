@@ -1,0 +1,53 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="wp-glow-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(120 120) scale(780)">
+      <stop stop-color="#a11f31" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wp-glow-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1800 960) scale(740)">
+      <stop stop-color="#a11f31" stop-opacity="0.075"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wp-glow-c" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(960 560) scale(640)">
+      <stop stop-color="#a11f31" stop-opacity="0.045"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="wp-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#121318" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="wp-rule-paper" x1="760" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#121318" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#121318" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#121318" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wp-rule-carmine" x1="700" y1="0" x2="1220" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a11f31" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#a11f31" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="#f2ede6"/>
+  <rect width="1920" height="1080" fill="url(#wp-grid)"/>
+  <rect width="1920" height="1080" fill="url(#wp-glow-a)"/>
+  <rect width="1920" height="1080" fill="url(#wp-glow-b)"/>
+  <rect width="1920" height="1080" fill="url(#wp-glow-c)"/>
+
+  <g stroke="#121318" stroke-opacity="0.18" stroke-width="1" fill="none">
+    <path d="M64 108V64h44"/>
+    <path d="M1856 108V64h-44"/>
+    <path d="M64 972v44h44"/>
+    <path d="M1856 972v44h-44"/>
+  </g>
+
+  <rect x="88" y="300" width="6" height="480" fill="#a11f31" fill-opacity="0.9"/>
+  <rect x="1810" y="88" width="20" height="20" fill="#a11f31"/>
+
+  <text x="965" y="560" text-anchor="middle" font-size="132" font-weight="600" letter-spacing="10" fill="#121318" fill-opacity="0.9" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+  <rect x="760" y="600" width="400" height="1" fill="url(#wp-rule-paper)"/>
+  <text x="964" y="654" text-anchor="middle" font-size="26" letter-spacing="8" fill="#121318" fill-opacity="0.62" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <rect x="700" y="690" width="520" height="1" fill="url(#wp-rule-carmine)"/>
+
+  <text x="88" y="958" font-size="14" letter-spacing="5" fill="#121318" fill-opacity="0.34" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">INDEPENDENT STUDIO</text>
+  <text x="1830" y="958" text-anchor="end" font-size="14" letter-spacing="5" fill="#121318" fill-opacity="0.34" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPORSOFT.DEV</text>
+</svg>
