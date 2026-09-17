@@ -1,0 +1,20 @@
+---
+/**
+ * /<repo>/docs/ — the same console, opened on Documentation.
+ *
+ * The documentation is the longest and most useful thing on the page, and
+ * until now it had no address of its own: you could only link someone to the
+ * repository and ask them to click. Every panel is still in the markup, so
+ * this costs a second HTML file and nothing at runtime.
+ */
+import RepoPage from '../../components/RepoPage.astro';
+import repos from '../../data/repos.json';
+
+export function getStaticPaths() {
+  return Object.keys(repos).map((slug) => ({ params: { repo: slug }, props: { slug } }));
+}
+
+const { slug } = Astro.props;
+---
+
+<RepoPage slug={slug} tab="documentation" />

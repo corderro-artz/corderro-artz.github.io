@@ -47,7 +47,7 @@ jobs:
         # actually exist rather than trusting the exit code alone.
         run: |
           set -euo pipefail
-          for page in index.html components/index.html contact/index.html \n                      akira/index.html kata/index.html nfty/index.html crispr/index.html; do
+          for page in index.html components/index.html contact/index.html \n                      akira/index.html kata/index.html nfty/index.html crispr/index.html \n                      akira/docs/index.html kata/docs/index.html \n                      nfty/docs/index.html crispr/docs/index.html; do
             if [ ! -s "dist/$page" ]; then
               echo "::error::Expected dist/$page to exist and be non-empty"
               exit 1

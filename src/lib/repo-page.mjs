@@ -433,39 +433,53 @@ function fToc(html) {
   }).join('') + '</nav>';
 }
 
+/* Which panel a route opens on. `url` is how the browser keeps the address in
+   step when the reader switches tabs by hand, and it is the address a link to
+   that tab should use. Overview is the repository's own root. */
+const TABS = [
+  { id: 'overview', label: 'Overview', url: '' },
+  { id: 'documentation', label: 'Documentation', url: 'docs/' },
+  { id: 'releases', label: 'Releases', url: '' }
+];
+
 /**
  * The whole page, as one HTML string.
  *
  * Three tabs, because three is what the record divides into cleanly: what the
- * project is, what it says about itself, and what it has shipped.
+ * project is, what it says about itself, and what it has shipped. `open` is
+ * which one the route asked for; every panel is in the markup either way.
  */
-export function renderRepoPage(r) {
+export function renderRepoPage(r, open = 'overview') {
   const doc = stripHandWrittenToc(r.readmeHtml);
   return fBar(r.name.toLowerCase())
     + '<div class="rp-console vapor-frame">'
     + fHead(r)
     + fLedger(r)
     + '<div class="rp-tabs" role="tablist" aria-label="' + esc(r.name) + '">'
-    +   '<button class="rp-tab" role="tab" type="button" id="rp-tab-overview" data-tab="overview" aria-controls="overview" aria-selected="true" tabindex="0">Overview</button>'
-    +   '<button class="rp-tab" role="tab" type="button" id="rp-tab-documentation" data-tab="documentation" aria-controls="documentation" aria-selected="false" tabindex="-1">Documentation</button>'
-    +   '<button class="rp-tab" role="tab" type="button" id="rp-tab-releases" data-tab="releases" aria-controls="releases" aria-selected="false" tabindex="-1">Releases'
-    +     '<span class="rp-tab-count">' + r.releases.length + '</span></button>'
+    + TABS.map((t) => {
+        const on = t.id === open;
+        return '<button class="rp-tab" role="tab" type="button" id="rp-tab-' + t.id + '"'
+          + ' data-tab="' + t.id + '" data-url="' + t.url + '" aria-controls="' + t.id + '"'
+          + ' aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '">' + t.label
+          + (t.id === 'releases' ? '<span class="rp-tab-count">' + r.releases.length + '</span>' : '')
+          + '</button>';
+      }).join('')
     + '</div>'
     + '<div class="rp-panels">'
     + panel('overview', [
         { id: 'spec', jp: '仕様', label: 'Specification', bodyClass: 'rp-block-body--fill', body: fKv(specRows(r)) },
         { id: 'comp', jp: '構成', label: 'Composition', bodyClass: 'rp-block-body--fill', body: fLanguages(r) },
         { id: 'team', jp: '開発', label: 'Project', bodyClass: 'rp-block-body--fill', body: fTeam(r) }
-      ], '3', true)
+      ], '3', open === 'overview')
     + panel('documentation', [
         { id: 'toc', jp: '目次', label: 'Contents', body: fToc(doc) },
         { id: 'doc', jp: '文書', label: 'Document', bodyClass: 'rp-doc-body',
           body: '<div class="rp-readme">' + doc + '</div>' }
-      ], 'doc')
+      ], 'doc', open === 'documentation')
     + panel('releases', [
         { id: 'rel', jp: '版', label: 'Published', body: fReleases(r) },
         { id: 'log', jp: '履歴', label: 'Recent commits', body: fCommits(r) }
-      ], '2')
+      ], '2', open === 'releases')
     + '</div>'
     + '</div>';
 }

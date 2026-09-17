@@ -1,0 +1,20 @@
+---
+/**
+ * /<repo>/ — the console, opened on Overview.
+ *
+ * The slug is the repository's own name, so a reader who knows the project can
+ * type the address. Note that a repository which publishes its own GitHub
+ * Pages site takes this path away: GitHub reserves /<repo>/** for it and
+ * redirects, whatever this build emits.
+ */
+import RepoPage from '../../components/RepoPage.astro';
+import repos from '../../data/repos.json';
+
+export function getStaticPaths() {
+  return Object.keys(repos).map((slug) => ({ params: { repo: slug }, props: { slug } }));
+}
+
+const { slug } = Astro.props;
+---
+
+<RepoPage slug={slug} tab="overview" />

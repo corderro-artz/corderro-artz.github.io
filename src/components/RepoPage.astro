@@ -1,7 +1,12 @@
 ---
 /**
- * One page per repository, at /<repo>/ — the same slug GitHub uses, so a
- * reader who knows the project name can type the address.
+ * The repository console, rendered by every route that shows one.
+ *
+ * Two routes use it: /<repo>/ opens on Overview, /<repo>/docs/ opens on
+ * Documentation. They are the same page — the panels are all in the markup
+ * either way — but each has its own address, so a link to the documentation
+ * is a link to the documentation rather than to a page the reader then has to
+ * click. Each URL carries its own canonical, title and description.
  *
  * Everything on it is rendered here, at build time, from the payload
  * scripts/fetch-repo-data.mjs committed — including the open panel and the
@@ -14,17 +19,16 @@ import repos from '../data/repos.json';
 import { renderRepoPage, repoStructuredData, displayName } from '../lib/repo-page.mjs';
 import '../styles/repo.css';
 
-export function getStaticPaths() {
-  return Object.keys(repos).map((slug) => ({ params: { repo: slug }, props: { slug } }));
-}
-
-const { slug } = Astro.props;
+const { slug, tab = 'overview' } = Astro.props;
 const repo = repos[slug];
+const onDocs = tab === 'documentation';
 const name = displayName(slug);
 const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
 
-const description = repo.description
-  || `${name}, an open-source project by Vaporsoft.`;
+const summary = repo.description || `${name}, an open-source project by Vaporsoft.`;
+const description = onDocs
+  ? `Documentation for ${name}. ${summary}`
+  : summary;
 
 const structuredData = [
   repoStructuredData(repo, siteUrl),
@@ -33,13 +37,18 @@ const structuredData = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Vaporsoft', item: new URL('/', siteUrl).href },
-      { '@type': 'ListItem', position: 2, name, item: new URL(`/${slug}/`, siteUrl).href }
+      { '@type': 'ListItem', position: 2, name, item: new URL(`/${slug}/`, siteUrl).href },
+      ...(onDocs
+        ? [{ '@type': 'ListItem', position: 3, name: 'Documentation',
+             item: new URL(`/${slug}/docs/`, siteUrl).href }]
+        : [])
     ]
   }
 ];
 
 const keywords = [
   name,
+  `${name} docs`,
   `${name} documentation`,
   `${name} releases`,
   'Vaporsoft',
@@ -49,7 +58,7 @@ const keywords = [
 ---
 
 <BaseLayout
-  title={`${name} | Vaporsoft`}
+  title={onDocs ? `${name} documentation | Vaporsoft` : `${name} | Vaporsoft`}
   description={description}
   bodyClass="vapor-repo-body"
   keywords={keywords}
@@ -57,7 +66,7 @@ const keywords = [
   ogImage={`/brand/${slug}/png/${slug}-icon.png`}
   structuredData={structuredData}
 >
-  <main class="rp-shell" set:html={renderRepoPage(repo)} />
+  <main class="rp-shell" set:html={renderRepoPage(repo, tab)} />
 
   <script is:inline>
     (function () {
@@ -96,8 +105,21 @@ const keywords = [
       }
 
       var panels = Array.prototype.slice.call(stage.querySelectorAll('.rp-panel'));
+
+      /* The repository's own root, whichever route we were served from, so
+         switching tabs can rewrite the address to match what is on screen.
+         replaceState rather than pushState: the back button should leave the
+         page, not walk back through tabs the reader clicked past. */
+      var root = location.pathname.replace(/docs\/?$/, '');
+      if (root.charAt(root.length - 1) !== '/') root += '/';
+
       wireRail(stage, '.rp-tab', 'data-tab', function (id) {
         panels.forEach(function (p) { p.classList.toggle('is-on', p.dataset.panel === id); });
+        var btn = stage.querySelector('.rp-tab[data-tab="' + id + '"]');
+        var next = root + (btn ? btn.dataset.url || '' : '');
+        if (next !== location.pathname && history.replaceState) {
+          try { history.replaceState(null, '', next + location.hash); } catch (e) {}
+        }
       });
       // Each panel's own rail, for the widths where its columns become pages.
       panels.forEach(function (p) {
