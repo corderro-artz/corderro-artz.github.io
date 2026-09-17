@@ -5,3 +5,7 @@ dist/
 backup/
 *.bak
 .env
+
+# Documentation sites this site hosts but does not author. Built into public/
+# by scripts/build-external-docs.mjs, in CI, on every deploy.
+public/*/docs/

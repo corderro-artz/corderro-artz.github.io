@@ -9,9 +9,15 @@
  */
 import RepoPage from '../../components/RepoPage.astro';
 import repos from '../../data/repos.json';
+import { EXTERNAL_DOCS } from '../../lib/repo-page.mjs';
 
 export function getStaticPaths() {
-  return Object.keys(repos).map((slug) => ({ params: { repo: slug }, props: { slug } }));
+  // A project that publishes its own documentation site owns this address; its
+  // manual is built into public/<repo>/docs/ and would collide with a page
+  // generated here. See scripts/build-external-docs.mjs.
+  return Object.keys(repos)
+    .filter((slug) => !EXTERNAL_DOCS[slug])
+    .map((slug) => ({ params: { repo: slug }, props: { slug } }));
 }
 
 const { slug } = Astro.props;

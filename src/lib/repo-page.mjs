@@ -433,6 +433,13 @@ function fToc(html) {
   }).join('') + '</nav>';
 }
 
+/* Projects whose documentation is a site of its own rather than a readme.
+   /<repo>/docs/ is that site, built into public/ by
+   scripts/build-external-docs.mjs, so the console must not also claim the
+   address: its Documentation tab keeps showing the readme but stops rewriting
+   the URL, and points at the manual instead. */
+export const EXTERNAL_DOCS = { nfty: '/nfty/docs/' };
+
 /* Which panel a route opens on. `url` is how the browser keeps the address in
    step when the reader switches tabs by hand, and it is the address a link to
    that tab should use. Overview is the repository's own root. */
@@ -451,6 +458,7 @@ const TABS = [
  */
 export function renderRepoPage(r, open = 'overview') {
   const doc = stripHandWrittenToc(r.readmeHtml);
+  const manual = EXTERNAL_DOCS[r.name.toLowerCase()] || null;
   return fBar(r.name.toLowerCase())
     + '<div class="rp-console vapor-frame">'
     + fHead(r)
@@ -458,8 +466,11 @@ export function renderRepoPage(r, open = 'overview') {
     + '<div class="rp-tabs" role="tablist" aria-label="' + esc(r.name) + '">'
     + TABS.map((t) => {
         const on = t.id === open;
+        // A repository with its own manual does not own /<repo>/docs/, so its
+        // Documentation tab must not rewrite the address to it.
+        const url = manual && t.id === 'documentation' ? '' : t.url;
         return '<button class="rp-tab" role="tab" type="button" id="rp-tab-' + t.id + '"'
-          + ' data-tab="' + t.id + '" data-url="' + t.url + '" aria-controls="' + t.id + '"'
+          + ' data-tab="' + t.id + '" data-url="' + url + '" aria-controls="' + t.id + '"'
           + ' aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '">' + t.label
           + (t.id === 'releases' ? '<span class="rp-tab-count">' + r.releases.length + '</span>' : '')
           + '</button>';
@@ -474,7 +485,16 @@ export function renderRepoPage(r, open = 'overview') {
     + panel('documentation', [
         { id: 'toc', jp: '目次', label: 'Contents', body: fToc(doc) },
         { id: 'doc', jp: '文書', label: 'Document', bodyClass: 'rp-doc-body',
-          body: '<div class="rp-readme">' + doc + '</div>' }
+          body: (manual
+            ? '<a class="rp-manual" href="' + esc(manual) + '">'
+              + '<span class="rp-manual-label">Full manual</span>'
+              + '<span class="rp-manual-note">Installation, guides and reference &mdash; the readme below is the '
+              + 'short version.</span>'
+              + '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" '
+              + 'stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
+              + '<path d="M2.6 8h10.8"/><path d="M9.4 3.9 13.5 8l-4.1 4.1"/></svg></a>'
+            : '')
+            + '<div class="rp-readme">' + doc + '</div>' }
       ], 'doc', open === 'documentation')
     + panel('releases', [
         { id: 'rel', jp: '版', label: 'Published', body: fReleases(r) },

@@ -36,6 +36,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The manual NFTY publishes is a site of its own, built here rather than
+      # in its own repository: a repository with its own GitHub Pages site
+      # reserves /<repo>/** on this one and redirects whatever this build
+      # emits, which is what used to shadow /nfty/. Built into public/, never
+      # committed — it is 7.7 MB of content-hashed files.
+      - name: Set up Python for the external documentation
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build the documentation this site hosts
+        run: npm run docs:external
+
       - name: Build site
         # PUBLIC_FORMSPREE_ENDPOINT is deliberately not provided. The contact
         # page falls back to an empty endpoint and renders a "not configured"
@@ -47,13 +60,35 @@ jobs:
         # actually exist rather than trusting the exit code alone.
         run: |
           set -euo pipefail
-          for page in index.html components/index.html contact/index.html \n                      akira/index.html kata/index.html nfty/index.html crispr/index.html \n                      akira/docs/index.html kata/docs/index.html \n                      nfty/docs/index.html crispr/docs/index.html; do
+          # A list rather than a continued line: a backslash continuation in
+          # YAML block scalars is easy to corrupt and hard to notice, and this
+          # loop is the thing that catches a build producing nothing useful.
+          pages="
+            index.html
+            components/index.html
+            contact/index.html
+            akira/index.html
+            kata/index.html
+            nfty/index.html
+            crispr/index.html
+            akira/docs/index.html
+            kata/docs/index.html
+            crispr/docs/index.html
+          "
+          for page in $pages; do
             if [ ! -s "dist/$page" ]; then
               echo "::error::Expected dist/$page to exist and be non-empty"
               exit 1
             fi
           done
           echo "All expected pages present."
+
+      - name: Verify the hosted manual was built
+        run: |
+          set -euo pipefail
+          test -s dist/nfty/docs/index.html
+          test -s dist/nfty/docs/assets/fonts/ibm-plex-nfty.zip
+          echo "NFTY manual present: $(find dist/nfty/docs -type f | wc -l) files."
 
   brand:
     name: Brand palette

@@ -1,7 +1,7 @@
 {
   "name": "vaporsoft-site",
   "private": true,
-  "version": "1.7.0",
+  "version": "1.8.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "repos:fetch": "node scripts/fetch-repo-data.mjs",
+    "docs:external": "node scripts/build-external-docs.mjs",
     "brand:png": "node scripts/render-brand-png.mjs",
     "brand:check": "node scripts/check-palette.mjs",
     "brand:verify": "node scripts/render-brand-png.mjs --check"

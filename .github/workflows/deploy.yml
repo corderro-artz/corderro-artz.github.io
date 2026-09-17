@@ -37,6 +37,29 @@ jobs:
           fi
           echo "PUBLIC_FORMSPREE_ENDPOINT=$endpoint" >> "$GITHUB_ENV"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # The manual NFTY publishes is a site of its own, built here rather than
+      # in its own repository: a repository with its own GitHub Pages site
+      # reserves /<repo>/** on this one and redirects whatever this build
+      # emits, which is what used to shadow /nfty/. It goes into public/ and is
+      # never committed — 7.7 MB of content-hashed files that change wholesale
+      # on every docs edit.
+      - name: Set up Python for the external documentation
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the documentation this site hosts
+        run: npm run docs:external
+
       - name: Install, build, and upload site
         uses: withastro/action@v5
 
