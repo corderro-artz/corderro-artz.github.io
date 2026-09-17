@@ -606,6 +606,10 @@ body.vapor-repo-body {
   font-variant-numeric: tabular-nums;
 }
 
+/* The one value in the table that is a destination rather than a fact. */
+.rp-kv-link { border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.45); }
+.rp-kv-link:hover { color: var(--vapor-carmine); border-bottom-color: var(--vapor-carmine); }
+
 /* ── Composition ──
    A proportion bar has nothing to say when there is one language: it is a
    solid stripe beside an empty column, and the reader learns only what the

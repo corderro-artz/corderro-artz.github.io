@@ -122,10 +122,26 @@ function packageCommand(r) {
   return nupkg ? 'dotnet add package ' + nupkg.name.replace(/\.\d+\.\d+\.\d+.*$/, '') : null;
 }
 
+/* Where the project actually runs, if it runs anywhere.
+   This site's own host is not a live site, at the root or at any path: a
+   repository whose homepage is its Vaporsoft page would otherwise render an
+   Open button pointing at the page the reader is already on. A subdomain is a
+   different matter — kata.vaporsoft.dev is where that app genuinely lives —
+   and so is any host elsewhere. */
+const SELF_HOSTS = new Set(['vaporsoft.dev', 'www.vaporsoft.dev']);
+
 export function liveSite(r) {
-  // A homepage that is only the studio's front door is not this project's site.
   if (!r.homepage) return null;
-  return /^https?:\/\/(www\.)?vaporsoft\.dev\/?$/.test(r.homepage) ? null : r.homepage;
+  let url;
+  try { url = new URL(r.homepage); } catch { return null; }
+  if (!/^https?:$/.test(url.protocol)) return null;
+  return SELF_HOSTS.has(url.hostname.toLowerCase()) ? null : url.href;
+}
+
+/* The bare host, which is what a reader recognises. A full URL with its scheme
+   and trailing slash is noise in a table of five short values. */
+export function siteLabel(site) {
+  try { return new URL(site).hostname.replace(/^www\./, ''); } catch { return site; }
 }
 
 const totalDownloads = (r) =>
@@ -220,7 +236,15 @@ function specRows(r) {
   // are already in the ledger. Repeating them here was the page saying the
   // same thing three times in three type styles.
   const rel = newestRelease(r);
+  const site = liveSite(r);
   return [
+    // Stated, not only offered. The action rail carries an Open button, but a
+    // glyph does not tell a reader *where* it goes; the address does, and it
+    // is the single most useful fact about a project that is running.
+    ['Live site', site
+      ? '<a class="rp-kv-link" href="' + esc(site) + '" target="_blank" rel="noopener">'
+        + esc(siteLabel(site)) + '</a>'
+      : null],
     ['First commit', esc(fmtDate(r.createdAt))],
     ['Latest release', rel ? esc(fmtDate(rel.publishedAt)) : null],
     ['Last commit', esc(fmtDate(r.pushedAt))],
