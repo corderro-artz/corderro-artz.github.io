@@ -1,8 +1,8 @@
-<svg width="146" height="20" viewBox="0 0 146 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="146" height="20" rx="3" fill="#07080b"/>
-  <path d="M104 0h39a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3h-39z" fill="#a11f31"/>
-  <rect x="0.5" y="0.5" width="145" height="19" rx="2.5" stroke="#f2ede6" stroke-opacity="0.12"/>
-  <rect x="9" y="5" width="2" height="10" fill="#a11f31"/>
-  <text x="19" y="14" font-size="11" letter-spacing="1.3" fill="#f2ede6" fill-opacity="0.92" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31">S</tspan>OFT</text>
-  <text x="124" y="14.5" text-anchor="middle" font-size="11" font-weight="600" fill="#f2ede6" fill-opacity="0.96" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+<svg width="130" height="20" viewBox="0 0 130 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="130" height="20" rx="3" fill="#07080b"/>
+  <path d="M90 0h37a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3h-37z" fill="#a11f31"/>
+  <rect x="0.5" y="0.5" width="129" height="19" rx="2.5" stroke="#f2ede6" stroke-opacity="0.12"/>
+  <rect x="8" y="5" width="2" height="10" fill="#a11f31"/>
+  <text x="16" y="14" font-size="11" letter-spacing="0.5" fill="#f2ede6" fill-opacity="0.94" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <text x="110" y="14.2" text-anchor="middle" font-size="11" font-weight="600" fill="#f2ede6" fill-opacity="0.96" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
 </svg>

@@ -1,0 +1,40 @@
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="eb-light-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 16) scale(256)">
+      <stop stop-color="#a11f31" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eb-light-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(568 184) scale(240)">
+      <stop stop-color="#a11f31" stop-opacity="0.075"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eb-light-c" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(304 104) scale(200)">
+      <stop stop-color="#a11f31" stop-opacity="0.045"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="eb-light-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0v24" fill="none" stroke="#121318" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="eb-light-rule" x1="176" y1="0" x2="336" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a11f31" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="200" rx="4" fill="#f4efe8"/>
+  <rect width="600" height="200" rx="4" fill="url(#eb-light-grid)"/>
+  <rect width="600" height="200" rx="4" fill="url(#eb-light-a)"/>
+  <rect width="600" height="200" rx="4" fill="url(#eb-light-b)"/>
+  <rect width="600" height="200" rx="4" fill="url(#eb-light-c)"/>
+  <rect x="16" y="16" width="568" height="168" rx="0" stroke="#121318" stroke-opacity="0.12"/>
+
+  <rect x="32" y="48" width="4" height="104" fill="#a11f31"/>
+  <rect x="560" y="32" width="8" height="8" fill="#a11f31"/>
+
+  <text x="64" y="113.7" font-size="36" font-weight="600" letter-spacing="4" fill="#121318" fill-opacity="0.9" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+  <rect x="156" y="64" width="1" height="72" fill="#121318" fill-opacity="0.14"/>
+  <text x="176" y="99.3" font-size="16" letter-spacing="4" fill="#121318" fill-opacity="0.72" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <rect x="176" y="111" width="160" height="1" fill="url(#eb-light-rule)"/>
+
+
+</svg>

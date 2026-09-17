@@ -122,15 +122,17 @@
       }
     },
     "public/brand/vaporsoft/vaporsoft-badge-light.svg": {
-      "sha256": "dd65907d3726da7af2ee04e5712cbda65c282216844d10fd47ecaa77bd9ebeef",
+      "sha256": "0f28939ff5ae4588cc1fd4d7eeb0d7443326f2957080ba8e3dce076df1456c65",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-badge-light.png": "a6d513c807d967d8d2d64b2152ace25d72c724ab9fe78144a5062e254c87458a"
+        "public/brand/vaporsoft/png/vaporsoft-badge-light-130x20.png": "23557ad0dacd5361ecb49195772706c082e4adafacb7cea1a5ecd4f1bbaef1d0",
+        "public/brand/vaporsoft/png/vaporsoft-badge-light.png": "0c0f6a4ec70ca44984f7a42bba968cd9140dd70b53fac9461edeca30d83e3c0c"
       }
     },
     "public/brand/vaporsoft/vaporsoft-badge.svg": {
-      "sha256": "5e7db521484d5e43f1092c92827bb823ff2e01a83121846e01b3ebb293a3aff9",
+      "sha256": "06e237622f0de25ceb14a5697d2ae8d81eea6080308a12b7f2a1124446123e1a",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-badge.png": "f3db577935ee70ebec5a47ef3b302e295f7c40ceeea48125b5a1cc5b78163149"
+        "public/brand/vaporsoft/png/vaporsoft-badge-130x20.png": "42f66767c12c4b6fb6858dc2a83406efc8db3b41aa1f4c6d3da89d33bbb4ada1",
+        "public/brand/vaporsoft/png/vaporsoft-badge.png": "2d9f28561665e3ea0f543a63b17f3185e092be89b6e70d078628355a42dee0a1"
       }
     },
     "public/brand/vaporsoft/vaporsoft-banner-light.svg": {
@@ -143,6 +145,20 @@
       "sha256": "2b2ba5ee58feffc2e9f3d9a03ad3813c235c3056f375465907f351daec41fc04",
       "png": {
         "public/brand/vaporsoft/png/vaporsoft-banner.png": "477f74f54a2eb4cb8362c81bc0b722530f361f4563deefa0389948e35e7f7ba9"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-email-banner-light.svg": {
+      "sha256": "e21d203400d7f1757477e51fdf2b2d300b2a603f285c555b568ce6eda5955116",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-email-banner-light-600x200.png": "d2601d97e86dc003e2e0127b78fbf45f8c1288a3144f4612aac87bd5932724d4",
+        "public/brand/vaporsoft/png/vaporsoft-email-banner-light.png": "8911fba918688f2be906bf21395b8e69d07a549265badee4e4f5af51f07be8c3"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-email-banner.svg": {
+      "sha256": "45e2e261e781948e3b4120cdb19b0aba14273937479a9022b136ce57bb0901ab",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-email-banner-600x200.png": "78c24fc6bf94b716fc18dba3115a69e0d3dcf359c2189922f7062400c6aa62d4",
+        "public/brand/vaporsoft/png/vaporsoft-email-banner.png": "4f5abd0377c38676c28d4a65034b7add6f077370ae5b7ef5a9eb85a5cd08cc51"
       }
     },
     "public/brand/vaporsoft/vaporsoft-favicon-light.svg": {
@@ -159,27 +175,45 @@
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-slim-light.svg": {
-      "sha256": "97d6b5e0e9490e1caefddcae781eb0d24d06a4a5c1cc1b965ebd57b8d5273731",
+      "sha256": "5b7b28adef68bc1d24519d77dbf99841888e78378665b27ab9a23a239588f580",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-slim-light.png": "c907d93575e06a1a1c19aa6dbb64fc24cdf4956129bd61a3c5a02d18490c30ad"
+        "public/brand/vaporsoft/png/vaporsoft-header-slim-light-1920x384.png": "7a8ec7a5af5b5f7d1eb0c7b57b307742ade76aaed51268bbbb6cdb128aaf1ea9",
+        "public/brand/vaporsoft/png/vaporsoft-header-slim-light.png": "3640d1e0cd9b4c54567e93926046280c1b2ab56940fd934d26f04b6562dd808b"
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-slim.svg": {
-      "sha256": "07d29cdd72515ae6a686c6153c08d74c65e11900b3dede9c92e53e94bff7b7bd",
+      "sha256": "974fe404d249bcec3071c0970b0493328961e9a6e722c9a7f0139d0881e94e2d",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-slim.png": "15c00ac5be0fcff99e7dc27159b76d5722a4ebba1315cf47cb9479a1d6d7b3fb"
+        "public/brand/vaporsoft/png/vaporsoft-header-slim-1920x384.png": "7b5235a26b0762b42ba9fafdd9848588764fad6a2585f2f9694cc2867b746407",
+        "public/brand/vaporsoft/png/vaporsoft-header-slim.png": "458a37dd8da7855d088e22e6fbbb0e0a0eb636d4e69e0d8071efab7e7c84bbfb"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-header-thin-light.svg": {
+      "sha256": "f6f5d046b79e612180a0c0a12b7cfc934514382bcdc8c70c83b201ff1274a528",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-header-thin-light-1128x191.png": "4fe33875e5532b24f3f8988b5edd09e432d47b9742a24af89a6d499553295ce1",
+        "public/brand/vaporsoft/png/vaporsoft-header-thin-light.png": "719156096ee0d81e605041aab955d234d67c37edc8596462408c439be491626a"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-header-thin.svg": {
+      "sha256": "fbe2a00769caea3b2b365f8e549274b9be558466a6123f3f2e79154bc9c6bf90",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-header-thin-1128x191.png": "3b5bdabcdbd063ff55d1bf674887072d5c3f4e4fdca617624997378dad545e3c",
+        "public/brand/vaporsoft/png/vaporsoft-header-thin.png": "73e54ea9d21d7114b98609287eab09f0899e79eb9a07db1ecae28493866dca0c"
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-wide-light.svg": {
-      "sha256": "79e269d6630e048fc08f349ec7638b4437e876fe89e98e0737b2505c5e18f7d8",
+      "sha256": "f4feb400ac841a03fabb1c3531e3554c3c8ecd3f11d8912adbc83a6fbf811ccb",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-wide-light.png": "e9b8beb549d4b979b963cd1da80f25e52886c6b0288b617cfd7ece304eddaaea"
+        "public/brand/vaporsoft/png/vaporsoft-header-wide-light-1500x500.png": "8ebf00b5cf53318e9e75a31c33882199ce4093713bd34818fa0c4e1bfdbaaa11",
+        "public/brand/vaporsoft/png/vaporsoft-header-wide-light.png": "2fdc4e157dddac1617204c810d0c145c33e16b21f727e04a11ac429e36d8dd40"
       }
     },
     "public/brand/vaporsoft/vaporsoft-header-wide.svg": {
-      "sha256": "c7c741b7f66e0d9dfee05c0397d20f69ce2925db18977c95a9b689a37d1ddfe0",
+      "sha256": "bcacfc44fc3a34c71dcb1a86e967239e754ff5aa0df668237a40fd6ebbb4715e",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-header-wide.png": "8900506e1e5ba8a32b086cac6d00442d95e50b191949052fe2ee1b5ac15b8631"
+        "public/brand/vaporsoft/png/vaporsoft-header-wide-1500x500.png": "5878b563c8bc14479301f0bdfa3b675636f35ae9c0a2d004a6250593d2645ccd",
+        "public/brand/vaporsoft/png/vaporsoft-header-wide.png": "b8c018c6d834d558bcc213e59f6b1bd7bd12dbd53fa98338e604025e26f23df6"
       }
     },
     "public/brand/vaporsoft/vaporsoft-logo-light.svg": {
@@ -194,16 +228,77 @@
         "public/brand/vaporsoft/png/vaporsoft-logo.png": "d3de456f71c1171d7c418c8011a96229368cab5e7cd0e74d4dbc3fb17aa79f73"
       }
     },
-    "public/brand/vaporsoft/vaporsoft-wallpaper-light.svg": {
-      "sha256": "f39b10516fd806e19124255f1960c335435652627979c09b8f6b565a16b596d6",
+    "public/brand/vaporsoft/vaporsoft-social-card-light.svg": {
+      "sha256": "c855a16fe731dca4813f149ba901c62b1109348001cff1ab294fad5f4780ade8",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light.png": "d63ed0f2e942c9ae2601a947b24117f1d25dfbe3f42908789a35f5d468a60fc0"
+        "public/brand/vaporsoft/png/vaporsoft-social-card-light-1200x630.png": "1f789e938e064da50bb1cad94ecc4606e8dd6378df32e7cd40258fe90300b7cd",
+        "public/brand/vaporsoft/png/vaporsoft-social-card-light.png": "5b3b36e34fe43627d217a385b7c4e0789d87b6de17cf0e8c853059f23ff68fef"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-social-card.svg": {
+      "sha256": "00a6c534962e2bb17a6826bc299c843092e164f4a9b7e8165bcce43eeca269cd",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-social-card-1200x630.png": "02d11f0c3ff6e23b0a7afe3c7a3ba6ecea91c335b53d9afc827fcda76e579e50",
+        "public/brand/vaporsoft/png/vaporsoft-social-card.png": "c21a52a1865b9774c277dde377cb0dbcc4aed7091d53370800c9c444e3cd6b97"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-crt-light.svg": {
+      "sha256": "8b21b4b86c4b5bae007370399c217e0a864094f2c63b0e70b6b9688ceeefadd2",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-light-1024x768.png": "8367a099baa5989438f5a7d0cc71dd3c1a6259689cdb5555dc87b86e7936afa0",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-light-1280x960.png": "ea6cb9b92250506a51e06539507458ff74356ee4402c1bd54f76bc9f283f9b45",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-light-800x600.png": "f117f127fcf8c16079cc10b654dd362b69863da7e482a9b44bb4dc514effe77c",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-light.png": "c351cc56f87f1a741be6a824560c76a9c25ad57f08823e507f174607930500d8"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-crt.svg": {
+      "sha256": "c0534c210911742b55875ae4a919505a9f2fbc6b7df4f6dfc1e3b2bcebbb671c",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-1024x768.png": "e03d90df13b6dd3629793dc4ba207063cab05bba877f8fef4ae78c1e8dcc9166",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-1280x960.png": "76d12851915f6afb84da16377b141c30125835ddb4f19ef209cc9571ea1b0004",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt-800x600.png": "ecfb4d92e018e47df52b360f2254d447ddd4673e8789bcfe075db42f0106e42a",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-crt.png": "fd843dbfa3002df67e615e8077343b4c87854f23983fce7913718b987d7b9389"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-light.svg": {
+      "sha256": "d58c6f18f41eeb3b6f673b1e71df476c51cf31a19f1b26b3d390a3d718684e87",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light-1920x1080.png": "664b8f2049fadbf37b2236849a3955454f8d683f466efc5ae9caa277e69c7393",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light-2560x1440.png": "d88ce72b16f1c57b74a80b7a831ee1c3d2c99fdea7390dc5a460c4440cf49260",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-light.png": "a20358dcddf614266d8c99c1f26b45042f1779ce6a79295c53fa1d97380b72e0"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-ultrawide-64x27-light.svg": {
+      "sha256": "2da9b79c99ba294c131797a53c2ae902e81fb47a188cd28dfdba4a21f9593230",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide-64x27-light.png": "7d2a8dcea5c5637c90bda021300841f1cbb44c6f92c64e80c83b18a6b62f10d8"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-ultrawide-64x27.svg": {
+      "sha256": "1815c89dc1b086c610bd64da8817d7708a1b5024d3b0058b278554103d6392da",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide-64x27.png": "04652fb70f4079fcf7a65223261424a2cfabf88ab64966d8c9b8842673359a68"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-ultrawide-light.svg": {
+      "sha256": "45bf1bea28f0b177ef471c83f3a43e9640659ebc5019cd03a56235cf9dea8479",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide-light.png": "13d92ea38a9c2e26be6f2cf1469af2666d21e7a741a1f25d771f1c3164a4bad9"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-wallpaper-ultrawide.svg": {
+      "sha256": "531bf7f3fdf93a74fb819772d8cb4f6ed50f4befa950af4cc82353db617ad927",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide-64x27.png": "04652fb70f4079fcf7a65223261424a2cfabf88ab64966d8c9b8842673359a68",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-ultrawide.png": "5eabea33688d2da6bdca380fd35fc39a00a49829182a3ec8ddc306ab851bd2a6"
       }
     },
     "public/brand/vaporsoft/vaporsoft-wallpaper.svg": {
-      "sha256": "0ae9aa57ae9dfaa59be6a8c1b6fd273a25ec3c0fc0801b7870c83b2a22abc9a8",
+      "sha256": "8a93ed3c8fc85e826cc9bcd0327a84ce4357c385ea2790f2fb87a51d09a6942a",
       "png": {
-        "public/brand/vaporsoft/png/vaporsoft-wallpaper.png": "6560b90888c6ab783206d76d6b2d993287ae6083df7c6e5cc3e7cfd9e2f68323"
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-1920x1080.png": "c1e67a73fe2fce9c7653b154aaf8a1a419fdc219d2af0eb5c62057eef7305205",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper-2560x1440.png": "1a3e5d003c0360f78676ea5ede2cffa32fa8a0413ac8f2a89a6719b6b6fc7f95",
+        "public/brand/vaporsoft/png/vaporsoft-wallpaper.png": "dc6b1f4a400cbd7a77ef33f7b6791b864f6a3c67dd73cc279550782a8ce931c2"
       }
     }
   }

@@ -131,33 +131,99 @@ anywhere in `src/` or `public/brand/`, if a brand SVG uses a colour outside the
 palette, or if any SVG has changed since the PNG beside it was rendered. It
 compares hashes, never pixels, so it gives the same answer on any machine.
 
-### The presentation assets are rendered by CRISPR, not by `brand:png`
+## Geometry
 
-Four assets exist in both themes for use outside the site — a 16:9 wallpaper, a
-wide header, a slim header, and a footer badge:
+The palette rules above say which colours an asset may use. These say where
+things go. They exist because the first presentation assets were drawn by hand
+and drifted: the wallpaper's lockup sat 29px below the centre of its own canvas,
+the badge had 9px of air to the left of its text and 14px to the right.
 
-| Source | Size | For |
-|---|---|---|
-| `vaporsoft-wallpaper{,-light}.svg` | 1920x1080 | Desktop wallpaper, YouTube channel art |
-| `vaporsoft-header-wide{,-light}.svg` | 1500x500 | Profile and social headers, Discord |
-| `vaporsoft-header-slim{,-light}.svg` | 1920x384 | Page and README headers, cover images |
-| `vaporsoft-badge{,-light}.svg` | 146x20 | Footers, READMEs, alongside shields |
+The presentation assets — every wallpaper, header, card and the badge — are
+therefore generated, not drawn:
 
-The wallpaper's mark sits inside the 1546x423 safe area YouTube crops to, so the
-same file serves both.
+```bash
+npm run brand:assets
+```
 
-Their PNGs were rendered by CRISPR, which hands the file to headless Chromium and
-fetches the font the SVG actually asks for:
+`scripts/build-brand-assets.mjs` holds the rules. The logo, the favicon and the
+original banner are older, hand-drawn, and left alone.
+
+### Centre on the ink, never on a baseline
+
+A baseline is not the middle of anything. Both faces were rendered at 200px and
+their ink measured, and those measurements are what the layout uses:
+
+| | measured |
+|---|---|
+| `VAPORSOFT` cap height | 0.725em |
+| `VAPORSOFT` ink width | 5.61em |
+| `仮想` ink above the baseline | 0.845em |
+| `仮想` ink below the baseline | 0.085em |
+| `仮想` ink width | 1.965em |
+| `NATIVE · WEB · AI · ASSETS` ink | 12.21em + one letter-spacing per gap |
+
+The optical centres fall 0.3625em and 0.38em above their own baselines, which is
+what lets a Latin line and a kanji set to one centre read level.
+
+Two consequences worth naming. A stacked lockup is centred on the whole run of
+ink — kanji, rule, cap height, rule — not on any one baseline. And SVG centres
+text on its advance width, which includes the letter-spacing trailing the last
+glyph, so a centred line needs half of that back or it sits left.
+
+### Everything else is derived from the canvas
+
+Sizes come from the canvas height, so an asset in a new shape is a row in
+`ASSETS` rather than a new set of guesses: the kanji is 0.122h on a plate and
+0.1875h on a band, margins 0.0815h and 0.1458h, the rail 0.0056h wide, the corner
+square 3.2 rails. Structural values round to 4 or 8.
+
+A **plate** stacks the lockup and centres it, for a canvas with room above and
+below. A **band** lays it out horizontally, for one too short to stack. A band
+carries the tagline only when it clears the wordmark by 0.125h — on a 600x200
+email banner the two came within 8px, which reads as one broken line, so there
+the tagline is dropped rather than crowded.
+
+### The assets, and the sizes they ship at
+
+A source is authored at the size whose 2x render is the largest standard size for
+its shape, so the PNG named after the source is itself a real display size.
+
+| Source | 2x PNG | Also exported | For |
+|---|---|---|---|
+| `wallpaper` | 3840x2160 | 1920x1080, 2560x1440 | 16:9 desktops, YouTube channel art |
+| `wallpaper-ultrawide` | 3440x1440 | — | 43:18 ultrawide |
+| `wallpaper-ultrawide-64x27` | 2560x1080 | — | 64:27 ultrawide, and 5120x2160 at 4x |
+| `wallpaper-crt` | 1600x1200 | 800x600, 1024x768, 1280x960 | 4:3 |
+| `header-wide` | 3000x1000 | 1500x500 | profile and social headers, Discord |
+| `header-slim` | 3840x768 | 1920x384 | page and README headers |
+| `header-thin` | 2256x382 | 1128x191 | LinkedIn page cover, narrow banners |
+| `social-card` | 2400x1260 | 1200x630 | Open Graph, link previews |
+| `email-banner` | 1200x400 | 600x200 | email headers at the 600px standard |
+| `badge` | 260x40 | 130x20 | footers and READMEs, beside shields |
+
+The two ultrawides are two shapes, not one. 3440x1440 is 43:18 and 2560x1080 is
+64:27; rendering the first at 2560 wide gives 2560x1072 and a letterbox.
+
+The wallpapers' lockup sits inside the 1546x423 area YouTube crops a channel
+banner to, so the 16:9 file serves both.
+
+### They are rendered by CRISPR, not by `brand:png`
 
 ```bash
 node path/to/crispr/dist/crispr.js public/brand/vaporsoft/<name>.svg   -o public/brand/vaporsoft/png --scale 2   --font "google:Noto Sans JP" --font "google:Noto Sans"
+npm run brand:record
 ```
 
-This matters at these sizes. `npm run brand:png` goes through librsvg, which
-substitutes a font it does not have rather than failing, so a machine without Yu
-Gothic renders the kanji in the wrong design and says nothing. Running it will
-overwrite these eight PNGs with that substituted output and re-record the hashes,
-so the check will still pass. Re-render them with CRISPR instead.
+CRISPR hands the file to headless Chromium and fetches the font the SVG actually
+asks for. That matters at these sizes: the kanji is the composition, and librsvg
+substitutes a face it does not have rather than failing, so a machine without Yu
+Gothic renders it in the wrong design and says nothing.
+
+`npm run brand:record` writes what is on disk into the manifest — including the
+extra sizes, which `brand:png` cannot know about because it renders exactly one
+PNG per source. Running `npm run brand:png` would overwrite these rasters with
+substituted output and re-record them, and the check would still pass. Re-render
+them with CRISPR instead.
 
 `npm run brand:verify` additionally re-renders and compares bytes. That only
 means anything where Yu Gothic and Meiryo are installed, so it is local-only and

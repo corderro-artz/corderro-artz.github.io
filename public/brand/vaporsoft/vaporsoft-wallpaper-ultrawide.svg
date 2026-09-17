@@ -1,0 +1,49 @@
+<svg width="1720" height="720" viewBox="0 0 1720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="wu-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(88 56) scale(720)">
+      <stop stop-color="#a11f31" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wu-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1632 664) scale(688)">
+      <stop stop-color="#a11f31" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wu-c" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(864 360) scale(576)">
+      <stop stop-color="#a11f31" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="wu-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" fill="none" stroke="#f2ede6" stroke-opacity="0.028" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="wu-rule-a" x1="726" y1="0" x2="994" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2ede6" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f2ede6" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#f2ede6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wu-rule-b" x1="686" y1="0" x2="1034" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a11f31" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#a11f31" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1720" height="720" fill="#07080b"/>
+  <rect width="1720" height="720" fill="url(#wu-grid)"/>
+  <rect width="1720" height="720" fill="url(#wu-a)"/>
+  <rect width="1720" height="720" fill="url(#wu-b)"/>
+  <rect width="1720" height="720" fill="url(#wu-c)"/>
+  <g stroke="#f2ede6" stroke-opacity="0.16" stroke-width="1" fill="none">
+    <path d="M40 68V40h28"/>
+    <path d="M1680 68V40h-28"/>
+    <path d="M40 652v28h28"/>
+    <path d="M1680 652v28h-28"/>
+  </g>
+
+  <rect x="56" y="200" width="4" height="320" fill="#a11f31" fill-opacity="0.9"/>
+  <rect x="1652" y="56" width="12" height="12" fill="#a11f31"/>
+
+  <text x="863" y="333.9" text-anchor="middle" font-size="88" font-weight="600" letter-spacing="6" fill="#f2ede6" fill-opacity="0.92" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+  <rect x="726" y="369" width="268" height="1" fill="url(#wu-rule-a)"/>
+  <text x="863" y="411.1" text-anchor="middle" font-size="18" letter-spacing="6" fill="#f2ede6" fill-opacity="0.6" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <rect x="686" y="459" width="348" height="1" fill="url(#wu-rule-b)"/>
+</svg>

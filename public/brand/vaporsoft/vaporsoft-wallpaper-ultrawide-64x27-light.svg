@@ -1,0 +1,49 @@
+<svg width="1280" height="540" viewBox="0 0 1280 540" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="wf-light-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(64 40) scale(536)">
+      <stop stop-color="#a11f31" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wf-light-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1216 496) scale(512)">
+      <stop stop-color="#a11f31" stop-opacity="0.075"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wf-light-c" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(640 272) scale(432)">
+      <stop stop-color="#a11f31" stop-opacity="0.045"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="wf-light-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0v32" fill="none" stroke="#121318" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="wf-light-rule-a" x1="544" y1="0" x2="736" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#121318" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#121318" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#121318" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wf-light-rule-b" x1="514" y1="0" x2="766" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a11f31" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#a11f31" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#a11f31" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="540" fill="#f2ede6"/>
+  <rect width="1280" height="540" fill="url(#wf-light-grid)"/>
+  <rect width="1280" height="540" fill="url(#wf-light-a)"/>
+  <rect width="1280" height="540" fill="url(#wf-light-b)"/>
+  <rect width="1280" height="540" fill="url(#wf-light-c)"/>
+  <g stroke="#121318" stroke-opacity="0.18" stroke-width="1" fill="none">
+    <path d="M32 56V32h24"/>
+    <path d="M1248 56V32h-24"/>
+    <path d="M32 484v24h24"/>
+    <path d="M1248 484v24h-24"/>
+  </g>
+
+  <rect x="48" y="150" width="4" height="240" fill="#a11f31" fill-opacity="0.9"/>
+  <rect x="1220" y="48" width="12" height="12" fill="#a11f31"/>
+
+  <text x="642" y="251" text-anchor="middle" font-size="64" font-weight="600" letter-spacing="4" fill="#121318" fill-opacity="0.9" font-family="Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif">仮想</text>
+  <rect x="544" y="276" width="192" height="1" fill="url(#wf-light-rule-a)"/>
+  <text x="642" y="305.7" text-anchor="middle" font-size="12" letter-spacing="4" fill="#121318" fill-opacity="0.66" font-family="Noto Sans, Yu Gothic, Meiryo, sans-serif">VAPOR<tspan fill="#a11f31" fill-opacity="1">S</tspan>OFT</text>
+  <rect x="514" y="342" width="252" height="1" fill="url(#wf-light-rule-b)"/>
+</svg>
