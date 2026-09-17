@@ -22,6 +22,7 @@
 // `node scripts/render-brand-png.mjs kata crispr` re-renders just those two.
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { svgHash } from './svg-hash.mjs';
 import { dirname, join, basename, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -69,13 +70,13 @@ for (const product of await readdir(BRAND, { withFileTypes: true })) {
     const src = join(dir, entry);
     const svg = await readFile(src, 'utf8');
     const [w, h] = intrinsic(svg);
-    const sha = createHash('sha256').update(await readFile(src)).digest('hex');
+    const sha = svgHash(await readFile(src));
     targets.push({ src, sha, out: join(dir, 'png', basename(entry, '.svg') + '.png'), w: w * SCALE, h: h * SCALE });
   }
 }
 const fav = join(BRAND, 'vaporsoft', 'vaporsoft-favicon.svg');
 targets.push({
-  src: fav, sha: createHash('sha256').update(await readFile(fav)).digest('hex'),
+  src: fav, sha: svgHash(await readFile(fav)),
   out: join(BRAND, 'vaporsoft', 'vaporsoft-favicon-256.png'), w: 256, h: 256
 });
 

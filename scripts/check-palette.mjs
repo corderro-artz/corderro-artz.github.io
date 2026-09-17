@@ -25,6 +25,7 @@
 // Usage:  node scripts/check-palette.mjs
 import { readFile, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { svgHash } from './svg-hash.mjs';
 import { join, dirname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -101,8 +102,10 @@ if (manifest) {
     const key = rel(file);
     const entry = manifest.rendered[key];
     if (!entry) { fail.push(`${key}: no PNG has been rendered from it — run: npm run brand:png`); continue; }
-    const hash = createHash('sha256').update(await readFile(file)).digest('hex');
-    if (hash !== entry.sha256)
+    // Line endings are normalised: git hands this file to a Linux runner
+    // with LF and to a Windows clone with CRLF, and neither changes what
+    // the renderer drew.
+    if (svgHash(await readFile(file)) !== entry.sha256)
       fail.push(`${key}: changed since its PNG was rendered — run: npm run brand:png`);
     for (const [out, want] of Object.entries(entry.png)) {
       const bytes = await readFile(join(ROOT, out)).catch(() => null);
