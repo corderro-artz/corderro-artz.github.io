@@ -1,11 +1,15 @@
 ---
 /**
- * The brand console, rendered by every route that shows one.
+ * The Vaporsoft console, rendered by every route that shows one.
  *
- * Three routes use it — /brand/ opens on Assets, /brand/icons/ on Icons,
- * /brand/palette/ on Palette — so a link to the icons is a link to the icons
- * rather than to a page the reader then has to click. Merch has no route,
- * because there is nothing to link to yet.
+ * Three routes use it — /vaporsoft/ opens on Assets, /vaporsoft/icons/ on
+ * Icons, /vaporsoft/palette/ on Palette — so a link to the icons is a link to
+ * the icons rather than to a page the reader then has to click. Donate and
+ * Merch have no routes, because there is nothing to link to yet.
+ *
+ * The assets themselves stay at /brand/: that is where the files live, and a
+ * file's address should not move because a page was renamed. /brand/ itself
+ * redirects here.
  *
  * Like the repository console, every panel is in the markup at build time. The
  * page is complete before any script runs and stays complete if none ever does;
@@ -28,16 +32,16 @@ const inventory = {
 };
 
 const TITLES = {
-  assets: 'Brand',
-  icons: 'Brand icons',
-  palette: 'Brand palette'
+  assets: 'Vaporsoft brand',
+  icons: 'Vaporsoft icons',
+  palette: 'Vaporsoft palette'
 };
 const DESCRIPTIONS = {
   assets: 'Vaporsoft brand assets: wallpapers in 16:9, ultrawide and 4:3, headers, a social card, an email banner and a badge, in both themes.',
   icons: 'Every Vaporsoft product mark and favicon, as vectors and rasters, in both themes.',
   palette: 'The Vaporsoft palette: carmine, ink, paper and graphite, the carmine ramp, and the files that define them.'
 };
-const PATHS = { assets: '/brand/', icons: '/brand/icons/', palette: '/brand/palette/' };
+const PATHS = { assets: '/vaporsoft/', icons: '/vaporsoft/icons/', palette: '/vaporsoft/palette/' };
 
 const structuredData = [
   {
@@ -63,10 +67,10 @@ const structuredData = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Vaporsoft', item: new URL('/', siteUrl).href },
-      { '@type': 'ListItem', position: 2, name: 'Brand', item: new URL('/brand/', siteUrl).href },
+      { '@type': 'ListItem', position: 2, name: 'Vaporsoft', item: new URL('/vaporsoft/', siteUrl).href },
       ...(tab === 'assets'
         ? []
-        : [{ '@type': 'ListItem', position: 3, name: TITLES[tab].replace('Brand ', ''),
+        : [{ '@type': 'ListItem', position: 3, name: TITLES[tab].replace('Vaporsoft ', ''),
              item: new URL(PATHS[tab], siteUrl).href }])
     ]
   }
@@ -77,7 +81,7 @@ const structuredData = [
   title={`${TITLES[tab]} | Vaporsoft`}
   description={DESCRIPTIONS[tab]}
   bodyClass="vapor-repo-body"
-  keywords={['Vaporsoft brand', 'brand assets', 'wallpaper', 'icons', 'palette', 'press kit', 'carmine']}
+  keywords={['Vaporsoft brand', 'brand assets', 'wallpaper', 'icons', 'palette', 'press kit', 'carmine', 'donate', 'merch']}
   ogImage="/brand/vaporsoft/png/vaporsoft-social-card.png"
   structuredData={structuredData}
 >
@@ -121,7 +125,7 @@ const structuredData = [
 
       var panels = Array.prototype.slice.call(stage.querySelectorAll('.rp-panel'));
 
-      /* /brand/, whichever of its routes we were served from, so switching
+      /* /vaporsoft/, whichever of its routes we were served from, so switching
          tabs can rewrite the address to match what is on screen. replaceState
          rather than pushState: the back button should leave the page, not walk
          back through tabs the reader clicked past. */

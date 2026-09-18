@@ -100,20 +100,20 @@ const catalog = [
     ]
   },
   {
-    id: 'brand',
-    label: 'Brand',
+    id: 'vaporsoft',
+    label: 'Vaporsoft',
     products: [
       {
         id: 'assets',
         label: 'Assets',
         repo: false,
         base: {
-          name: 'Brand',
+          name: 'Assets',
           description:
             'Every mark the site serves, at every size it is drawn at. Wallpapers in three shapes, headers, a social card, an email banner and a badge — vector sources, with rasters rendered from them.',
           iconSrc: '/brand/vaporsoft/vaporsoft-logo.svg',
           iconSrcLight: '/brand/vaporsoft/vaporsoft-logo-light.svg',
-          href: '/brand/',
+          href: '/vaporsoft/',
           label: 'FABRIC',
           variant: 'foundation'
         },
@@ -123,7 +123,7 @@ const catalog = [
             description: 'Each product mark and favicon, as a vector and a raster, in both themes.',
             iconSrc: '/brand/vaporsoft/vaporsoft-mark-icons.svg',
             iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-icons-light.svg',
-            href: '/brand/icons/',
+            href: '/vaporsoft/icons/',
             label: 'SURFACE',
             variant: 'surface'
           },
@@ -132,11 +132,26 @@ const catalog = [
             description: 'Carmine, ink, paper, graphite, and the ramp built on carmine. The values the build enforces.',
             iconSrc: '/brand/vaporsoft/vaporsoft-mark-palette.svg',
             iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-palette-light.svg',
-            href: '/brand/palette/',
+            href: '/vaporsoft/palette/',
             label: 'SURFACE',
             variant: 'surface'
           }
         ]
+      },
+      {
+        id: 'donate',
+        label: 'Donate',
+        repo: false,
+        base: {
+          name: 'Donate',
+          description:
+            'A way to support the work directly, for anyone who finds it useful. Not open yet.',
+          iconSrc: '/brand/vaporsoft/vaporsoft-mark-donate.svg',
+          iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-donate-light.svg',
+          label: 'SURFACE',
+          variant: 'future'
+        },
+        surfaces: []
       },
       {
         id: 'merch',
@@ -145,7 +160,9 @@ const catalog = [
         base: {
           name: 'Merch',
           description:
-            'Nothing to print yet. When there is, it comes off the same files — which is why they are drawn as vectors at every size first.',
+            'Nothing to print yet. When there is, it comes off these same files — which is why they are drawn as vectors at every size first.',
+          iconSrc: '/brand/vaporsoft/vaporsoft-mark-merch.svg',
+          iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-merch-light.svg',
           label: 'SURFACE',
           variant: 'future'
         },

@@ -218,33 +218,34 @@
 .bp-file { color: inherit; text-decoration: none; border-bottom: 1px solid var(--theme-line); }
 .bp-file:hover, .bp-file:focus-visible { border-bottom-color: var(--vapor-carmine); }
 
-/* ── Merch ──
-   One block across the whole console, so the composition is centred in it
-   rather than sitting in the top-left of an otherwise empty panel. */
-.bp-merch {
+/* ── A section that does not exist yet ──
+   Donate and Merch. The catalogue states a future the same way — a mark, a
+   line, a sentence — and this is that at panel size: centred in the block,
+   nothing else in it, and the mark at the size it is drawn at rather than
+   stretched to fill a column it was never meant to fill. */
+.bp-future {
   display: grid;
-  gap: 1.35rem;
+  gap: 1.1rem;
   align-content: center;
   justify-items: center;
-  width: min(100%, 44rem);
+  width: min(100%, 30rem);
   margin: 0 auto;
   text-align: center;
 }
 
-.bp-merch-art { width: 100%; line-height: 0; border: 1px solid var(--theme-line); }
-/* Width only, for the same reason as the head mark. */
-.bp-merch-art img { width: 100%; height: auto; }
-.bp-merch-copy { display: grid; gap: 0.6rem; justify-items: center; }
-.bp-merch .rp-kv { width: 100%; text-align: left; }
+.bp-future-art { line-height: 0; opacity: 0.92; }
+.bp-future-art img { width: 6.5rem; height: 6.5rem; }
 
-.bp-merch-lede {
+.bp-future-lede {
   margin: 0;
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--vapor-carmine);
 }
+
+.bp-future .rp-note { margin: 0; max-width: 26rem; }
 
 /* A panel with one block still has a column, and that column is the width of
    the console. */

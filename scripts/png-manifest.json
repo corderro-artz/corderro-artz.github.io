@@ -228,6 +228,18 @@
         "public/brand/vaporsoft/png/vaporsoft-logo.png": "d3de456f71c1171d7c418c8011a96229368cab5e7cd0e74d4dbc3fb17aa79f73"
       }
     },
+    "public/brand/vaporsoft/vaporsoft-mark-donate-light.svg": {
+      "sha256": "0eb9acadab94f7c14ff2b220963c8fc52f7dd4d902b6eeaafc8e432c7f6ce20f",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-donate-light.png": "94cbb9e4b86874e16cbaea2fd67e6fa8dbd5150cbb9651c2e88a130b836c9bc5"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-donate.svg": {
+      "sha256": "eca92b1f27653334f6298eaa4dccce9b906d4c736ab778c4e21bb35f34eb58a7",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-donate.png": "9667aa3d76f87f9dbe292957d49cace07fceba882a2bd7dbb9379f1a6d6d98c3"
+      }
+    },
     "public/brand/vaporsoft/vaporsoft-mark-icons-light.svg": {
       "sha256": "f02acf6f895f1fc90636a3296a574f27670ee12e78fb3138d3c741c0df0ce2dc",
       "png": {
@@ -238,6 +250,18 @@
       "sha256": "c74f4865f842fc7723b4749ef88a8e0208fc5a4b96ff23e99b830975ece8cd99",
       "png": {
         "public/brand/vaporsoft/png/vaporsoft-mark-icons.png": "6813bdd1fd4e52401a4e58e8cd6d62e539aab63696c26375d46bb189d87aa23f"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-merch-light.svg": {
+      "sha256": "6843abd3211edac248eb977948ea388ac81e74dc8198d09c0acc90316704fdfc",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-merch-light.png": "589963df088462c09a6ea7bc532bed27d9ca4d6a8a4a03489f04b5004d3e71c3"
+      }
+    },
+    "public/brand/vaporsoft/vaporsoft-mark-merch.svg": {
+      "sha256": "4e695797e1e6e4ef705f109d461c3afe51575ad9bb2dc88b898e1bf074b41e07",
+      "png": {
+        "public/brand/vaporsoft/png/vaporsoft-mark-merch.png": "1e52f9fe9b70751a2281330fd0ddff7b6f40c66b94752289d081ca77a7333f83"
       }
     },
     "public/brand/vaporsoft/vaporsoft-mark-palette-light.svg": {

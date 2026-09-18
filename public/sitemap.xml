@@ -100,7 +100,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.vaporsoft.dev/brand/</loc>
+    <loc>https://www.vaporsoft.dev/vaporsoft/</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -111,13 +111,13 @@
     </image:image>
   </url>
   <url>
-    <loc>https://www.vaporsoft.dev/brand/icons/</loc>
+    <loc>https://www.vaporsoft.dev/vaporsoft/icons/</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.vaporsoft.dev/brand/palette/</loc>
+    <loc>https://www.vaporsoft.dev/vaporsoft/palette/</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

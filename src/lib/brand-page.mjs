@@ -1,5 +1,8 @@
 /**
- * The brand console: what the directory holds, and where every file is.
+ * The Vaporsoft console: what the brand directory holds, and where every file
+ * is. It is named after the studio rather than after the word "brand" because
+ * all of it is the studio's — the assets, the marks, the palette, and the two
+ * sections that do not exist yet.
  *
  * It is built out of the same console the repository pages use — the same bar,
  * frame, tab rail and columns — because it is the same kind of object: a record
@@ -19,8 +22,10 @@ export const TABS = [
   { id: 'assets', label: 'Assets', url: '' },
   { id: 'icons', label: 'Icons', url: 'icons/' },
   { id: 'palette', label: 'Palette', url: 'palette/' },
-  // No route: there is nothing to link to yet, and giving it an address would
-  // be the site promising a page that says "not yet" in two places.
+  // Neither of these has a route. There is nothing to link to yet, and giving
+  // one an address would be the site promising a page that says "not yet" in
+  // two places.
+  { id: 'donate', label: 'Donate', url: '' },
   { id: 'merch', label: 'Merch', url: '' }
 ];
 
@@ -126,25 +131,20 @@ const fFiles = () =>
   + fileRow('robots.txt', '/robots.txt', 'Crawl policy')
   + '</div>';
 
-const fMerch = () =>
-  '<div class="bp-merch">'
-  + '<div class="bp-merch-art">'
-  + '<img class="rp-mark--dark" src="/brand/vaporsoft/png/vaporsoft-header-slim-1920x384.png"'
-  + ' alt="" width="1920" height="384" loading="lazy" />'
-  + '<img class="rp-mark--light" src="/brand/vaporsoft/png/vaporsoft-header-slim-light-1920x384.png"'
-  + ' alt="" width="1920" height="384" loading="lazy" />'
+// A section that does not exist yet. The catalogue already has a way of saying
+// this — the future card in Akira's stack is a mark, a line and a sentence — so
+// this is that, at the size of a panel rather than a card.
+const fFuture = (mark, lede, note) =>
+  '<div class="bp-future">'
+  + '<div class="bp-future-art">'
+  + '<img class="rp-mark--dark" src="/brand/vaporsoft/vaporsoft-mark-' + mark + '.svg"'
+  + ' alt="" width="256" height="256" loading="lazy" />'
+  + '<img class="rp-mark--light" src="/brand/vaporsoft/vaporsoft-mark-' + mark + '-light.svg"'
+  + ' alt="" width="256" height="256" loading="lazy" />'
   + '</div>'
-  + '<div class="bp-merch-copy">'
-  + '<p class="bp-merch-lede">Nothing to buy yet.</p>'
-  + '<p class="rp-note">The mark is drawn as a vector at every size the brand needs, which is '
-  + 'the part that has to exist first — a print file is a render of it, not a redraw. When '
-  + 'there is something to print, it comes off these files and is listed here.</p>'
-  + '</div>'
-  + '<div class="rp-kv">'
-  + '<div class="rp-kv-row"><span>Status</span><i aria-hidden="true"></i><span>Not open</span></div>'
-  + '<div class="rp-kv-row"><span>Source</span><i aria-hidden="true"></i><span>The assets beside this tab</span></div>'
-  + '<div class="rp-kv-row"><span>Largest render</span><i aria-hidden="true"></i><span>3840 &times; 2160</span></div>'
-  + '</div></div>';
+  + '<p class="bp-future-lede">' + esc(lede) + '</p>'
+  + '<p class="rp-note">' + esc(note) + '</p>'
+  + '</div>';
 
 /* ── Shell ── */
 
@@ -168,7 +168,7 @@ const panel = (id, list, mod, on) =>
 function head(totals) {
   return '<header class="bp-head">'
     + '<div class="bp-head-copy">'
-    + '<h1>Brand</h1>'
+    + '<h1>Vaporsoft</h1>'
     + '<p class="rp-lede">Every mark the site serves, at every size it is drawn at. '
     + 'The sources are vectors; the rasters beside them are rendered from those sources '
     + 'by a browser engine, so the type is the type the file asks for.</p>'
@@ -186,10 +186,10 @@ function head(totals) {
 }
 
 export function renderBrandPage({ assets, marks, sections, palette, totals }, open = 'assets') {
-  return renderBar('brand')
+  return renderBar('vaporsoft')
     + '<div class="rp-console vapor-frame">'
     + head(totals)
-    + '<div class="rp-tabs" role="tablist" aria-label="Brand">'
+    + '<div class="rp-tabs" role="tablist" aria-label="Vaporsoft">'
     + TABS.map((t) => {
         const on = t.id === open;
         return '<button class="rp-tab" role="tab" type="button" id="rp-tab-' + t.id + '"'
@@ -216,8 +216,16 @@ export function renderBrandPage({ assets, marks, sections, palette, totals }, op
         { id: 'ramp', jp: '階', label: 'Ramp', body: fRamp(palette) },
         { id: 'files', jp: '索', label: 'Files', body: fFiles() }
       ], '3', open === 'palette')
+    + panel('donate', [
+        { id: 'donate', jp: '寄', label: 'Donate', bodyClass: 'rp-block-body--fill',
+          body: fFuture('donate', 'Coming soon',
+            'A way to support the work directly, for anyone who finds it useful. Not open yet.') }
+      ], '1', open === 'donate')
     + panel('merch', [
-        { id: 'merch', jp: '品', label: 'Merch', bodyClass: 'rp-block-body--fill', body: fMerch() }
+        { id: 'merch', jp: '品', label: 'Merch', bodyClass: 'rp-block-body--fill',
+          body: fFuture('merch', 'Coming soon',
+            'The mark is already drawn as a vector at every size it needs, so a print file is a '
+            + 'render of it rather than a redraw. Nothing to buy yet.') }
       ], '1', open === 'merch')
     + '</div>'
     + '</div>';

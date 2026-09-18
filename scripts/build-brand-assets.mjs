@@ -317,7 +317,9 @@ function sectionMark({ kanji, word }, key) {
 /** The sections of the site that are not products but still need a mark. */
 const SECTION_MARKS = [
   { name: 'mark-icons', kanji: '印', word: 'ICONS' },
-  { name: 'mark-palette', kanji: '色', word: 'PALETTE' }
+  { name: 'mark-palette', kanji: '色', word: 'PALETTE' },
+  { name: 'mark-donate', kanji: '寄', word: 'DONATE' },
+  { name: 'mark-merch', kanji: '品', word: 'MERCH' }
 ];
 
 // ---------------------------------------------------------------------------

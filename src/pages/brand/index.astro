@@ -1,11 +1,26 @@
 ---
 /**
- * /brand/ — the brand console, opened on Assets.
+ * /brand/ — where the console used to live, kept as a redirect.
  *
- * It shares its address with the static files it lists: public/brand/ is
- * copied to /brand/, and this page is the index.html beside those directories.
+ * The section was renamed to Vaporsoft, because all of it is: the assets, the
+ * marks and the palette. The files did not move — they are still served out of
+ * public/brand/, and a file's address should not change because a page was
+ * renamed — so this page exists only to carry anyone holding the old address to
+ * the new one, rather than leaving them at a directory with no index.
  */
-import BrandPage from '../../components/BrandPage.astro';
+const target = '/vaporsoft/';
 ---
 
-<BrandPage tab="assets" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vaporsoft</title>
+    <link rel="canonical" href={`https://www.vaporsoft.dev${target}`} />
+    <meta name="robots" content="noindex, follow" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+  </head>
+  <body>
+    <p>This page moved to <a href={target}>vaporsoft.dev/vaporsoft/</a>.</p>
+    <script is:inline define:vars={{ target }}>location.replace(target);</script>
+  </body>
+</html>
