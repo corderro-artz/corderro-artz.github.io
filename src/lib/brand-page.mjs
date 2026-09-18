@@ -131,10 +131,10 @@ const fFiles = () =>
   + fileRow('robots.txt', '/robots.txt', 'Crawl policy')
   + '</div>';
 
-// A section that does not exist yet. The catalogue already has a way of saying
-// this — the future card in Akira's stack is a mark, a line and a sentence — so
-// this is that, at the size of a panel rather than a card.
-const fFuture = (mark, lede, note) =>
+// A section that does not exist yet: the mark, and the line. The panel used to
+// explain itself underneath, and an explanation of why a thing is not there yet
+// is the thing nobody came to read. The tab already says what the section is.
+const fFuture = (mark, lede) =>
   '<div class="bp-future">'
   + '<div class="bp-future-art">'
   + '<img class="rp-mark--dark" src="/brand/vaporsoft/vaporsoft-mark-' + mark + '.svg"'
@@ -143,7 +143,6 @@ const fFuture = (mark, lede, note) =>
   + ' alt="" width="256" height="256" loading="lazy" />'
   + '</div>'
   + '<p class="bp-future-lede">' + esc(lede) + '</p>'
-  + '<p class="rp-note">' + esc(note) + '</p>'
   + '</div>';
 
 /* ── Shell ── */
@@ -218,14 +217,11 @@ export function renderBrandPage({ assets, marks, sections, palette, totals }, op
       ], '3', open === 'palette')
     + panel('donate', [
         { id: 'donate', jp: '寄', label: 'Donate', bodyClass: 'rp-block-body--fill',
-          body: fFuture('donate', 'Coming soon',
-            'A way to support the work directly, for anyone who finds it useful. Not open yet.') }
+          body: fFuture('donate', 'Coming soon') }
       ], '1', open === 'donate')
     + panel('merch', [
         { id: 'merch', jp: '品', label: 'Merch', bodyClass: 'rp-block-body--fill',
-          body: fFuture('merch', 'Coming soon',
-            'The mark is already drawn as a vector at every size it needs, so a print file is a '
-            + 'render of it rather than a redraw. Nothing to buy yet.') }
+          body: fFuture('merch', 'Coming soon') }
       ], '1', open === 'merch')
     + '</div>'
     + '</div>';
