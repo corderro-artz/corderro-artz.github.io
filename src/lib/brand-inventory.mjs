@@ -57,8 +57,17 @@ const dims = (file) => {
   return w && h ? [Number(w[1]), Number(h[1])] : [0, 0];
 };
 
+/**
+ * Products whose marks are not listed. Sen is not released, and a page that
+ * lists every mark would announce it. The files stay where they are — this
+ * removes the listing, not the directory.
+ */
+const UNLISTED = new Set(['sen']);
+
 const dirs = () =>
-  readdirSync(BRAND, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+  readdirSync(BRAND, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !UNLISTED.has(d.name))
+    .map((d) => d.name);
 
 /**
  * The presentation assets: every Vaporsoft-branded file with a light twin and a
@@ -119,7 +128,7 @@ export function presentationAssets() {
  * missing.
  */
 export function marks() {
-  const known = Object.keys(PRODUCT);
+  const known = Object.keys(PRODUCT).filter((slug) => !UNLISTED.has(slug));
   const order = [...known, ...dirs().filter((d) => !known.includes(d))];
 
   return order.filter((slug) => dirs().includes(slug)).map((slug) => {
