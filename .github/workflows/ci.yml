@@ -65,6 +65,7 @@ jobs:
           # loop is the thing that catches a build producing nothing useful.
           pages="
             index.html
+            404.html
             components/index.html
             contact/index.html
             akira/index.html

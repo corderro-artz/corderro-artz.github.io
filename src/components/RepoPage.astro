@@ -15,6 +15,7 @@
  * document pane to a heading, and marks where in the document the reader is.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from './SiteFooter.astro';
 import repos from '../data/repos.json';
 import { renderRepoPage, repoStructuredData, displayName } from '../lib/repo-page.mjs';
 import '../styles/repo.css';
@@ -64,9 +65,12 @@ const keywords = [
   keywords={keywords}
   ogType="article"
   ogImage={`/brand/${slug}/png/${slug}-icon.png`}
+  ogImageWidth={512}
+  ogImageHeight={512}
   structuredData={structuredData}
 >
   <main class="rp-shell" set:html={renderRepoPage(repo, tab)} />
+  <SiteFooter class="rp-foot" />
 
   <script is:inline>
     (function () {

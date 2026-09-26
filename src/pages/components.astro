@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
 const componentsStructuredData = [
@@ -25,6 +26,7 @@ const componentsStructuredData = [
   bodyClass="vapor-body"
   keywords={['Vaporsoft components', 'design system', 'UI patterns', 'Astro component reference']}
   structuredData={componentsStructuredData}
+  robots="noindex, follow"
 >
   <main class="vapor-site">
     <div class="vapor-noise"></div>
@@ -44,9 +46,9 @@ const componentsStructuredData = [
         <a href="#catalogue">Catalogue</a>
         <a href="#preview">Preview</a>
         <a href="/contact/">Contact</a>
-        <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <button class="vapor-theme-toggle" data-theme-toggle>
           <span class="vapor-theme-toggle-dot"></span>
-          <span data-theme-label>Dark</span>
+          <span data-theme-label>LIGHT</span>
         </button>
       </nav>
     </header>
@@ -134,7 +136,7 @@ const componentsStructuredData = [
         <article class="vapor-class-card">
           <p class="vapor-class-type">Layout</p>
           <h3>.vapor-hero</h3>
-          <p>Two-column hero layout. Pairs .vapor-copy with .vapor-aside.</p>
+          <p>Two-column hero layout. Pairs <code>.vapor-copy</code> with <code>.vapor-aside</code>.</p>
         </article>
         <article class="vapor-class-card">
           <p class="vapor-class-type">Layout</p>
@@ -154,7 +156,7 @@ const componentsStructuredData = [
         <article class="vapor-class-card">
           <p class="vapor-class-type">Element</p>
           <h3>.vapor-button</h3>
-          <p>Action element. Variants: --primary (carmine) and --secondary (neutral).</p>
+          <p>Action element. Variants: <code>--primary</code> (carmine) and <code>--secondary</code> (neutral).</p>
         </article>
         <article class="vapor-class-card">
           <p class="vapor-class-type">Element</p>
@@ -184,12 +186,12 @@ const componentsStructuredData = [
         <p class="vapor-kicker">Live Preview</p>
         <h2 class="vapor-title">Surfaces in context.</h2>
         <div class="vapor-preview-tabs">
-          <button class="vapor-preview-tab" aria-selected="true" data-preview-mode="dark">Dark</button>
-          <button class="vapor-preview-tab" aria-selected="false" data-preview-mode="light">Light</button>
+          <button type="button" class="vapor-preview-tab" aria-pressed="true" aria-controls="preview-container" data-preview-mode="dark">Dark</button>
+          <button type="button" class="vapor-preview-tab" aria-pressed="false" aria-controls="preview-container" data-preview-mode="light">Light</button>
         </div>
       </div>
 
-      <div class="vapor-preview" id="preview-container">
+      <div class="vapor-preview vapor-dark" id="preview-container">
         <div class="vapor-topbar">
           <div class="vapor-brand">
             <span class="vapor-brand-mark"></span>
@@ -263,9 +265,7 @@ const componentsStructuredData = [
       </div>
     </section>
 
-    <footer class="vapor-landing-footer">
-      <p>&copy; 2026 Corderro Artz / Vaporsoft. All rights reserved.</p>
-    </footer>
+    <SiteFooter />
   </main>
 
   <script is:inline>
@@ -275,20 +275,27 @@ const componentsStructuredData = [
       var subtitle = document.getElementById('preview-subtitle');
       if (!tabs.length || !container) return;
 
+      // The preview sets its own theme either way. Only removing .vapor-light
+      // left a light site showing a light "Dark" preview, since the tokens
+      // cascade from body.
+      function show(mode){
+        var light = mode === 'light';
+        tabs.forEach(function(t){
+          t.setAttribute('aria-pressed', t.getAttribute('data-preview-mode') === mode ? 'true' : 'false');
+        });
+        container.classList.toggle('vapor-light', light);
+        container.classList.toggle('vapor-dark', !light);
+        if(subtitle) subtitle.textContent = light ? 'Light Preview' : 'Dark Preview';
+      }
+
       tabs.forEach(function(tab){
         tab.addEventListener('click', function(){
-          var mode = tab.getAttribute('data-preview-mode');
-          tabs.forEach(function(t){ t.setAttribute('aria-selected','false'); });
-          tab.setAttribute('aria-selected','true');
-          if (mode === 'light') {
-            container.classList.add('vapor-light');
-            if(subtitle) subtitle.textContent = 'Light Preview';
-          } else {
-            container.classList.remove('vapor-light');
-            if(subtitle) subtitle.textContent = 'Dark Preview';
-          }
+          show(tab.getAttribute('data-preview-mode'));
         });
       });
+
+      // Open on the theme the site is showing.
+      show(document.documentElement.classList.contains('vapor-light') ? 'light' : 'dark');
     })();
   </script>
 </BaseLayout>

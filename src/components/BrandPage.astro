@@ -16,6 +16,7 @@
  * the browser only switches panels and rewrites the address to match.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from './SiteFooter.astro';
 import { renderBrandPage } from '../lib/brand-page.mjs';
 import { presentationAssets, marks, sectionMarks, palette, totals } from '../lib/brand-inventory.mjs';
 import '../styles/brand.css';
@@ -82,10 +83,13 @@ const structuredData = [
   description={DESCRIPTIONS[tab]}
   bodyClass="vapor-repo-body"
   keywords={['Vaporsoft brand', 'brand assets', 'wallpaper', 'icons', 'palette', 'press kit', 'carmine', 'donate', 'merch']}
-  ogImage="/brand/vaporsoft/png/vaporsoft-social-card.png"
+  ogImage="/brand/vaporsoft/png/vaporsoft-social-card-1200x630.png"
+  ogImageWidth={1200}
+  ogImageHeight={630}
   structuredData={structuredData}
 >
   <main class="rp-shell" set:html={renderBrandPage(inventory, tab)} />
+  <SiteFooter class="rp-foot" />
 
   <script is:inline>
     (function () {

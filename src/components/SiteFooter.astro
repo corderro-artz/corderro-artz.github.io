@@ -1,0 +1,24 @@
+---
+/**
+ * The copyright line every page ends on.
+ *
+ * One component so the wording and the year live in one place; the year is
+ * the build's, so it moves on the next deploy after New Year rather than
+ * waiting for someone to edit four templates.
+ *
+ * @prop {string} [class] – The footer's class. The landing, contact and
+ *                          components pages use the default; the repository
+ *                          and brand consoles pass `rp-foot`, a single muted
+ *                          line under the frame.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'vapor-landing-footer' } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class={className}>
+  <p>&copy; {year} Corderro Artz / Vaporsoft. All rights reserved.</p>
+</footer>

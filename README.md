@@ -4,9 +4,15 @@ Static site for www.vaporsoft.dev — minimal landing page, product showcase, co
 
 ## Pages
 
-- **/** — Brand landing page
-- **/components/** — Design system component reference
+- **/** — Brand landing page and product catalogue
 - **/contact/** — Business inquiry form
+- **/vaporsoft/**, **/vaporsoft/icons/**, **/vaporsoft/palette/** — The studio's
+  console: brand assets, marks and palette
+- **/&lt;repo&gt;/** and **/&lt;repo&gt;/docs/** — A console per repository (akira, kata,
+  nfty, crispr), rendered from `src/data/repos.json`; `/nfty/docs/` is instead
+  the hosted MkDocs manual built by `npm run docs:external`
+- **/components/** — Design system component reference (unlisted, `noindex`)
+- **/404.html** — Served by GitHub Pages for any unknown path
 
 ## Brand assets
 
@@ -57,10 +63,15 @@ SVG, run `npm run brand:png`.
 
 ## Development
 
+Requires Node 22.12 or later (Astro 7).
+
 ```bash
 npm install
 npm run dev
 ```
+
+`npm run docs:external` builds the hosted NFTY manual into `public/nfty/docs/`.
+It needs Python 3 and git on the path.
 
 ## Build
 
@@ -92,4 +103,13 @@ The contact page is wired for Formspree so submissions work on static GitHub Pag
 4. Optionally create a local `.env` from `.env.example` for local testing.
 
 The endpoint is embedded into the static build, so it should be stored as a repository variable, not treated as a secret.
+
+### Testing the contact form locally
+
+`dev/form-mock.mjs` stands in for Formspree on port 4320 and prints each
+submission to the terminal.
+
+1. Put `PUBLIC_FORMSPREE_ENDPOINT=http://localhost:4320` in `.env`.
+2. Run `npm run dev:mock` in one terminal and `npm run dev` in another.
+3. Submit the form at `/contact/`.
 

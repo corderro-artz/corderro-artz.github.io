@@ -50,7 +50,7 @@ const server = createServer((req, res) => {
 
     // Filter out honeypot and empty values
     const filtered = Object.fromEntries(
-      Object.entries(fields).filter(([k, v]) => k !== 'website' && v)
+      Object.entries(fields).filter(([k, v]) => k !== '_gotcha' && v)
     );
 
     const timestamp = new Date().toLocaleTimeString();

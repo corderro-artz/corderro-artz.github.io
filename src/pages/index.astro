@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 /**
  * Product catalogue.
@@ -239,11 +240,13 @@ const homePageStructuredData = [
   ]}
   structuredData={homePageStructuredData}
 >
-  <div class="vapor-snap-container">
+  <!-- Both pages are the page's content, so the landmark wraps the deck, not
+       just the splash; the catalogue was outside every landmark. -->
+  <main class="vapor-snap-container">
 
     <!-- ── Page 1 · Landing ── -->
     <section class="vapor-snap-page">
-      <main class="vapor-site vapor-landing">
+      <div class="vapor-site vapor-landing">
         <div class="vapor-noise vapor-noise--landing"></div>
 
         <div class="vapor-landing-center">
@@ -272,7 +275,7 @@ const homePageStructuredData = [
               <button type="button" class="vapor-inline-link" data-scroll-target="products" aria-controls="products">Products</button>
               <a class="vapor-inline-link" href="/contact/">Contact</a>
             </div>
-            <button type="button" class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+            <button type="button" class="vapor-theme-toggle" data-theme-toggle>
               <span class="vapor-theme-toggle-dot"></span>
               <span data-theme-label>LIGHT</span>
             </button>
@@ -283,11 +286,11 @@ const homePageStructuredData = [
           <span class="vapor-scroll-cue-label">Scroll</span>
           <span class="vapor-scroll-cue-line"></span>
         </div>
-      </main>
+      </div>
     </section>
 
     <!-- ── Page 2 · Products ── -->
-    <section class="vapor-snap-page" id="products">
+    <section class="vapor-snap-page" id="products" aria-label="Products">
       <div class="vapor-site vapor-arch">
         <div class="vapor-noise vapor-noise--arch"></div>
 
@@ -312,7 +315,7 @@ const homePageStructuredData = [
               id={`category-tab-${category.id}`}
               data-category={category.id}
               aria-selected={category.id === defaultCategoryId ? 'true' : 'false'}
-              aria-controls={`product-rail-${category.id}`}
+              aria-controls={`product-panel-${defaultProductByCategory[category.id]}`}
               tabindex={category.id === defaultCategoryId ? 0 : -1}
             >{category.label}</button>
           ))}
@@ -388,13 +391,11 @@ const homePageStructuredData = [
           })}
         </div>
 
-        <footer class="vapor-landing-footer">
-          <p>&copy; 2026 Corderro Artz / Vaporsoft. All rights reserved.</p>
-        </footer>
+        <SiteFooter />
       </div>
     </section>
 
-  </div>
+  </main>
 
   <script is:inline define:vars={{ defaultProductByCategory }}>
     (function(){
@@ -463,6 +464,12 @@ const homePageStructuredData = [
           panel.classList.toggle('vapor-product-panel--active', active);
           panel.hidden = !active;
           panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        // A category tab controls the panel its rail currently has open.
+        categoryTabs.forEach(function(tab) {
+          if (tab.getAttribute('data-category') === categoryId) {
+            tab.setAttribute('aria-controls', 'product-panel-' + productId);
+          }
         });
       }
 
