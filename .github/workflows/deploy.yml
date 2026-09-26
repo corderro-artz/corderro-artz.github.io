@@ -43,6 +43,12 @@ jobs:
           node-version: '22'
           cache: npm
 
+      # ci.yml does not run on pushes to main, so a commit pushed straight to
+      # main would otherwise deploy without the palette gate. Builtins only, so
+      # it needs no install; see the brand job in ci.yml.
+      - name: Check the palette and the rendered marks
+        run: node scripts/check-palette.mjs
+
       # The manual NFTY publishes is a site of its own, built here rather than
       # in its own repository: a repository with its own GitHub Pages site
       # reserves /<repo>/** on this one and redirects whatever this build
@@ -54,9 +60,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: npm ci
-
+      # No npm ci here: build-external-docs.mjs imports only node builtins, and
+      # withastro/action below runs its own install, so one here was a second.
       - name: Build the documentation this site hosts
         run: npm run docs:external
 

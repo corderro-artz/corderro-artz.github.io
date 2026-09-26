@@ -1,8 +1,9 @@
 /* ══════════════════════════════════════════════════════════════════════════
    Repository page.
 
-   Loaded only by src/pages/[repo].astro, which is why the rules on html and
-   body are safe to write unqualified here.
+   Loaded only by the console pages — src/components/RepoPage.astro imports
+   it, and src/styles/brand.css (BrandPage.astro) builds on it — which is why
+   the rules on html and body are safe to write unqualified here.
 
    The page is one instrument: a single frame, divided by hairlines, that fills
    the viewport exactly and never grows past it. Reading a long document is the
@@ -52,7 +53,22 @@ body.vapor-repo-body {
   flex-direction: column;
   justify-content: center;
   gap: 0.75rem;
-  padding-block: 1.1rem;
+  /* Less below than above: the copyright line follows the shell. */
+  padding-block: 1.1rem 0.55rem;
+}
+
+/* The copyright line. One muted row under the frame, set like the utility bar
+   above it, so the console ends the way every other page does without taking
+   more than a line from the panel. */
+.rp-foot {
+  flex: none;
+  width: min(100% - 2rem, 82.5rem);
+  margin: 0 auto;
+  padding: 0 0.15rem 0.7rem;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--theme-muted);
 }
 
 /* A grid or flex child defaults to `min-width: auto` and so refuses to be
@@ -233,7 +249,7 @@ body.vapor-repo-body {
 }
 
 .rp-tag--live { border-color: rgba(46, 164, 79, 0.45); color: var(--theme-text); }
-.rp-tag--pre { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-carmine); }
+.rp-tag--pre { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-accent-text); }
 
 .rp-dot-live {
   display: inline-block;
@@ -255,7 +271,7 @@ body.vapor-repo-body {
 }
 
 .rp-cmd code {
-  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-family: var(--vapor-mono);
   font-size: 0.74rem;
   color: var(--theme-text);
   overflow-x: auto;
@@ -263,7 +279,7 @@ body.vapor-repo-body {
   flex: 1;
 }
 
-.rp-cmd code::before { content: '$ '; color: var(--vapor-carmine); }
+.rp-cmd code::before { content: '$ '; color: var(--vapor-accent-text); }
 
 .rp-copy {
   flex: none;
@@ -351,7 +367,7 @@ body.vapor-repo-body {
 }
 
 .rp-rail-btn:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
-.rp-rail-btn--accent { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-carmine); }
+.rp-rail-btn--accent { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-accent-text); }
 
 /* A touch reader gets no hover, so the rail opens and stays open there. */
 @media (hover: none) {
@@ -726,7 +742,7 @@ body.vapor-repo-body {
 .rp-rel-item:first-child { border-top: 0; padding-top: 0; }
 .rp-rel-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.85rem; }
 
-.rp-rel-head h4 {
+.rp-rel-head h3 {
   margin: 0;
   font-family: 'Space Grotesk', 'Manrope', sans-serif;
   font-weight: 400;
@@ -752,7 +768,7 @@ body.vapor-repo-body {
 .rp-rel-notes ul { padding-left: 1.05rem; }
 .rp-rel-notes li::marker { color: var(--vapor-carmine); }
 .rp-rel-notes strong { color: var(--theme-text); font-weight: 600; }
-.rp-rel-notes code { font-family: ui-monospace, Menlo, monospace; font-size: 0.82em; color: var(--vapor-carmine); }
+.rp-rel-notes code { font-family: var(--vapor-mono); font-size: 0.82em; color: var(--vapor-accent-text); }
 
 .rp-rel-notes table {
   border-collapse: collapse;
@@ -819,7 +835,7 @@ body.vapor-repo-body {
 }
 
 .rp-commit:first-child { border-top: 0; padding-top: 0; }
-.rp-commit code { font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem; color: var(--vapor-carmine); }
+.rp-commit code { font-family: var(--vapor-mono); font-size: 0.72rem; color: var(--vapor-accent-text); }
 .rp-commit > span { min-width: 0; overflow-wrap: anywhere; }
 .rp-commit time { grid-column: 2; color: var(--theme-muted); font-size: 0.68rem; }
 .rp-commit:hover > span { color: var(--theme-text); }
@@ -931,9 +947,9 @@ body.vapor-repo-body {
 .rp-readme strong { color: var(--theme-text); font-weight: 600; }
 
 .rp-readme code {
-  font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  font-family: var(--vapor-mono);
   font-size: 0.85em;
-  color: var(--vapor-carmine);
+  color: var(--vapor-accent-text);
   background: rgba(var(--vapor-carmine-rgb), 0.08);
   padding: 0.1em 0.35em;
 }
@@ -948,7 +964,7 @@ body.vapor-repo-body {
   padding: 0.85rem 0.95rem;
   overflow-x: auto;
   scrollbar-width: thin;
-  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-family: var(--vapor-mono);
   font-size: 0.76rem;
   line-height: 1.65;
   color: var(--theme-text);
@@ -1073,7 +1089,15 @@ body.vapor-repo-body {
 
 @media (max-width: 900px), (max-height: 620px) {
   .rp-shell { --rp-pad: 1.15rem; }
-  .rp-head { padding-block: 1.1rem; gap: 0.9rem 0.8rem; }
+  .rp-head { padding-block: 1.5rem 1.1rem; gap: 0.9rem 0.8rem; }
+
+  /* At this inset the frame's full-size brackets (0.8rem in, 1rem long) ran
+     through the first letter of the name. Smaller and tucked closer to the
+     corner, they end short of the --rp-pad line and above the first row. */
+  .rp-console.vapor-frame::before,
+  .rp-console.vapor-frame::after { width: 0.6rem; height: 0.6rem; }
+  .rp-console.vapor-frame::before { top: 0.45rem; left: 0.45rem; }
+  .rp-console.vapor-frame::after { right: 0.45rem; bottom: 0.45rem; }
   .rp-lede { -webkit-line-clamp: 2; font-size: 0.8rem; }
   .rp-mark { width: clamp(4rem, min(11vw, 13vh), 7.5rem); }
   .rp-rail-btn { height: 2.05rem; }
@@ -1109,10 +1133,10 @@ body.vapor-repo-body {
     color: var(--theme-muted);
     cursor: pointer;
     font-family: 'Syncopate', 'Manrope', sans-serif;
-    font-size: 0.54rem;
+    font-size: 0.6875rem;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.1em;
     white-space: nowrap;
     transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
   }
@@ -1187,12 +1211,29 @@ body.vapor-repo-body {
 
 @media (max-width: 480px) {
   .rp-shell { width: 100%; padding-block: 0; gap: 0.4rem; }
+  .rp-foot { padding-top: 0.45rem; padding-bottom: 0.5rem; }
   .rp-bar { padding: 0.5rem var(--rp-pad) 0; }
   .rp-console { border-left: 0; border-right: 0; }
   .rp-head h1 { font-size: 1.35rem; }
   .rp-lede { display: none; }
   .rp-cmd code { font-size: 0.68rem; }
   .rp-metric b { font-size: 1.05rem; }
+}
+
+/* Below this height the head, ledger and tabs leave the panel region almost
+   nothing — on a phone held sideways, or a laptop at 200% zoom, it shrank to
+   a few pixels and the page could not scroll to it. There the instrument
+   stops being viewport-locked: the page scrolls as a document and the panel
+   keeps a readable height of its own, still scrolling inside itself. */
+@media (max-height: 560px) {
+  html,
+  body.vapor-repo-body {
+    height: auto;
+    overflow: visible;
+  }
+
+  .rp-shell { justify-content: flex-start; }
+  .rp-panels { flex: none; height: max(18rem, calc(100svh - 3rem)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

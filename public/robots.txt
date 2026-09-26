@@ -3,3 +3,4 @@ Allow: /
 
 Host: www.vaporsoft.dev
 Sitemap: https://www.vaporsoft.dev/sitemap.xml
+Sitemap: https://www.vaporsoft.dev/nfty/docs/sitemap.xml

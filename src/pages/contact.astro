@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
 const contactFormEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ?? '';
@@ -41,9 +42,9 @@ const contactStructuredData = [
 
       <nav class="vapor-nav" aria-label="Secondary">
         <a href="/">Home</a>
-        <button class="vapor-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <button class="vapor-theme-toggle" data-theme-toggle>
           <span class="vapor-theme-toggle-dot"></span>
-          <span data-theme-label>Dark</span>
+          <span data-theme-label>LIGHT</span>
         </button>
       </nav>
     </header>
@@ -81,7 +82,11 @@ const contactStructuredData = [
             data-contact-form
             data-endpoint={contactFormEndpoint}
           >
-            <input class="vapor-contact-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" />
+            {/* Honeypot. `_gotcha` is the field Formspree itself discards, so it
+                also guards the no-JS post. Hidden from assistive tech entirely. */}
+            <div class="vapor-contact-honeypot" aria-hidden="true">
+              <label>Leave this empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+            </div>
 
             <div class="vapor-contact-grid">
               <label class="vapor-contact-field">
@@ -124,7 +129,7 @@ const contactStructuredData = [
             <p class="vapor-contact-status" data-contact-status role="status" aria-live="polite"></p>
           </form>
 
-          <div class="vapor-contact-success" data-contact-success hidden>
+          <div class="vapor-contact-success" data-contact-success tabindex="-1" hidden>
             <p class="vapor-kicker">Message Sent</p>
             <h2 class="vapor-title">Thanks. Your inquiry is on its way.</h2>
             <p>
@@ -135,9 +140,7 @@ const contactStructuredData = [
         </section>
     </section>
 
-    <footer class="vapor-landing-footer">
-      <p>&copy; 2026 Corderro Artz / Vaporsoft. All rights reserved.</p>
-    </footer>
+    <SiteFooter />
   </main>
 
   <script is:inline>
@@ -149,8 +152,23 @@ const contactStructuredData = [
       var status = document.querySelector('[data-contact-status]');
       var submit = document.querySelector('[data-contact-submit]');
       var success = document.querySelector('[data-contact-success]');
-      var honeypot = form.querySelector('[name="website"]');
+      var honeypot = form.querySelector('[name="_gotcha"]');
       var submitLabel = submit ? submit.textContent : 'Send Message';
+
+      // Swap the form for the confirmation and move focus to it, so keyboard
+      // and screen-reader users land on the result rather than on <body>.
+      function showSuccess() {
+        form.reset();
+        form.hidden = true;
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = submitLabel;
+        }
+        if (success) {
+          success.hidden = false;
+          success.focus();
+        }
+      }
 
       if (!endpoint) {
         if (status) {
@@ -162,8 +180,9 @@ const contactStructuredData = [
       form.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // A bot filled the honeypot. Don't send, but don't tip it off either.
         if (honeypot && honeypot.value) {
-          form.reset();
+          showSuccess();
           return;
         }
 
@@ -199,14 +218,10 @@ const contactStructuredData = [
           })
           .then(function(result) {
             if (result.ok) {
-              form.reset();
-              form.hidden = true;
-              if (success) {
-                success.hidden = false;
-              }
               if (status) {
-                status.textContent = 'Message sent.';
+                status.textContent = '';
               }
+              showSuccess();
               return;
             }
 

@@ -37,7 +37,9 @@ const markLight = iconSrcLight || (icon ? `/brand/${icon}/${icon}-icon-light.svg
 // Sending an in-site navigation to a new tab is the behaviour the repository
 // pages exist to stop.
 const isExternal = Boolean(href && /^https?:/i.test(href));
-const linkLabel = isExternal ? `Open ${name} on GitHub` : `Open the ${name} page`;
+// Starts with the name the card shows, so a speech user saying "click Akira"
+// reaches it (WCAG 2.5.3), then says where it goes.
+const linkLabel = isExternal ? `${name}, on GitHub` : `${name}, open page`;
 
 const isFoundation = variant === 'foundation';
 const isStandalone = variant === 'standalone';
@@ -48,7 +50,10 @@ const classes = [
   isFoundation || isStandalone ? 'vapor-frame' : 'vapor-panel',
   isStandalone ? 'vapor-arch-card--standalone' : '',
   isFoundation ? 'vapor-arch-card--foundation' : '',
-  !isFuture ? 'vapor-arch-card--active' : 'vapor-arch-card--future',
+  // Only a card that navigates gets the hover lift and pointer; a live card
+  // with nowhere to go yet (an <article>) stays still rather than invite a
+  // click that does nothing.
+  isFuture ? 'vapor-arch-card--future' : href ? 'vapor-arch-card--active' : 'vapor-arch-card--static',
 ].filter(Boolean).join(' ');
 ---
 
@@ -63,8 +68,8 @@ const classes = [
     <div class="vapor-arch-card-icon">
       {markDark ? (
         <>
-          <img src={markDark} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={markLight} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={markDark} alt="" width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={markLight} alt="" width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>
@@ -79,8 +84,8 @@ const classes = [
     <div class="vapor-arch-card-icon">
       {markDark ? (
         <>
-          <img src={markDark} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
-          <img src={markLight} alt={name} width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
+          <img src={markDark} alt="" width="72" height="72" class="vapor-arch-icon vapor-arch-icon--dark" />
+          <img src={markLight} alt="" width="72" height="72" class="vapor-arch-icon vapor-arch-icon--light" />
         </>
       ) : (
         <span class="vapor-arch-placeholder-icon"></span>

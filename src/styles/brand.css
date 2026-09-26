@@ -59,7 +59,7 @@
 
 .bp-asset:last-child { padding-bottom: 0; border-bottom: 0; }
 
-.bp-asset-head h4 {
+.bp-asset-head h3 {
   display: flex;
   align-items: baseline;
   gap: 0.6rem;
@@ -73,11 +73,11 @@
 /* The shape, not a second heading: same size as the label it sits beside, in
    the muted colour, with the accent reserved for the glyph in the column
    title. */
-.bp-asset-head h4 i {
+.bp-asset-head h3 i {
   font-style: normal;
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.16em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
   color: var(--theme-muted);
 }
 
@@ -92,15 +92,15 @@
 
 .bp-links-row {
   display: grid;
-  grid-template-columns: 2.9rem minmax(0, 1fr);
+  grid-template-columns: 3.6rem minmax(0, 1fr);
   align-items: center;
   gap: 0.6rem;
 }
 
 .bp-links-label {
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.5rem;
-  letter-spacing: 0.16em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--theme-muted);
 }
@@ -159,7 +159,7 @@
 .vapor-light .bp-mark-img--dark { display: none; }
 .vapor-light .bp-mark-img--light { display: block; }
 
-.bp-mark h4 {
+.bp-mark h3 {
   margin: 0.15rem 0 0;
   font-family: 'Manrope', sans-serif;
   font-size: 0.78rem;
@@ -176,6 +176,10 @@
 /* ── Palette ── */
 .bp-swatches { display: grid; gap: 0.75rem; align-content: start; }
 .bp-swatches--tight { gap: 0.5rem; margin-top: 1rem; }
+
+/* The note under a set of swatches starts on the same rhythm as the rest of
+   the block, not directly under the last chip. */
+.bp-swatches + .rp-note { margin-top: 1rem; }
 
 .bp-swatch {
   display: grid;
@@ -199,14 +203,14 @@
 }
 
 .bp-swatch code {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--vapor-mono);
   font-size: 0.68rem;
   color: var(--theme-muted);
 }
 
 .bp-swatch span {
   grid-column: 2 / -1;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--vapor-mono);
   font-size: 0.62rem;
   color: var(--theme-muted);
   opacity: 0.8;
@@ -258,7 +262,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--vapor-carmine);
+  color: var(--vapor-accent-text);
 }
 
 .bp-future .rp-note { margin: 0; max-width: 26rem; }
@@ -270,5 +274,5 @@
 @media (max-width: 900px), (max-height: 620px) {
   .bp-head { grid-template-columns: minmax(0, 1fr); }
   .bp-head-mark { display: none; }
-  .bp-links-row { grid-template-columns: 2.6rem minmax(0, 1fr); }
+  .bp-links-row { grid-template-columns: 3.4rem minmax(0, 1fr); }
 }
