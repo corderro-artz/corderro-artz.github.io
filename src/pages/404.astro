@@ -1,0 +1,61 @@
+---
+/**
+ * GitHub Pages serves dist/404.html for any path it has no file for, so a
+ * mistyped or stale address lands here, inside the site, instead of on
+ * GitHub's generic page with no way back in.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout
+  title="Page not found | Vaporsoft"
+  description="This page does not exist on vaporsoft.dev."
+  themeColor="#f2ede6"
+  bodyClass="vapor-body"
+  robots="noindex, follow"
+>
+  <main class="vapor-site">
+    <div class="vapor-noise"></div>
+
+    <header class="vapor-topbar">
+      <a class="vapor-brand" href="/">
+        <span class="vapor-brand-mark"></span>
+        <span class="vapor-brand-lockup">
+          <span class="vapor-brand-name">Vaporsoft</span>
+          <span class="vapor-brand-subtitle">Not found</span>
+        </span>
+      </a>
+
+      <nav class="vapor-nav" aria-label="Secondary">
+        <a href="/">Home</a>
+        <button type="button" class="vapor-theme-toggle" data-theme-toggle>
+          <span class="vapor-theme-toggle-dot"></span>
+          <span data-theme-label>LIGHT</span>
+        </button>
+      </nav>
+    </header>
+
+    <section class="vapor-section">
+      <div class="vapor-section-head">
+        <p class="vapor-kicker">404</p>
+        <h1 class="vapor-title">Nothing lives at this address.</h1>
+        <div class="vapor-rule vapor-rule--compact">
+          <span></span>
+          <strong>無</strong>
+          <span></span>
+        </div>
+        <p class="vapor-intro">
+          The page may have moved, or the link may be mistyped. Everything the site holds is reachable from one of these.
+        </p>
+        <div class="vapor-actions">
+          <a class="vapor-button vapor-button--primary" href="/">Home</a>
+          <a class="vapor-button vapor-button--secondary" href="/vaporsoft/">Vaporsoft</a>
+          <a class="vapor-button vapor-button--secondary" href="/contact/">Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </main>
+</BaseLayout>

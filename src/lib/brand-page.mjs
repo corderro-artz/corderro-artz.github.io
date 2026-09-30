@@ -44,7 +44,7 @@ const links = (rows) =>
 function fAsset(a) {
   return '<article class="bp-asset">'
     + '<header class="bp-asset-head">'
-    + '<h4>' + esc(a.title) + '<i>' + esc(a.shape) + '</i></h4>'
+    + '<h3>' + esc(a.title) + '<i>' + esc(a.shape) + '</i></h3>'
     + (a.use ? '<p>' + esc(a.use) + '</p>' : '')
     + '</header>'
     + links([
@@ -88,7 +88,7 @@ function fMark(m, kinds) {
         ? '<img class="bp-mark-img bp-mark-img--light" src="' + esc(k.svgLight) + '" alt="" width="64" height="64" loading="lazy" />'
         : '')
     + '</div>'
-    + '<h4>' + esc(m.name) + '</h4>'
+    + '<h3>' + esc(m.name) + '</h3>'
     + '<span class="bp-mark-size">' + esc(k.size) + '</span>'
     + '<div class="bp-links-set">'
     + themedChip(k.svg, k.svgLight, 'SVG')
@@ -168,22 +168,26 @@ const fSen = () =>
 
 /* ── Shell ── */
 
-const blocks = (list, mod) =>
+// Ids are prefixed with the panel's id: Donate and Merch are each a panel and
+// a block of the same name.
+const blocks = (list, mod, pid) =>
   '<div class="rp-subtabs" role="tablist" aria-label="Section">'
   + list.map((b, i) => '<button class="rp-subtab" role="tab" type="button" data-block="' + b.id
+      + '" id="rp-subtab-' + pid + '-' + b.id + '" aria-controls="rp-block-' + pid + '-' + b.id
       + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '">'
       + '<i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</button>').join('')
   + '</div>'
   + '<div class="rp-blocks rp-blocks--' + mod + '">'
-  + list.map((b, i) => '<section class="rp-block' + (i === 0 ? ' is-on' : '') + '" data-block="' + b.id + '">'
-      + '<h3 class="rp-block-title"><i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</h3>'
+  + list.map((b, i) => '<section class="rp-block' + (i === 0 ? ' is-on' : '') + '" data-block="' + b.id + '"'
+      + ' id="rp-block-' + pid + '-' + b.id + '" role="tabpanel" aria-labelledby="rp-subtab-' + pid + '-' + b.id + '">'
+      + '<h2 class="rp-block-title"><i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</h2>'
       + '<div class="rp-block-body' + (b.bodyClass ? ' ' + b.bodyClass : '') + '">' + b.body + '</div>'
       + '</section>').join('')
   + '</div>';
 
 const panel = (id, list, mod, on) =>
-  '<section class="rp-panel' + (on ? ' is-on' : '') + '" data-panel="' + id + '"'
-  + ' role="tabpanel" aria-labelledby="rp-tab-' + id + '">' + blocks(list, mod) + '</section>';
+  '<section class="rp-panel' + (on ? ' is-on' : '') + '" data-panel="' + id + '" id="rp-panel-' + id + '"'
+  + ' role="tabpanel" aria-labelledby="rp-tab-' + id + '">' + blocks(list, mod, id) + '</section>';
 
 function head(totals) {
   return '<header class="bp-head">'
@@ -212,7 +216,7 @@ export function renderBrandPage({ assets, marks, sections, palette, totals }, op
     + TABS.map((t) => {
         const on = t.id === open;
         return '<button class="rp-tab" role="tab" type="button" id="rp-tab-' + t.id + '"'
-          + ' data-tab="' + t.id + '" data-url="' + t.url + '" aria-controls="' + t.id + '"'
+          + ' data-tab="' + t.id + '" data-url="' + t.url + '" aria-controls="rp-panel-' + t.id + '"'
           + ' aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '">' + t.label + '</button>';
       }).join('')
     + '</div>'

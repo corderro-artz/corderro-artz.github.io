@@ -1,8 +1,11 @@
 {
   "name": "vaporsoft-site",
   "private": true,
-  "version": "1.12.3",
+  "version": "1.14.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "dev": "astro dev",
     "dev:mock": "node dev/form-mock.mjs",

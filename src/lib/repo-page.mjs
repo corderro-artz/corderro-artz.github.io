@@ -62,7 +62,7 @@ export function renderBar(crumb) {
     + '<path d="M13.4 8H2.6"/><path d="M6.6 3.9 2.5 8l4.1 4.1"/></svg>'
     + '<span>Vaporsoft</span></a>'
     + '<span class="rp-crumb"><b>/</b> ' + esc(crumb) + '</span>'
-    + '<button type="button" class="vapor-theme-toggle rp-theme" data-theme-toggle aria-label="Toggle theme">'
+    + '<button type="button" class="vapor-theme-toggle rp-theme" data-theme-toggle>'
     + '<span class="vapor-theme-toggle-dot"></span><span data-theme-label>LIGHT</span></button>'
     + '</div>';
 }
@@ -119,7 +119,15 @@ const cloneCommand = (r) => 'git clone ' + r.htmlUrl + '.git';
 function packageCommand(r) {
   const nupkg = r.releases.reduce((a, x) => a.concat(x.assets), [])
     .find((a) => a.name.endsWith('.nupkg'));
-  return nupkg ? 'dotnet add package ' + nupkg.name.replace(/\.\d+\.\d+\.\d+.*$/, '') : null;
+  if (!nupkg) return null;
+  const m = /^(.+?)\.(\d+\.\d+\.\d+)(-[^.]+(?:\.[^.]+)*?)?\.nupkg$/.exec(nupkg.name);
+  const id = m ? m[1] : nupkg.name.replace(/\.\d+\.\d+\.\d+.*$/, '');
+  // `dotnet add package` without a version resolves only stable releases and
+  // fails outright when a package has none, as every alpha-only package here
+  // does. `--prerelease` rather than a pinned `--version`: the release tag and
+  // what is actually on NuGet have drifted before, and the flag always
+  // resolves to a version the feed really has.
+  return 'dotnet add package ' + id + (m && m[3] ? ' --prerelease' : '');
 }
 
 /* Where the project actually runs, if it runs anywhere.
@@ -194,7 +202,7 @@ function fHead(r) {
   const slug = r.name.toLowerCase();
   return '<header class="rp-head">'
     + '<div class="rp-hero-copy">'
-    + '<h1>' + esc(r.name) + '</h1>'
+    + '<h1>' + esc(displayName(r.name.toLowerCase())) + '</h1>'
     + '<p class="rp-lede">' + esc(r.description) + '</p>'
     + fChips(r)
     + '</div>'
@@ -332,7 +340,7 @@ function fReleases(r) {
           + (a.downloads === 1 ? ' download' : ' downloads') + '</em></div>').join('') + '</div>'
       : '';
     return '<div class="rp-rel-item">'
-      + '<div class="rp-rel-head"><h4>' + esc(x.tag) + '</h4>'
+      + '<div class="rp-rel-head"><h3>' + esc(x.tag) + '</h3>'
       + (x.prerelease ? '<span class="rp-tag rp-tag--pre">Prerelease</span>' : '')
       + '<span class="rp-rel-date">' + esc(fmtDate(x.publishedAt)) + '</span></div>'
       + '<div class="rp-rel-notes">' + mdLite(x.body) + '</div>' + assets + '</div>';
@@ -386,15 +394,20 @@ function fTeam(r) {
    The glyph names the section in the language the brand already speaks on the
    front page, where a single kanji sits between two hairlines. Here it carries
    the accent colour that the whole label used to carry. */
-function blocks(list, mod) {
+/* Ids carry an rp- prefix and the panel's id: a readme brings its own heading
+   ids (a README's "overview" is an <h2 id="overview">), and two panels can
+   both have a block of the same name. */
+function blocks(list, mod, pid) {
   return '<div class="rp-subtabs" role="tablist" aria-label="Section">'
     + list.map((b, i) => '<button class="rp-subtab" role="tab" type="button" data-block="' + b.id
+        + '" id="rp-subtab-' + pid + '-' + b.id + '" aria-controls="rp-block-' + pid + '-' + b.id
         + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '">'
         + '<i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</button>').join('')
     + '</div>'
     + '<div class="rp-blocks rp-blocks--' + mod + '">'
-    + list.map((b, i) => '<section class="rp-block' + (i === 0 ? ' is-on' : '') + '" data-block="' + b.id + '">'
-        + '<h3 class="rp-block-title"><i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</h3>'
+    + list.map((b, i) => '<section class="rp-block' + (i === 0 ? ' is-on' : '') + '" data-block="' + b.id + '"'
+        + ' id="rp-block-' + pid + '-' + b.id + '" role="tabpanel" aria-labelledby="rp-subtab-' + pid + '-' + b.id + '">'
+        + '<h2 class="rp-block-title"><i aria-hidden="true">' + b.jp + '</i>' + esc(b.label) + '</h2>'
         + '<div class="rp-block-body' + (b.bodyClass ? ' ' + b.bodyClass : '') + '">' + b.body + '</div>'
         + '</section>').join('')
     + '</div>';
@@ -405,9 +418,9 @@ function blocks(list, mod) {
 // page that waits for JavaScript to open one renders blank until it runs, and
 // renders blank for good if it never does.
 const panel = (id, list, mod, on) =>
-  '<section class="rp-panel' + (on ? ' is-on' : '') + '" data-panel="' + id + '"'
+  '<section class="rp-panel' + (on ? ' is-on' : '') + '" data-panel="' + id + '" id="rp-panel-' + id + '"'
   + ' role="tabpanel" aria-labelledby="rp-tab-' + id + '">'
-  + blocks(list, mod) + '</section>';
+  + blocks(list, mod, id) + '</section>';
 
 /* A readme that writes its own contents section now has two of them: the
    column standing beside the prose, and the list inside it. The one in the
@@ -470,7 +483,7 @@ export function renderRepoPage(r, open = 'overview') {
         // Documentation tab must not rewrite the address to it.
         const url = manual && t.id === 'documentation' ? '' : t.url;
         return '<button class="rp-tab" role="tab" type="button" id="rp-tab-' + t.id + '"'
-          + ' data-tab="' + t.id + '" data-url="' + url + '" aria-controls="' + t.id + '"'
+          + ' data-tab="' + t.id + '" data-url="' + url + '" aria-controls="rp-panel-' + t.id + '"'
           + ' aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '">' + t.label
           + (t.id === 'releases' ? '<span class="rp-tab-count">' + r.releases.length + '</span>' : '')
           + '</button>';

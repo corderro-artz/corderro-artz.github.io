@@ -1,9 +1,11 @@
 ---
 import '../styles/global.css';
 
+const defaultDescription = 'Vaporsoft makes developer and design tools: Akira, Kata, NFTY, CRISPR and Sen.';
+
 const {
   title = 'Vaporsoft',
-  description = 'Vaporsoft makes developer and design tools: Akira, Kata, NFTY, CRISPR and Sen.',
+  description = defaultDescription,
   themeColor = '#07080b',
   bodyClass = '',
   keywords = [],
@@ -11,10 +13,12 @@ const {
   // Must be a raster format. Google, X, LinkedIn, Slack and Discord all refuse
   // SVG for link previews, so an SVG here means every share renders with no
   // image at all. Keep the declared dimensions in step with the file.
-  ogImage = '/brand/vaporsoft/png/vaporsoft-logo.png',
-  ogImageWidth = 512,
-  ogImageHeight = 512,
+  ogImage = '/brand/vaporsoft/png/vaporsoft-social-card-1200x630.png',
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
   ogImageType = 'image/png',
+  // A wide image gets the large card; a square icon stays a thumbnail.
+  twitterCard = ogImageWidth / ogImageHeight > 1.5 ? 'summary_large_image' : 'summary',
   robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   structuredData = []
 } = Astro.props;
@@ -22,6 +26,13 @@ const {
 const siteUrl = Astro.site ?? new URL('https://www.vaporsoft.dev');
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
 const ogImageUrl = new URL(ogImage, siteUrl);
+// The Organization node shares one @id on every page, so it must say the same
+// thing on every page: the Vaporsoft logo and description, never the page's
+// own share image or summary (a product icon, or a 2400×1260 banner).
+const orgLogoUrl = new URL('/brand/vaporsoft/png/vaporsoft-logo.png', siteUrl);
+// Every kanji the site sets: the landing, contact and 404 rules, and the
+// console section glyphs in src/lib/repo-page.mjs and src/lib/brand-page.mjs.
+const kanji = '仮想織問無仕様構成開発目次文書版履歴壁紙帯札印符章色階索寄品';
 const keywordContent = Array.isArray(keywords) ? keywords.join(', ') : keywords;
 const defaultStructuredData = [
   {
@@ -36,12 +47,12 @@ const defaultStructuredData = [
     url: siteUrl.href,
     logo: {
       '@type': 'ImageObject',
-      url: ogImageUrl.href,
-      width: ogImageWidth,
-      height: ogImageHeight
+      url: orgLogoUrl.href,
+      width: 512,
+      height: 512
     },
-    image: ogImageUrl.href,
-    description,
+    image: orgLogoUrl.href,
+    description: defaultDescription,
     slogan: 'A single loom to spin many threads',
     founder: {
       '@type': 'Person',
@@ -121,17 +132,30 @@ const structuredDataNodes = [
     <meta property="og:image:width" content={String(ogImageWidth)} />
     <meta property="og:image:height" content={String(ogImageHeight)} />
     <meta property="og:image:alt" content="Vaporsoft brand mark" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content={twitterCard} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:url" content={canonicalUrl.href} />
     <meta name="twitter:image" content={ogImageUrl.href} />
     <meta name="twitter:image:alt" content="Vaporsoft brand mark" />
     <link rel="icon" type="image/svg+xml" href="/brand/vaporsoft/vaporsoft-favicon.svg" data-favicon data-dark-href="/brand/vaporsoft/vaporsoft-favicon.svg" data-light-href="/brand/vaporsoft/vaporsoft-favicon-light.svg" />
-    <link rel="apple-touch-icon" type="image/svg+xml" href="/brand/vaporsoft/vaporsoft-logo.svg" />
+    {/* iOS ignores an SVG here and saves a screenshot instead. A 180px PNG
+        downscaled from the rendered logo, corners filled with ink, since iOS
+        paints transparency black anyway. */}
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Syncopate:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+    {/*
+      Two requests. The Latin faces carry only the weights the CSS resolves to
+      (measured over every route: Space Grotesk and Zen Kaku never render at
+      700). Zen Kaku is only ever used for a handful of kanji, and asking for
+      the whole face shipped ~350 KB of @font-face rules for its CJK subsets
+      alone, render-blocking on every page; `text=` gets one tiny subset.
+      A kanji added to the site must be added to `kanji` below, or it falls
+      back to a system face.
+    */}
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500&family=Syncopate:wght@400;700&display=swap" rel="stylesheet" />
+    <link href={`https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500&display=swap&text=${encodeURIComponent(kanji)}`} rel="stylesheet" />
     {structuredDataNodes.map((entry) => (
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
@@ -152,6 +176,7 @@ const structuredDataNodes = [
         }
         // The reader's choice wins; without one the system decides; where the
         // browser cannot say (no matchMedia, storage blocked), it is dark.
+        // Storage throws, rather than returning null, where site data is blocked.
         var stored=null;
         try{stored=localStorage.getItem('vapor-theme');}catch(e){}
         var mq=null;
@@ -203,6 +228,9 @@ const structuredDataNodes = [
           function sync(){
             var light=document.documentElement.classList.contains('vapor-light');
             if(label)label.textContent=light?'LIGHT':'DARK';
+            // The name starts with the word on the button, so a speech user
+            // saying "click Light" reaches it, and it says what a press does.
+            toggle.setAttribute('aria-label',light?'Light theme, switch to dark':'Dark theme, switch to light');
             document.body.classList.toggle('vapor-light',light);
             if(window.__vaporSetFavicon)window.__vaporSetFavicon(light);
             if(window.__vaporSetThemeColor)window.__vaporSetThemeColor(light);
@@ -210,6 +238,8 @@ const structuredDataNodes = [
           sync();
           toggle.addEventListener('click',function(){
             document.documentElement.classList.toggle('vapor-light');
+            // The choice just won't persist if storage is blocked; html and
+            // body must still end up agreeing.
             try{localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');}catch(e){}
             sync();
           });
@@ -289,6 +319,41 @@ const structuredDataNodes = [
             },120);
           }
           snap.addEventListener('scroll',enforceSnap,{passive:true});
+
+          // Focus reveal. Tabbing into the other page leaves the browser's own
+          // focus scroll part-way between pages, and enforceSnap then settles on
+          // whichever page top is nearest, which can be the one without the
+          // focused control on it. Bring the focused element's page into view,
+          // then the element itself if the page is taller than the viewport.
+          // Runs a frame late so it lands after the browser's focus scroll, and
+          // sets scrollTop with scroll-behavior on auto for the same reason the
+          // Products button does (index.astro): mandatory snapping cancels a
+          // smooth programmatic scroll.
+          function revealFocus(el){
+            var page=el.closest('.vapor-snap-page');
+            if(!page)return;
+            var box=snap.getBoundingClientRect();
+            var pageBox=page.getBoundingClientRect();
+            var toPageTop=pageBox.top-box.top;
+            var delta=0;
+            // Not resting inside this page: start from its top.
+            if(pageBox.top>box.top+2||pageBox.bottom<box.bottom-2)delta=toPageTop;
+            var elBox=el.getBoundingClientRect();
+            if(elBox.bottom-delta>box.bottom)delta+=elBox.bottom-delta-box.bottom+16;
+            else if(elBox.top-delta<box.top)delta+=elBox.top-delta-box.top-16;
+            // Never past this page's top into the page above it.
+            delta=Math.max(delta,toPageTop);
+            if(Math.abs(delta)<1)return;
+            snap.style.scrollBehavior='auto';
+            snap.scrollTop+=delta;
+            snap.style.removeProperty('scroll-behavior');
+          }
+          snap.addEventListener('focusin',function(e){
+            var el=e.target;
+            requestAnimationFrame(function(){
+              if(document.activeElement===el)revealFocus(el);
+            });
+          });
         }
       })();
     </script>
