@@ -20,7 +20,8 @@
   --theme-text: var(--vapor-paper);
   --theme-muted: rgba(242, 237, 230, 0.78);
   --theme-shadow: var(--vapor-shadow);
-  /* Follows the manual toggle, not the OS — same reasoning as theme-color. */
+  /* Dark is the floor. The head script adds .vapor-light for a reader who chose
+     light, or whose system prefers it and who has not chosen. */
   color-scheme: dark;
 }
 
@@ -1566,6 +1567,47 @@ body.vapor-light::before {
 
 .vapor-arch-card-icon {
   margin-bottom: 0.25rem;
+}
+
+/* The one card with a hover of its own — Sen's Donate. A single pass of light
+   crosses the mark and a carmine glow comes up behind it, then it settles. The
+   plate clips the light; the glow is its own box-shadow, which overflow does
+   not clip. */
+.vapor-arch-card--special .vapor-arch-card-icon {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  transition: box-shadow 600ms ease;
+}
+
+.vapor-arch-card--special .vapor-arch-card-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 255, 255, 0.36) 50%, transparent 64%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.vapor-arch-card--special:hover .vapor-arch-card-icon,
+.vapor-arch-card--special:focus-visible .vapor-arch-card-icon {
+  box-shadow: 0 0 0 1px rgba(var(--vapor-carmine-rgb), 0.5), 0 0 1.6rem rgba(var(--vapor-carmine-rgb), 0.4);
+}
+
+.vapor-arch-card--special:hover .vapor-arch-card-icon::after,
+.vapor-arch-card--special:focus-visible .vapor-arch-card-icon::after {
+  transform: translateX(130%);
+  transition: transform 1000ms cubic-bezier(.3,.6,.2,1);
+}
+
+.vapor-arch-card--special .vapor-meta { transition: letter-spacing 600ms cubic-bezier(.2,.8,.2,1); }
+.vapor-arch-card--special:hover .vapor-meta,
+.vapor-arch-card--special:focus-visible .vapor-meta { letter-spacing: 0.32em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vapor-arch-card--special .vapor-arch-card-icon,
+  .vapor-arch-card--special .vapor-meta { transition: none; }
+  .vapor-arch-card--special .vapor-arch-card-icon::after { display: none; }
 }
 
 .vapor-arch-icon {

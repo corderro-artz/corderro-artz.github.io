@@ -1,8 +1,8 @@
 /**
  * The Vaporsoft console: what the brand directory holds, and where every file
  * is. It is named after the studio rather than after the word "brand" because
- * all of it is the studio's — the assets, the marks, the palette, and the two
- * sections that do not exist yet.
+ * all of it is the studio's — the assets, the marks, the palette, and Donate and
+ * Merch.
  *
  * It is built out of the same console the repository pages use — the same bar,
  * frame, tab rail and columns — because it is the same kind of object: a record
@@ -22,18 +22,20 @@ export const TABS = [
   { id: 'assets', label: 'Assets', url: '' },
   { id: 'icons', label: 'Icons', url: 'icons/' },
   { id: 'palette', label: 'Palette', url: 'palette/' },
-  // Neither of these has a route. There is nothing to link to yet, and giving
-  // one an address would be the site promising a page that says "not yet" in
-  // two places.
+  // Neither of these has a route of its own: Donate leaves for Sen, and Merch
+  // has nothing to link to yet.
   { id: 'donate', label: 'Donate', url: '' },
   { id: 'merch', label: 'Merch', url: '' }
 ];
 
 /* ── Pieces ── */
 
+// Each row is drawn once per theme and the one that does not match is hidden by
+// the same class that swaps the artwork, so the file a chip downloads is the
+// file the reader is looking at. `theme` is 'dark' or 'light'.
 const links = (rows) =>
   '<div class="bp-links">' + rows.filter(Boolean).map((row) =>
-    '<div class="bp-links-row"><span class="bp-links-label">' + esc(row.label) + '</span>'
+    '<div class="bp-links-row bp-theme--' + row.theme + '"><span class="bp-links-label">' + esc(row.label) + '</span>'
     + '<div class="bp-links-set">' + row.items.filter((i) => i && i.href).map((i) =>
         '<a class="bp-chip" href="' + esc(i.href) + '"' + (i.download ? ' download' : '') + '>'
         + esc(i.text) + '</a>').join('')
@@ -46,12 +48,12 @@ function fAsset(a) {
     + (a.use ? '<p>' + esc(a.use) + '</p>' : '')
     + '</header>'
     + links([
-        { label: 'Dark', items: [
+        { theme: 'dark', label: 'Dark', items: [
           { href: a.svg, text: 'SVG' },
           ...a.sizes.map((s) => ({ href: s.dark, text: s.label, download: true }))
         ] },
         a.svgLight || a.sizes.some((s) => s.light)
-          ? { label: 'Light', items: [
+          ? { theme: 'light', label: 'Light', items: [
               { href: a.svgLight, text: 'SVG' },
               ...a.sizes.map((s) => ({ href: s.light, text: s.label, download: true }))
             ] }
@@ -64,6 +66,14 @@ const assetGroup = (assets, names) =>
   '<div class="bp-assets">'
   + names.map((n) => assets.find((a) => a.name === n)).filter(Boolean).map(fAsset).join('')
   + '</div>';
+
+// A chip that follows the theme: two anchors, one per theme, and CSS shows the
+// one that matches. A mark with no light twin keeps its one file in both.
+const themedChip = (dark, light, text, download) => {
+  const attrs = download ? ' download' : '';
+  return '<a class="bp-chip bp-theme--dark" href="' + esc(dark) + '"' + attrs + '>' + text + '</a>'
+    + '<a class="bp-chip bp-theme--light" href="' + esc(light || dark) + '"' + attrs + '>' + text + '</a>';
+};
 
 // Kinds in preference order: Vaporsoft has no `-icon`, its square mark is the
 // logo, and leaving it out of the grid would drop the brand's own mark from the
@@ -81,9 +91,8 @@ function fMark(m, kinds) {
     + '<h4>' + esc(m.name) + '</h4>'
     + '<span class="bp-mark-size">' + esc(k.size) + '</span>'
     + '<div class="bp-links-set">'
-    + '<a class="bp-chip" href="' + esc(k.svg) + '">SVG</a>'
-    + (k.svgLight ? '<a class="bp-chip" href="' + esc(k.svgLight) + '">Light</a>' : '')
-    + (k.png ? '<a class="bp-chip" href="' + esc(k.png) + '" download>PNG</a>' : '')
+    + themedChip(k.svg, k.svgLight, 'SVG')
+    + (k.png ? themedChip(k.png, k.pngLight, 'PNG', true) : '')
     + '</div>'
     + '</article>';
 }
@@ -99,9 +108,7 @@ const swatch = (name, hex, note) =>
 function fCore(p) {
   return '<div class="bp-swatches">'
     + Object.entries(p.core).map(([name, t]) => swatch(name, t.hex, t.css)).join('')
-    + '</div>'
-    + '<p class="rp-note">Carmine is the only accent, and it is never approximated. '
-    + 'The check script fails the build when a brand file uses a value outside this set.</p>';
+    + '</div>';
 }
 
 function fRamp(p) {
@@ -113,9 +120,7 @@ function fRamp(p) {
     + [['Anchor', p.ramp.anchor], ['Deepest shade', p.ramp.shades[p.ramp.shades.length - 1]],
        ['Lightest tint', p.ramp.tints[p.ramp.tints.length - 1]]]
       .map(([n, hex]) => swatch(n, hex)).join('')
-    + '</div>'
-    + '<p class="rp-note">Anchored on carmine at a roughly constant luminance step. '
-    + 'Shades read on light grounds, tints on dark.</p>';
+    + '</div>';
 }
 
 const fileRow = (label, href, note) =>
@@ -145,6 +150,22 @@ const fFuture = (mark, lede) =>
   + '<p class="bp-future-lede">' + esc(lede) + '</p>'
   + '</div>';
 
+// Donate is Vaporsoft's own page on Sen, the studio's own platform. The mark is
+// Sen's, and the whole block is the link, so the glint on hover has the plate it
+// crosses and the hover has one thing to belong to.
+export const SEN_URL = 'https://sen.vaporsoft.dev/vaporsoft';
+
+const fSen = () =>
+  '<a class="bp-sen" href="' + SEN_URL + '" target="_blank" rel="noopener noreferrer"'
+  + ' aria-label="Donate to Vaporsoft on Sen">'
+  + '<span class="bp-sen-art">'
+  + '<img class="rp-mark--dark" src="/brand/sen/sen-icon.svg" alt="" width="256" height="256" loading="lazy" />'
+  + '<img class="rp-mark--light" src="/brand/sen/sen-icon-light.svg" alt="" width="256" height="256" loading="lazy" />'
+  + '</span>'
+  + '<span class="bp-sen-lede">Give on Sen</span>'
+  + '<span class="bp-sen-url">sen.vaporsoft.dev/vaporsoft</span>'
+  + '</a>';
+
 /* ── Shell ── */
 
 const blocks = (list, mod) =>
@@ -168,9 +189,8 @@ function head(totals) {
   return '<header class="bp-head">'
     + '<div class="bp-head-copy">'
     + '<h1>Vaporsoft</h1>'
-    + '<p class="rp-lede">Every mark the site serves, at every size it is drawn at. '
-    + 'The sources are vectors; the rasters beside them are rendered from those sources '
-    + 'by a browser engine, so the type is the type the file asks for.</p>'
+    + '<p class="rp-lede">Wallpapers, headers, cards, icons and the palette, '
+    + 'as vectors and rasters, in dark and light.</p>'
     + '</div>'
     + '<div class="bp-head-mark">'
     + '<img class="rp-mark rp-mark--dark" src="/brand/vaporsoft/vaporsoft-logo.svg" alt="" width="132" height="132" />'
@@ -217,7 +237,7 @@ export function renderBrandPage({ assets, marks, sections, palette, totals }, op
       ], '3', open === 'palette')
     + panel('donate', [
         { id: 'donate', jp: '寄', label: 'Donate', bodyClass: 'rp-block-body--fill',
-          body: fFuture('donate', 'Coming soon') }
+          body: fSen() }
       ], '1', open === 'donate')
     + panel('merch', [
         { id: 'merch', jp: '品', label: 'Merch', bodyClass: 'rp-block-body--fill',

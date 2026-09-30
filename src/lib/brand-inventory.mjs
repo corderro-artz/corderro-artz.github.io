@@ -57,16 +57,9 @@ const dims = (file) => {
   return w && h ? [Number(w[1]), Number(h[1])] : [0, 0];
 };
 
-/**
- * Products whose marks are not listed. Sen is not released, and a page that
- * lists every mark would announce it. The files stay where they are — this
- * removes the listing, not the directory.
- */
-const UNLISTED = new Set(['sen']);
-
 const dirs = () =>
   readdirSync(BRAND, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !UNLISTED.has(d.name))
+    .filter((d) => d.isDirectory())
     .map((d) => d.name);
 
 /**
@@ -128,7 +121,7 @@ export function presentationAssets() {
  * missing.
  */
 export function marks() {
-  const known = Object.keys(PRODUCT).filter((slug) => !UNLISTED.has(slug));
+  const known = Object.keys(PRODUCT);
   const order = [...known, ...dirs().filter((d) => !known.includes(d))];
 
   return order.filter((slug) => dirs().includes(slug)).map((slug) => {
@@ -147,7 +140,8 @@ export function marks() {
           size: `${w}×${h}`,
           svg: `/brand/${slug}/${base}.svg`,
           svgLight: files.includes(`${base}-light.svg`) ? `/brand/${slug}/${base}-light.svg` : null,
-          png: pngs.includes(`${base}.png`) ? `/brand/${slug}/png/${base}.png` : null
+          png: pngs.includes(`${base}.png`) ? `/brand/${slug}/png/${base}.png` : null,
+          pngLight: pngs.includes(`${base}-light.png`) ? `/brand/${slug}/png/${base}-light.png` : null
         };
       });
 
@@ -179,7 +173,8 @@ export function sectionMarks() {
         svg: `/brand/vaporsoft/${base}.svg`,
         svgLight: files.includes(`${base}-light.svg`) || existsSync(join(dir, `${base}-light.svg`))
           ? `/brand/vaporsoft/${base}-light.svg` : null,
-        png: pngs.includes(`${base}.png`) ? `/brand/vaporsoft/png/${base}.png` : null
+        png: pngs.includes(`${base}.png`) ? `/brand/vaporsoft/png/${base}.png` : null,
+        pngLight: pngs.includes(`${base}-light.png`) ? `/brand/vaporsoft/png/${base}-light.png` : null
       }]
     };
   });

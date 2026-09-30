@@ -132,6 +132,15 @@
   color: var(--theme-text);
 }
 
+/* ── Downloads follow the theme ──
+   Every row and chip that names a file is drawn once per theme. The one that
+   does not match is hidden by the class the toggle sets, so what a chip
+   downloads is what the reader is looking at. */
+.bp-theme--light { display: none; }
+.vapor-light .bp-theme--dark { display: none; }
+.vapor-light .bp-chip.bp-theme--light { display: inline-flex; }
+.vapor-light .bp-links-row.bp-theme--light { display: grid; }
+
 /* ── Marks ── */
 .bp-marks {
   display: grid;
@@ -262,6 +271,92 @@
 }
 
 .bp-future .rp-note { margin: 0; max-width: 26rem; }
+
+/* ── Donate ──
+   Sen's mark, the line, and the address. The plate is what the hover acts on:
+   a single pass of light crosses it, like a coin turned in the hand, and a
+   carmine glow comes up behind it. Once, slowly, then it settles. */
+.bp-sen {
+  display: grid;
+  gap: 1.1rem;
+  align-content: center;
+  justify-items: center;
+  width: min(100%, 34rem);
+  margin: 0 auto;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
+.bp-sen-art {
+  position: relative;
+  display: block;
+  line-height: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 1px rgba(var(--vapor-carmine-rgb), 0), 0 0 0 rgba(var(--vapor-carmine-rgb), 0);
+  transition: box-shadow 700ms ease, transform 700ms cubic-bezier(.2,.8,.2,1);
+}
+
+.bp-sen-art img {
+  width: clamp(7.5rem, min(17vw, 27vh), 13rem);
+  height: auto;
+}
+
+.bp-sen-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 255, 255, 0.34) 50%, transparent 64%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.bp-sen:hover .bp-sen-art,
+.bp-sen:focus-visible .bp-sen-art {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(var(--vapor-carmine-rgb), 0.5), 0 0 2.2rem rgba(var(--vapor-carmine-rgb), 0.38);
+}
+
+.bp-sen:hover .bp-sen-art::after,
+.bp-sen:focus-visible .bp-sen-art::after {
+  transform: translateX(130%);
+  transition: transform 1100ms cubic-bezier(.3,.6,.2,1);
+}
+
+.bp-sen-lede {
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vapor-carmine);
+  transition: letter-spacing 700ms cubic-bezier(.2,.8,.2,1);
+}
+
+.bp-sen:hover .bp-sen-lede,
+.bp-sen:focus-visible .bp-sen-lede { letter-spacing: 0.3em; }
+
+.bp-sen-url {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--theme-muted);
+  border-bottom: 1px solid var(--theme-line);
+  padding-bottom: 0.15rem;
+  transition: border-color 300ms ease, color 300ms ease;
+}
+
+.bp-sen:hover .bp-sen-url,
+.bp-sen:focus-visible .bp-sen-url {
+  color: var(--theme-text);
+  border-bottom-color: var(--vapor-carmine);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-sen-art, .bp-sen-lede { transition: none; }
+  .bp-sen:hover .bp-sen-art, .bp-sen:focus-visible .bp-sen-art { transform: none; }
+  .bp-sen-art::after { display: none; }
+}
 
 /* A panel with one block still has a column, and that column is the width of
    the console. */

@@ -3,7 +3,7 @@ import '../styles/global.css';
 
 const {
   title = 'Vaporsoft',
-  description = 'Vaporsoft builds clean digital systems with precision, atmosphere, and technical clarity.',
+  description = 'Vaporsoft makes developer and design tools: Akira, Kata, NFTY, CRISPR and Sen.',
   themeColor = '#07080b',
   bodyClass = '',
   keywords = [],
@@ -93,12 +93,12 @@ const structuredDataNodes = [
     {keywordContent && <meta name="keywords" content={keywordContent} />}
     {/*
       Mobile browsers paint their chrome, and the strip revealed by overscroll,
-      with theme-color. The site's theme comes from a manual toggle stored in
-      localStorage and ignores the OS, so keying theme-color to
-      prefers-color-scheme paints a near-white band under a black page on a
-      light phone, and a black band under a paper page on a dark one. One tag,
-      rewritten from the resolved theme before first paint and on every toggle.
-      color-scheme is set from the same class in CSS for the same reason.
+      with theme-color. The theme is resolved once, before first paint — the
+      reader's own choice if they have made one, otherwise the system's, and
+      dark if the browser will not say — so theme-color is a single tag rewritten
+      from that result and on every toggle. Keying it to prefers-color-scheme in
+      markup would ignore the choice and paint a near-white band under a black
+      page. color-scheme is set from the same class in CSS for the same reason.
     */}
     <meta name="theme-color" content={themeColor} />
     <meta name="author" content="Vaporsoft" />
@@ -150,9 +150,35 @@ const structuredDataNodes = [
           var meta=document.querySelector('meta[name="theme-color"]');
           if(meta)meta.setAttribute('content',isLight?'#f2ede6':'#07080b');
         }
-        var t=localStorage.getItem('vapor-theme');
-        document.documentElement.classList.toggle('vapor-light',t!=='dark');
+        // The reader's choice wins; without one the system decides; where the
+        // browser cannot say (no matchMedia, storage blocked), it is dark.
+        var stored=null;
+        try{stored=localStorage.getItem('vapor-theme');}catch(e){}
+        var mq=null;
+        try{mq=window.matchMedia('(prefers-color-scheme: light)');}catch(e){}
+        function resolve(){
+          if(stored==='light')return true;
+          if(stored==='dark')return false;
+          return !!(mq&&mq.matches);
+        }
+        document.documentElement.classList.toggle('vapor-light',resolve());
         var light=document.documentElement.classList.contains('vapor-light');
+        // With no stored choice the page follows the system as it changes.
+        if(mq&&!stored){
+          var follow=function(){
+            var s=null;
+            try{s=localStorage.getItem('vapor-theme');}catch(e){}
+            if(s)return;
+            var l=mq.matches;
+            document.documentElement.classList.toggle('vapor-light',l);
+            document.body&&document.body.classList.toggle('vapor-light',l);
+            setFavicon(l);setThemeColor(l);
+            var lab=document.querySelector('[data-theme-label]');
+            if(lab)lab.textContent=l?'LIGHT':'DARK';
+          };
+          if(mq.addEventListener)mq.addEventListener('change',follow);
+          else if(mq.addListener)mq.addListener(follow);
+        }
         setFavicon(light);
         setThemeColor(light);
         window.__vaporSetFavicon=setFavicon;
@@ -184,7 +210,7 @@ const structuredDataNodes = [
           sync();
           toggle.addEventListener('click',function(){
             document.documentElement.classList.toggle('vapor-light');
-            localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');
+            try{localStorage.setItem('vapor-theme',document.documentElement.classList.contains('vapor-light')?'light':'dark');}catch(e){}
             sync();
           });
         }

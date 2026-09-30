@@ -96,6 +96,23 @@ const catalog = [
           variant: 'standalone'
         },
         surfaces: []
+      },
+      {
+        id: 'sen',
+        label: 'Sen',
+        // Live at sen.vaporsoft.dev and the source is private, so there is no
+        // repository page and no repository to name in the structured data.
+        repo: false,
+        base: {
+          name: 'Sen',
+          description:
+            'A payments-first creator platform: tips and subscriptions on expressive, block-based personal pages.',
+          icon: 'sen',
+          href: 'https://sen.vaporsoft.dev/',
+          label: 'PLATFORM',
+          variant: 'standalone'
+        },
+        surfaces: []
       }
     ]
   },
@@ -110,7 +127,7 @@ const catalog = [
         base: {
           name: 'Assets',
           description:
-            'Every mark the site serves, at every size it is drawn at. Wallpapers in three shapes, headers, a social card, an email banner and a badge — vector sources, with rasters rendered from them.',
+            'Wallpapers, headers, a social card, an email banner and a badge, as vectors and rasters, in dark and light.',
           iconSrc: '/brand/vaporsoft/vaporsoft-logo.svg',
           iconSrcLight: '/brand/vaporsoft/vaporsoft-logo-light.svg',
           href: '/vaporsoft/',
@@ -129,7 +146,7 @@ const catalog = [
           },
           {
             name: 'Palette',
-            description: 'Carmine, ink, paper, graphite, and the ramp built on carmine. The values the build enforces.',
+            description: 'Carmine, ink, paper and graphite, and the ramp built on carmine.',
             iconSrc: '/brand/vaporsoft/vaporsoft-mark-palette.svg',
             iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-palette-light.svg',
             href: '/vaporsoft/palette/',
@@ -145,11 +162,14 @@ const catalog = [
         base: {
           name: 'Donate',
           description:
-            'A way to support the work directly, for anyone who finds it useful. Not open yet.',
-          iconSrc: '/brand/vaporsoft/vaporsoft-mark-donate.svg',
-          iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-donate-light.svg',
-          label: 'SURFACE',
-          variant: 'future'
+            'Support Vaporsoft on Sen, the studio’s own platform. Tips and subscriptions go straight to the studio.',
+          iconSrc: '/brand/sen/sen-icon.svg',
+          iconSrcLight: '/brand/sen/sen-icon-light.svg',
+          href: 'https://sen.vaporsoft.dev/vaporsoft',
+          linkLabel: 'Donate to Vaporsoft on Sen',
+          label: 'SEN',
+          special: true,
+          variant: 'standalone'
         },
         surfaces: []
       },
@@ -160,7 +180,7 @@ const catalog = [
         base: {
           name: 'Merch',
           description:
-            'Nothing to print yet. When there is, it comes off these same files — which is why they are drawn as vectors at every size first.',
+            'Nothing to print yet.',
           iconSrc: '/brand/vaporsoft/vaporsoft-mark-merch.svg',
           iconSrcLight: '/brand/vaporsoft/vaporsoft-mark-merch-light.svg',
           label: 'SURFACE',
@@ -223,8 +243,7 @@ const homePageStructuredData = [
 
 <BaseLayout
   title="Vaporsoft | Native, Web, AI, and Digital Assets"
-  description="Vaporsoft builds open-source developer and design tools: Akira system telemetry, Kata text parsing, NFTY asset generation, CRISPR SVG rasterizing."
-  themeColor="#f2ede6"
+  description="Vaporsoft builds open-source developer and design tools: Akira system telemetry, Kata text parsing, NFTY asset generation, CRISPR SVG rasterizing, Sen creator payments."
   bodyClass="vapor-body"
   keywords={[
     'software contracting',
@@ -234,6 +253,7 @@ const homePageStructuredData = [
     'Kata',
     'NFTY',
     'CRISPR',
+    'Sen',
     'cross-platform telemetry',
     'local-first tools'
   ]}

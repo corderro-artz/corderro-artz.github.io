@@ -13,6 +13,8 @@
  * @prop {string}  [href]      – Where the card leads. When set, renders as <a>. A site-relative
  *                               path stays in the tab; an absolute URL opens a new one.
  * @prop {string}  label       – Category label (FABRIC, SURFACE, etc.).
+ * @prop {boolean} [special]  – The one card with a hover of its own: a glint across the mark. Sen's Donate card.
+ * @prop {string}  [linkLabel] – Overrides the link's accessible name.
  * @prop {'foundation'|'surface'|'standalone'|'future'} [variant='surface'] – Card presentation variant.
  */
 interface Props {
@@ -23,10 +25,12 @@ interface Props {
   iconSrcLight?: string;
   href?: string;
   label: string;
+  special?: boolean;
+  linkLabel?: string;
   variant?: 'foundation' | 'surface' | 'standalone' | 'future';
 }
 
-const { name, description, icon, iconSrc, iconSrcLight, href, label, variant = 'surface' } = Astro.props;
+const { name, description, icon, iconSrc, iconSrcLight, href, label, special = false, linkLabel: linkLabelProp, variant = 'surface' } = Astro.props;
 
 // An explicit pair wins over the naming convention, and either is drawn the
 // same way: one image per theme, swapped by the class the toggle sets.
@@ -37,7 +41,7 @@ const markLight = iconSrcLight || (icon ? `/brand/${icon}/${icon}-icon-light.svg
 // Sending an in-site navigation to a new tab is the behaviour the repository
 // pages exist to stop.
 const isExternal = Boolean(href && /^https?:/i.test(href));
-const linkLabel = isExternal ? `Open ${name} on GitHub` : `Open the ${name} page`;
+const linkLabel = linkLabelProp || (isExternal ? `Open ${name}` : `Open the ${name} page`);
 
 const isFoundation = variant === 'foundation';
 const isStandalone = variant === 'standalone';
@@ -49,6 +53,7 @@ const classes = [
   isStandalone ? 'vapor-arch-card--standalone' : '',
   isFoundation ? 'vapor-arch-card--foundation' : '',
   !isFuture ? 'vapor-arch-card--active' : 'vapor-arch-card--future',
+  special ? 'vapor-arch-card--special' : '',
 ].filter(Boolean).join(' ');
 ---
 

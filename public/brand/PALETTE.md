@@ -33,9 +33,12 @@ Carmine and graphite each carry an `-rgb` companion (`--vapor-carmine-rgb`,
 
 ## Theme
 
-Both themes follow the site's own toggle, stored in `localStorage` under
-`vapor-theme`. They do not follow `prefers-color-scheme`, and neither does
-`theme-color` or the `color-scheme` property.
+The theme is the reader's own choice if they have made one with the toggle
+(stored in `localStorage` under `vapor-theme`), otherwise the system's
+`prefers-color-scheme`, and dark where the browser cannot say. It is resolved
+by a script in the document head before first paint, so there is no flash, and
+it sets `theme-color`, `color-scheme` and the favicon from the same result. With
+no stored choice the page follows the system as it changes.
 
 | | Dark | Light |
 |---|---|---|
