@@ -1,15 +1,18 @@
 {
   "name": "vaporsoft-site",
   "private": true,
-  "version": "1.14.0",
+  "version": "1.15.0",
   "type": "module",
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
+    "predev": "node scripts/fetch-repo-data.mjs --if-missing",
     "dev": "astro dev",
     "dev:mock": "node dev/form-mock.mjs",
+    "prestart": "node scripts/fetch-repo-data.mjs --if-missing",
     "start": "astro dev",
+    "prebuild": "node scripts/fetch-repo-data.mjs --if-missing",
     "build": "astro build",
     "preview": "astro preview",
     "repos:fetch": "node scripts/fetch-repo-data.mjs",

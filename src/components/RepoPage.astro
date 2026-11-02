@@ -9,7 +9,7 @@
  * click. Each URL carries its own canonical, title and description.
  *
  * Everything on it is rendered here, at build time, from the payload
- * scripts/fetch-repo-data.mjs committed — including the open panel and the
+ * scripts/fetch-repo-data.mjs fetched at the start of this build — including the open panel and the
  * contents index, so the page is complete before any script runs and stays
  * complete if none ever does. The browser only switches panels, scrolls the
  * document pane to a heading, and marks where in the document the reader is.
@@ -17,6 +17,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteFooter from './SiteFooter.astro';
 import repos from '../data/repos.json';
+import sync from '../data/sync.json';
 import { renderRepoPage, repoStructuredData, displayName } from '../lib/repo-page.mjs';
 import '../styles/repo.css';
 
@@ -69,7 +70,7 @@ const keywords = [
   ogImageHeight={512}
   structuredData={structuredData}
 >
-  <main class="rp-shell" set:html={renderRepoPage(repo, tab)} />
+  <main class="rp-shell" set:html={renderRepoPage(repo, tab, sync.syncedAt)} />
   <SiteFooter class="rp-foot" />
 
   <script is:inline>
@@ -117,7 +118,7 @@ const keywords = [
       var root = location.pathname.replace(/docs\/?$/, '');
       if (root.charAt(root.length - 1) !== '/') root += '/';
 
-      wireRail(stage, '.rp-tab', 'data-tab', function (id) {
+      var mainTabs = wireRail(stage, '.rp-tab', 'data-tab', function (id) {
         panels.forEach(function (p) { p.classList.toggle('is-on', p.dataset.panel === id); });
         var btn = stage.querySelector('.rp-tab[data-tab="' + id + '"]');
         var next = root + (btn ? btn.dataset.url || '' : '');
@@ -126,13 +127,116 @@ const keywords = [
         }
       });
       // Each panel's own rail, for the widths where its columns become pages.
+      var subRails = {};
       panels.forEach(function (p) {
-        wireRail(p, '.rp-subtab', 'data-block', function (id) {
+        subRails[p.dataset.panel] = wireRail(p, '.rp-subtab', 'data-block', function (id) {
           p.querySelectorAll('.rp-block').forEach(function (b) {
             b.classList.toggle('is-on', b.dataset.block === id);
           });
         });
       });
+
+      // A button inside one panel that leads to another — Latest release, Read
+      // the documentation — is a press of that panel's tab, so the rail, the
+      // address and the open panel all agree afterwards.
+      stage.querySelectorAll('[data-goto]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var t = mainTabs.filter(function (x) { return x.dataset.tab === b.dataset.goto; })[0];
+          if (t) { t.click(); t.focus(); }
+        });
+      });
+
+      /* Releases: an index and the page it selects. Every entry is a link to
+         the release on GitHub; the ones whose notes are in the page open here
+         instead. Where the two columns have become sub-tabs, picking a version
+         turns to its notes. */
+      var relPanel = stage.querySelector('.rp-panel[data-panel="releases"]');
+      if (relPanel) {
+        var vers = Array.prototype.slice.call(relPanel.querySelectorAll('.rp-ver[data-rel]'));
+        var notes = Array.prototype.slice.call(relPanel.querySelectorAll('.rp-rel-item'));
+        var notesBody = relPanel.querySelector('.rp-notes-body');
+        vers.forEach(function (v) {
+          v.addEventListener('click', function (e) {
+            e.preventDefault();
+            vers.forEach(function (x) {
+              var on = x === v;
+              x.classList.toggle('is-on', on);
+              if (on) x.setAttribute('aria-current', 'true'); else x.removeAttribute('aria-current');
+            });
+            notes.forEach(function (n) { n.hidden = n.dataset.rel !== v.dataset.rel; });
+            if (notesBody) notesBody.scrollTop = 0;
+            var sub = (subRails.releases || []).filter(function (x) { return x.dataset.block === 'notes'; })[0];
+            if (sub && sub.offsetParent !== null) sub.click();
+          });
+        });
+      }
+
+      /* How old the record is. The server wrote the absolute time; this says
+         it the way a person would, and then asks GitHub whether anything has
+         been pushed since. One unauthenticated request per repository, kept for
+         ten minutes, so browsing the four pages costs four of the sixty an
+         hour the API allows. If it cannot answer, the line just keeps the
+         time — which is still true. */
+      var sync = document.querySelector('[data-sync]');
+      if (sync) {
+        var syncLabel = sync.querySelector('[data-sync-label]');
+        var syncedAt = Date.parse(sync.dataset.synced);
+        var state = { upstream: null };
+        var ago = function (ms) {
+          var m = Math.round(ms / 60000);
+          if (m < 1) return 'just now';
+          if (m < 60) return m + ' min ago';
+          var h = Math.round(m / 60);
+          if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+          var d = Math.round(h / 24);
+          return d + (d === 1 ? ' day ago' : ' days ago');
+        };
+        var paint = function () {
+          var now = Date.now();
+          if (state.upstream) {
+            sync.dataset.state = 'behind';
+            syncLabel.textContent = 'Updating · changed on GitHub ' + ago(now - state.upstream);
+            sync.title = 'GitHub has changes from ' + new Date(state.upstream).toLocaleString()
+              + ' that this page does not show yet. The site rebuilds itself within a few minutes.';
+          } else {
+            syncLabel.textContent = 'Synced ' + ago(now - syncedAt);
+          }
+        };
+        paint();
+        setInterval(paint, 60000);
+
+        var repo = sync.dataset.repo;
+        var pushed = Date.parse(sync.dataset.pushed);
+        var settle = function (ghPushed) {
+          if (!ghPushed) return;
+          if (ghPushed > pushed) {
+            state.upstream = ghPushed;
+          } else {
+            sync.dataset.state = 'current';
+            sync.title = 'Matches GitHub as of ' + new Date().toLocaleTimeString()
+              + '. Fetched ' + new Date(syncedAt).toLocaleString() + '.';
+          }
+          paint();
+        };
+        if (repo && pushed && window.fetch) {
+          var key = 'vapor-gh:' + repo;
+          var cached = null;
+          try { cached = JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (e) {}
+          if (cached && Date.now() - cached.at < 600000) {
+            settle(cached.pushed);
+          } else {
+            fetch('https://api.github.com/repos/' + repo, { headers: { Accept: 'application/vnd.github+json' } })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (j) {
+                if (!j || !j.pushed_at) return;
+                var p = Date.parse(j.pushed_at);
+                try { sessionStorage.setItem(key, JSON.stringify({ pushed: p, at: Date.now() })); } catch (e) {}
+                settle(p);
+              })
+              .catch(function () {});
+          }
+        }
+      }
 
       stage.querySelectorAll('[data-copy]').forEach(function (b) {
         b.addEventListener('click', function () {

@@ -155,6 +155,44 @@ body.vapor-repo-body {
 .rp-crumb { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rp-crumb b { font-weight: 400; color: var(--vapor-carmine); margin-right: 0.15rem; }
 
+/* How old the record is, said once, quietly, beside the theme control. The
+   square is hollow until the page has checked with GitHub; filled when GitHub
+   has nothing newer; and breathing while the site catches up with a change it
+   has not built yet. */
+.rp-sync {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  cursor: default;
+}
+
+.rp-sync > span { overflow: hidden; text-overflow: ellipsis; }
+
+.rp-sync i {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border: 1px solid rgba(var(--vapor-carmine-rgb), 0.7);
+  transition: background-color 400ms ease;
+}
+
+.rp-sync[data-state='current'] i { background: var(--vapor-carmine); }
+.rp-sync[data-state='behind'] i { background: var(--vapor-carmine); animation: rp-breathe 1.8s ease-in-out infinite; }
+.rp-sync[data-state='behind'] { color: var(--theme-text); }
+
+@keyframes rp-breathe { 50% { opacity: 0.25; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rp-sync[data-state='behind'] i { animation: none; }
+}
+
 /* Subtle: no box, no fill. A dot and a word, the same pair the landing page
    uses, sitting at the end of the row where nothing else competes with it. */
 .rp-theme {
@@ -170,6 +208,10 @@ body.vapor-repo-body {
 
 .rp-theme:hover { opacity: 1; border: 0; color: var(--theme-text); }
 .rp-theme:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 3px; }
+
+/* With a sync line in the row, it takes the push to the right edge and the
+   theme control sits after it at a fixed distance. */
+.rp-sync + .rp-theme { margin-left: 1.25rem; }
 
 /* ── Head ──
    cols  1–7   the name block, hard left
@@ -298,67 +340,57 @@ body.vapor-repo-body {
 .rp-copy:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
 
 /* ── The action rail ──
-   The site has one button: 2.75rem tall, wide padding, a full text label. It
-   is right for a hero call to action and too heavy for a row of four
-   repository links. This is a lighter member of the same family, built from
-   the same border and the same Syncopate label: square at rest, opening
-   leftward on hover or focus to name itself. The label is width-animated
-   rather than display-toggled, so it is always in the accessibility tree and
-   always reachable by keyboard. */
+   A column of named destinations, each the same width, so the rail reads as
+   one list rather than a scatter of controls. It used to be a stack of bare
+   glyphs that named themselves only on hover; a reader had to find out what
+   each one was by pointing at it, and on a phone could not at all.
+
+   The label is set left and the glyph right, where the eye ends the line: the
+   word says where, the glyph says what kind of going — out to a new tab, down
+   to a file, across the site. The first is the one the project exists for and
+   carries the accent; the rest are hairline. */
 .rp-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  display: grid;
   gap: 0.35rem;
+  width: 11.5rem;
 }
 
 .rp-rail-btn {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: flex-end;
-  height: 2.25rem;
-  padding: 0 0.7rem;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 2.3rem;
+  padding: 0 0.8rem 0 0.95rem;
   border: 1px solid var(--theme-line);
   background-color: var(--theme-canvas);
   background-image: var(--theme-surface);
   color: var(--theme-text);
-  cursor: pointer;
   text-decoration: none;
-  overflow: hidden;
-  transition: border-color 200ms ease, background-color 200ms ease;
+  transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
 }
 
-.rp-rail-btn svg { width: 1rem; height: 1rem; flex: none; display: block; }
+.rp-rail-btn svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+  display: block;
+  color: var(--theme-muted);
+  transition: color 200ms ease, transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 
-.rp-rail-btn .rp-rail-label {
-  max-width: 0;
-  opacity: 0;
-  overflow: hidden;
-  white-space: nowrap;
+.rp-rail-label {
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.55rem;
+  font-size: 0.6rem;
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  transition: max-width 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 180ms ease,
-    margin-right 260ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* The label sits to the left of the glyph, so the space between them is the
-   label's right margin. */
-.rp-rail-btn:hover .rp-rail-label,
-.rp-rail-btn:focus-visible .rp-rail-label {
-  max-width: 7rem;
-  opacity: 1;
-  margin-right: 0.95rem;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
 }
 
 .rp-rail-btn:hover,
 .rp-rail-btn:focus-visible {
   border-color: rgba(var(--vapor-carmine-rgb), 0.55);
-  background-color: var(--theme-canvas);
   background-image: linear-gradient(
     180deg,
     rgba(var(--vapor-carmine-rgb), 0.14),
@@ -366,14 +398,20 @@ body.vapor-repo-body {
   );
 }
 
+.rp-rail-btn:hover svg,
+.rp-rail-btn:focus-visible svg { color: var(--vapor-accent-text); transform: translateX(2px); }
 .rp-rail-btn:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
-.rp-rail-btn--accent { border-color: rgba(var(--vapor-carmine-rgb), 0.45); color: var(--vapor-accent-text); }
 
-/* A touch reader gets no hover, so the rail opens and stays open there. */
-@media (hover: none) {
-  .rp-rail { flex-direction: row; flex-wrap: nowrap; align-items: center; }
-  .rp-rail-btn .rp-rail-label { max-width: 7rem; opacity: 1; margin-right: 0.95rem; }
+.rp-rail-btn--accent {
+  border-color: rgba(var(--vapor-carmine-rgb), 0.5);
+  background-image: linear-gradient(
+    180deg,
+    rgba(var(--vapor-carmine-rgb), 0.12),
+    rgba(var(--vapor-carmine-rgb), 0.05)
+  );
 }
+
+.rp-rail-btn--accent svg { color: var(--vapor-accent-text); }
 
 /* ── Ledger ──
    Figures on equal columns, hairline-divided, so the strip is symmetric
@@ -407,7 +445,7 @@ body.vapor-repo-body {
 
 .rp-metric span {
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.52rem;
+  font-size: 0.56rem;
   font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -504,6 +542,10 @@ body.vapor-repo-body {
 .rp-blocks--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .rp-blocks--doc { grid-template-columns: 15.5rem minmax(0, 1fr); }
 
+/* What the project is gets the widest column, because it is the one written in
+   sentences. */
+.rp-blocks--overview { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); }
+
 /* A column is a full-height cell divided by the same hairline as everything
    else, so adjacent columns are the same height by construction and the rule
    between them is visibly true from the top edge to the bottom. */
@@ -524,7 +566,7 @@ body.vapor-repo-body {
   gap: 0.75rem;
   margin: 0;
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.57rem;
+  font-size: 0.6rem;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -606,12 +648,12 @@ body.vapor-repo-body {
   );
 }
 
+/* The label is read, not scanned past: set in the text face at a size you do
+   not have to lean in for. The tracked capitals stay for headings, where there
+   are a handful of words and they are meant to be seen before they are read. */
 .rp-kv-row > span:first-child {
-  font-family: 'Syncopate', 'Manrope', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.55rem;
-  font-weight: 400;
+  font-size: 0.76rem;
+  letter-spacing: 0.01em;
   color: var(--theme-muted);
 }
 
@@ -620,6 +662,7 @@ body.vapor-repo-body {
   font-weight: 400;
   text-align: right;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 /* The one value in the table that is a destination rather than a fact. */
@@ -697,75 +740,256 @@ body.vapor-repo-body {
 .rp-lang-item span { font-size: 0.76rem; color: var(--theme-muted); flex: 1; min-width: 0; }
 .rp-lang-item em { font-style: normal; font-size: 0.68rem; color: var(--theme-muted); opacity: 0.7; }
 
-/* ── Project ──
-   The contributors and the community files were two lists of different shapes
-   stacked with a gap between them. One register, on the row rhythm the
-   Specification column uses, so the two columns read as one table divided. */
-.rp-team { display: grid; grid-auto-rows: minmax(2.1rem, 1fr); }
-.rp-team > * { border-top: 1px solid var(--theme-line); }
-.rp-team > :first-child { border-top: 0; }
+/* ── About ──
+   The readme's own opening, then a way into the rest of it, then the four
+   facts a newcomer asks next. The prose sets the measure; the facts sit under
+   it on the leader rows the brand page uses, at their natural height rather
+   than stretched to fill the column. */
+.rp-about { display: grid; gap: 1.1rem; align-content: start; }
 
-.rp-person { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; }
+.rp-about-lead {
+  font-size: 0.86rem;
+  line-height: 1.78;
+  color: var(--theme-muted);
+  max-width: 36rem;
+}
 
-.rp-person span {
-  width: 1.7rem;
-  height: 1.7rem;
+.rp-about-lead p { margin: 0 0 0.75rem; }
+.rp-about-lead p:last-child { margin-bottom: 0; }
+.rp-about-lead p:first-child { color: var(--theme-text); }
+.rp-about-lead strong { color: var(--theme-text); font-weight: 600; }
+.rp-about-lead em { font-style: italic; }
+.rp-about-lead a { color: var(--theme-text); border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.4); }
+
+.rp-about-lead code {
+  font-family: var(--vapor-mono);
+  font-size: 0.85em;
+  color: var(--vapor-accent-text);
+}
+
+.rp-about .rp-kv { grid-auto-rows: auto; }
+.rp-about .rp-kv-row { min-height: 2.2rem; padding: 0.45rem 0; }
+.rp-about .rp-kv-row:first-child { border-top: 1px solid var(--theme-line); }
+
+/* A move to another tab, set as the line that follows the text it continues.
+   Not a button-shaped box: it is the end of the paragraph, pointing on. */
+.rp-onward {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.15rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.45);
+  background: none;
+  color: var(--theme-text);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.rp-onward svg,
+.rp-latest svg {
+  width: 0.85rem;
+  height: 0.85rem;
   flex: none;
-  border: 1px solid var(--theme-line);
+  color: var(--vapor-accent-text);
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rp-onward:hover svg,
+.rp-onward:focus-visible svg,
+.rp-latest:hover svg,
+.rp-latest:focus-visible svg { transform: translateX(3px); }
+.rp-onward:hover { border-bottom-color: var(--vapor-carmine); }
+.rp-onward:focus-visible,
+.rp-latest:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 3px; }
+
+/* ── Activity ──
+   Newest first, and dated: the release that is out, then what has been
+   committed. A commit's message is what it is for, so it leads, and the date
+   and hash follow it in the quiet register. */
+.rp-activity { display: grid; gap: 1rem; align-content: start; }
+
+.rp-latest {
   display: grid;
-  place-items: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'label go'
+    'tag   go'
+    'date  go';
+  align-items: center;
+  gap: 0.15rem 1rem;
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid rgba(var(--vapor-carmine-rgb), 0.4);
+  background: rgba(var(--vapor-carmine-rgb), 0.05);
+  color: var(--theme-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.rp-latest:hover { border-color: rgba(var(--vapor-carmine-rgb), 0.7); background: rgba(var(--vapor-carmine-rgb), 0.09); }
+
+.rp-latest-label {
+  grid-area: label;
+  font-family: 'Syncopate', 'Manrope', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--theme-muted);
 }
 
-.rp-person b { font-weight: 400; flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.rp-person em { font-style: normal; color: var(--theme-muted); font-variant-numeric: tabular-nums; }
-.rp-person:hover b { color: var(--vapor-carmine); }
-
-.rp-file { display: flex; gap: 0.7rem; align-items: center; font-size: 0.78rem; color: var(--theme-muted); }
-.rp-file i { font-style: normal; flex: none; width: 0.9rem; }
-.rp-file.yes { color: var(--theme-text); }
-.rp-file.yes i { color: #2ea44f; }
-.rp-file.no { opacity: 0.55; }
-
-/* ── Releases ── */
-.rp-rel { display: grid; gap: 0; }
-
-.rp-rel-item {
-  border-top: 1px solid var(--theme-line);
-  padding: 1rem 0;
-  display: grid;
-  gap: 0.65rem;
+.rp-latest b {
+  grid-area: tag;
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
 }
 
-.rp-rel-item:first-child { border-top: 0; padding-top: 0; }
-.rp-rel-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.85rem; }
+.rp-latest em { grid-area: date; font-style: normal; font-size: 0.72rem; color: var(--theme-muted); }
+.rp-latest svg { grid-area: go; }
+
+.rp-commits { display: grid; gap: 0; }
+
+.rp-commit {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--theme-line);
+}
+
+.rp-commit:first-child { border-top: 0; padding-top: 0; }
+
+.rp-commit-msg {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--theme-text);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  transition: color 150ms ease;
+}
+
+.rp-commit-meta { display: flex; gap: 0.75rem; align-items: baseline; font-size: 0.68rem; color: var(--theme-muted); }
+.rp-commit-meta code { font-family: var(--vapor-mono); font-size: 0.66rem; color: var(--vapor-accent-text); opacity: 0.85; }
+.rp-commit:hover .rp-commit-msg,
+.rp-commit:focus-visible .rp-commit-msg { color: var(--vapor-accent-text); }
+.rp-commit:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: 2px; }
+
+/* A way out to the full record on GitHub, in the register of a footnote. */
+.rp-quiet-link {
+  justify-self: start;
+  font-size: 0.72rem;
+  color: var(--theme-muted);
+  border-bottom: 1px solid var(--theme-line);
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.rp-quiet-link::after { content: ' \2197'; color: var(--vapor-accent-text); }
+.rp-quiet-link:hover,
+.rp-quiet-link:focus-visible { color: var(--theme-text); border-bottom-color: var(--vapor-carmine); outline: none; }
+
+/* ── Releases ──
+   An index of versions beside the notes for the one selected — the shape the
+   documentation already has, so the two tabs are read the same way. */
+.rp-vers { display: grid; gap: 0; align-content: start; }
+
+.rp-ver {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'tag  pre'
+    'date pre';
+  gap: 0.1rem 0.6rem;
+  align-items: center;
+  padding: 0.55rem 0.6rem 0.55rem 0.8rem;
+  border-left: 1px solid transparent;
+  color: var(--theme-muted);
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.rp-ver b {
+  grid-area: tag;
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rp-ver time { grid-area: date; font-size: 0.66rem; opacity: 0.8; }
+
+.rp-ver-pre {
+  grid-area: pre;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vapor-accent-text);
+  border: 1px solid rgba(var(--vapor-carmine-rgb), 0.4);
+  padding: 0.1rem 0.35rem;
+}
+
+.rp-ver svg { grid-area: pre; width: 0.75rem; height: 0.75rem; opacity: 0.6; }
+.rp-ver:hover { color: var(--theme-text); border-left-color: rgba(var(--vapor-carmine-rgb), 0.45); }
+.rp-ver.is-on { color: var(--theme-text); border-left-color: var(--vapor-carmine); background: rgba(var(--vapor-carmine-rgb), 0.06); }
+.rp-ver:focus-visible { outline: 2px solid var(--vapor-carmine); outline-offset: -2px; }
+
+/* Older than the notes the page carries: listed, dimmer, and leaving. */
+.rp-ver--away { opacity: 0.7; }
+.rp-ver--away .rp-ver-pre { display: none; }
+
+.rp-notes-body { padding-right: 0.9rem; }
+.rp-rel-item { display: grid; gap: 0.9rem; max-width: 46rem; }
+.rp-rel-item[hidden] { display: none; }
+
+.rp-rel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.9rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--theme-line);
+}
 
 .rp-rel-head h3 {
   margin: 0;
   font-family: 'Space Grotesk', 'Manrope', sans-serif;
   font-weight: 400;
-  font-size: 0.98rem;
+  font-size: 1.15rem;
   letter-spacing: 0.04em;
 }
 
-.rp-rel-date { font-size: 0.7rem; color: var(--theme-muted); margin-left: auto; }
-.rp-rel-notes { font-size: 0.82rem; line-height: 1.7; color: var(--theme-muted); }
+.rp-rel-date { font-size: 0.74rem; color: var(--theme-muted); }
+.rp-rel-head .rp-quiet-link { margin-left: auto; }
+.rp-rel-notes { font-size: 0.86rem; line-height: 1.75; color: var(--theme-muted); }
 
-.rp-rel-notes h4 {
+.rp-rel-notes h4,
+.rp-files-title {
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.56rem;
-  letter-spacing: 0.14em;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--theme-text);
-  margin: 0.8rem 0 0.35rem;
+  margin: 1rem 0 0.4rem;
   font-weight: 400;
 }
 
+.rp-files-title { margin: 0.3rem 0 0; }
+.rp-rel-notes > :first-child { margin-top: 0; }
+
 .rp-rel-notes p,
-.rp-rel-notes ul { margin: 0 0 0.45rem; }
+.rp-rel-notes ul { margin: 0 0 0.5rem; }
 .rp-rel-notes ul { padding-left: 1.05rem; }
+.rp-rel-notes li { margin-bottom: 0.2rem; }
 .rp-rel-notes li::marker { color: var(--vapor-carmine); }
 .rp-rel-notes strong { color: var(--theme-text); font-weight: 600; }
 .rp-rel-notes code { font-family: var(--vapor-mono); font-size: 0.82em; color: var(--vapor-accent-text); }
@@ -774,7 +998,7 @@ body.vapor-repo-body {
   border-collapse: collapse;
   width: 100%;
   margin: 0.5rem 0 0.7rem;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   display: block;
   overflow-x: auto;
   scrollbar-width: thin;
@@ -783,62 +1007,44 @@ body.vapor-repo-body {
 .rp-rel-notes th,
 .rp-rel-notes td {
   border: 1px solid var(--theme-line);
-  padding: 0.32rem 0.6rem;
+  padding: 0.35rem 0.65rem;
   text-align: left;
   white-space: nowrap;
 }
 
 .rp-rel-notes th {
   font-family: 'Syncopate', 'Manrope', sans-serif;
-  font-size: 0.52rem;
+  font-size: 0.54rem;
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--theme-muted);
 }
 
-.rp-rel-more { border-top: 1px solid var(--theme-line); padding-top: 0.9rem; margin: 0; font-size: 0.78rem; }
-.rp-rel-more a { border-bottom: 1px solid rgba(var(--vapor-carmine-rgb), 0.4); }
-.rp-rel-more a:hover { color: var(--vapor-carmine); }
-
 .rp-assets { display: grid; gap: 0; }
 
 .rp-asset {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: baseline;
-  gap: 0.8rem;
-  padding: 0.4rem 0;
-  border-top: 1px dashed var(--theme-line);
-  font-size: 0.75rem;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--theme-line);
+  font-size: 0.78rem;
 }
 
-.rp-asset a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.rp-asset a:hover { color: var(--vapor-carmine); }
+.rp-asset:first-child { border-top: 0; }
+.rp-asset a { min-width: 0; overflow-wrap: anywhere; color: var(--theme-text); }
+.rp-asset a:hover { color: var(--vapor-accent-text); }
 
 .rp-asset em {
   font-style: normal;
   color: var(--theme-muted);
+  font-size: 0.72rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  text-align: right;
 }
-
-/* ── Commits ── */
-.rp-commits { display: grid; gap: 0; }
-
-.rp-commit {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.2rem 0.8rem;
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--theme-line);
-  font-size: 0.79rem;
-}
-
-.rp-commit:first-child { border-top: 0; padding-top: 0; }
-.rp-commit code { font-family: var(--vapor-mono); font-size: 0.72rem; color: var(--vapor-accent-text); }
-.rp-commit > span { min-width: 0; overflow-wrap: anywhere; }
-.rp-commit time { grid-column: 2; color: var(--theme-muted); font-size: 0.68rem; }
-.rp-commit:hover > span { color: var(--theme-text); }
 
 /* ── Documentation ──
    The index is a standing column, not a list buried in the prose. It is built
@@ -1078,7 +1284,7 @@ body.vapor-repo-body {
   .rp-shell { --rp-pad: 1.4rem; }
 
   .rp-head {
-    grid-template-columns: minmax(0, 1fr) auto 10rem;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-areas:
       'copy mark rail'
       'cmd  mark rail';
@@ -1173,24 +1379,13 @@ body.vapor-repo-body {
     align-items: center;
   }
 
-  /* Flat, the rail ran wider than the frame — and it did not scroll, because
-     the frame clips its overflow, so the last action could not be reached.
-     Two columns fits, and reads as a block rather than a row that ran out. */
+  /* Two columns of named actions under the name block, so the whole rail is
+     on screen and nothing has to scroll sideways to be reached. */
   .rp-hero-rail { justify-self: stretch; min-width: 0; }
-  .rp-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+  .rp-rail { width: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
 
   /* An odd number of actions would leave the last one alone in half a row. */
   .rp-rail-btn:nth-child(odd):last-child { grid-column: 1 / -1; }
-  .rp-rail-btn { justify-content: center; height: 2.3rem; }
-
-  /* Open from the start here, so nothing animates on load and no label is
-     caught mid-transition. */
-  .rp-rail-btn .rp-rail-label {
-    max-width: 7rem;
-    opacity: 1;
-    margin-right: 0.95rem;
-    transition: none;
-  }
 
   /* A wrapping chip row changes the head's height as the data changes. It
      travels sideways instead, so the head is the same height on every

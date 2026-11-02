@@ -41,7 +41,9 @@ const GLYPH = {
   source: '<path d="M5.9 3.9 2 8l3.9 4.1M10.1 3.9 14 8l-3.9 4.1"/>',
   release: '<path d="M8.4 2.2H2.2v6.2L8 14.2l6.2-6.2z"/><path d="M4.6 4.6h1.5v1.5H4.6z"/>',
   download: '<path d="M8 1.9v7.7"/><path d="M4.7 6.3 8 9.6l3.3-3.3"/><path d="M2.3 13.8h11.4"/>',
-  open: '<path d="M7.6 2.9H2.6v10.5h10.5v-5"/><path d="M9.6 2.2h4.2v4.2"/><path d="M13.8 2.2 7.9 8.1"/>'
+  open: '<path d="M7.6 2.9H2.6v10.5h10.5v-5"/><path d="M9.6 2.2h4.2v4.2"/><path d="M13.8 2.2 7.9 8.1"/>',
+  next: '<path d="M2.6 8h10.8"/><path d="M9.4 3.9 13.5 8l-4.1 4.1"/>',
+  manual: '<path d="M8 3.6C6.6 2.6 4.6 2.2 2.2 2.4v10.2c2.4-.2 4.4.2 5.8 1.2 1.4-1 3.4-1.4 5.8-1.2V2.4c-2.4-.2-4.4.2-5.8 1.2z"/><path d="M8 3.6v10.2"/>'
 };
 const icon = (k) => '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" '
   + 'stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
@@ -53,8 +55,29 @@ const icon = (k) => '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="fals
    and read as one broken glyph. Outside, there is nothing to collide with, and
    it is the more honest place for it: getting back to the site is not part of
    the repository's record. The arrow is drawn on the same grid and at the same
-   stroke as the action rail's glyphs, and steps left on hover. */
-export function renderBar(crumb) {
+   stroke as the action rail's glyphs, and steps left on hover.
+
+   `sync`, on a repository page, says how old the record is: when this build
+   fetched it, and which repository to ask whether that is still true. The
+   server-rendered text is the absolute time, which is right whenever it is
+   read; the page's script turns it into "12 min ago" and checks GitHub. */
+function fmtStamp(iso) {
+  const d = new Date(iso);
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const mm = String(d.getUTCMinutes()).padStart(2, '0');
+  return fmtDate(iso) + ', ' + hh + ':' + mm + ' UTC';
+}
+
+function fSync(sync) {
+  if (!sync || !sync.syncedAt) return '';
+  return '<span class="rp-sync" data-sync data-synced="' + esc(sync.syncedAt) + '"'
+    + (sync.repo ? ' data-repo="' + esc(sync.repo) + '" data-pushed="' + esc(sync.pushedAt) + '"' : '')
+    + ' title="Fetched from GitHub ' + esc(fmtStamp(sync.syncedAt)) + '">'
+    + '<i aria-hidden="true"></i>'
+    + '<span data-sync-label>Synced ' + esc(fmtStamp(sync.syncedAt)) + '</span></span>';
+}
+
+export function renderBar(crumb, sync) {
   return '<div class="rp-bar">'
     + '<a class="rp-back" href="/">'
     + '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" '
@@ -62,6 +85,7 @@ export function renderBar(crumb) {
     + '<path d="M13.4 8H2.6"/><path d="M6.6 3.9 2.5 8l4.1 4.1"/></svg>'
     + '<span>Vaporsoft</span></a>'
     + '<span class="rp-crumb"><b>/</b> ' + esc(crumb) + '</span>'
+    + fSync(sync)
     + '<button type="button" class="vapor-theme-toggle rp-theme" data-theme-toggle>'
     + '<span class="vapor-theme-toggle-dot"></span><span data-theme-label>LIGHT</span></button>'
     + '</div>';
@@ -116,18 +140,24 @@ export function newestRelease(r) {
 
 const cloneCommand = (r) => 'git clone ' + r.htmlUrl + '.git';
 
-function packageCommand(r) {
+// The NuGet package a release ships, read off the .nupkg attached to it.
+function nugetPackage(r) {
   const nupkg = r.releases.reduce((a, x) => a.concat(x.assets), [])
     .find((a) => a.name.endsWith('.nupkg'));
   if (!nupkg) return null;
   const m = /^(.+?)\.(\d+\.\d+\.\d+)(-[^.]+(?:\.[^.]+)*?)?\.nupkg$/.exec(nupkg.name);
-  const id = m ? m[1] : nupkg.name.replace(/\.\d+\.\d+\.\d+.*$/, '');
+  return { id: m ? m[1] : nupkg.name.replace(/\.\d+\.\d+\.\d+.*$/, ''), pre: Boolean(m && m[3]) };
+}
+
+function packageCommand(r) {
+  const pkg = nugetPackage(r);
+  if (!pkg) return null;
   // `dotnet add package` without a version resolves only stable releases and
   // fails outright when a package has none, as every alpha-only package here
   // does. `--prerelease` rather than a pinned `--version`: the release tag and
   // what is actually on NuGet have drifted before, and the flag always
   // resolves to a version the feed really has.
-  return 'dotnet add package ' + id + (m && m[3] ? ' --prerelease' : '');
+  return 'dotnet add package ' + pkg.id + (pkg.pre ? ' --prerelease' : '');
 }
 
 /* Where the project actually runs, if it runs anywhere.
@@ -159,21 +189,38 @@ const people = (r) => r.contributors.filter((c) => !/\[bot\]$/.test(c.login));
 
 /* ── Head ── */
 
+/* Projects whose documentation is a site of its own rather than a readme.
+   /<repo>/docs/ is that site, built into public/ by
+   scripts/build-external-docs.mjs, so the console must not also claim the
+   address: its Documentation tab keeps showing the readme but stops rewriting
+   the URL, and points at the manual instead. */
+export const EXTERNAL_DOCS = { nfty: '/nfty/docs/' };
+
+/* The ways out, each named. The rail used to be four square glyphs that said
+   what they were only on hover, which a reader had to discover one at a time,
+   and could not at all on a phone until the layout gave up and opened them.
+   A glyph does not say where it goes; a word does. The glyph stays as the
+   mark of the kind of place — leaves the site, downloads, stays here. */
 function fRail(r) {
   const site = liveSite(r);
   const rel = newestRelease(r);
-  const asset = rel && rel.assets.length ? rel.assets[0] : null;
+  const name = displayName(r.name.toLowerCase());
+  const manual = EXTERNAL_DOCS[r.name.toLowerCase()];
   const items = [];
-  if (site) items.push(['open', 'Open', 'Open the ' + r.name + ' app', site, true]);
-  if (asset) items.push(['download', 'Download', 'Download ' + rel.tag, asset.url, !site]);
-  items.push(['source', 'Source', 'Source code on GitHub', r.htmlUrl, false]);
-  if (rel) items.push(['release', 'Releases', 'All releases on GitHub', r.htmlUrl + '/releases', false]);
-  return '<nav class="rp-rail" aria-label="' + esc(r.name) + ' links">'
+  if (site) items.push({ glyph: 'open', label: 'Open app', title: 'Open ' + name + ' at ' + siteLabel(site), href: site, ext: true });
+  if (manual) items.push({ glyph: 'manual', label: 'Manual', title: 'The full ' + name + ' manual', href: manual, ext: false });
+  if (rel && rel.assets.length) items.push({ glyph: 'download', label: 'Download', title: 'Download ' + rel.tag + ' on GitHub', href: rel.url, ext: true });
+  const pkg = nugetPackage(r);
+  if (pkg) items.push({ glyph: 'download', label: 'NuGet', title: pkg.id + ' on NuGet', href: 'https://www.nuget.org/packages/' + pkg.id, ext: true });
+  items.push({ glyph: 'source', label: 'Source', title: 'Source code on GitHub', href: r.htmlUrl, ext: true });
+  // The first is what the project is for, so it is the one in the accent.
+  items[0].accent = items.length > 1;
+  return '<nav class="rp-rail" aria-label="' + esc(name) + ' links">'
     + items.map((it) =>
-        '<a class="rp-rail-btn' + (it[4] ? ' rp-rail-btn--accent' : '') + '" href="' + esc(it[3])
-        + '" target="_blank" rel="noopener" aria-label="' + esc(it[2]) + '">'
-        + '<span class="rp-rail-label" aria-hidden="true">' + esc(it[1]) + '</span>'
-        + icon(it[0]) + '</a>').join('')
+        '<a class="rp-rail-btn' + (it.accent ? ' rp-rail-btn--accent' : '') + '" href="' + esc(it.href) + '"'
+        + (it.ext ? ' target="_blank" rel="noopener"' : '') + ' title="' + esc(it.title) + '">'
+        + '<span class="rp-rail-label">' + esc(it.label) + '</span>'
+        + icon(it.glyph) + '</a>').join('')
     + '</nav>';
 }
 
@@ -202,7 +249,7 @@ function fHead(r) {
   const slug = r.name.toLowerCase();
   return '<header class="rp-head">'
     + '<div class="rp-hero-copy">'
-    + '<h1>' + esc(displayName(r.name.toLowerCase())) + '</h1>'
+    + '<h1>' + esc(displayName(slug)) + '</h1>'
     + '<p class="rp-lede">' + esc(r.description) + '</p>'
     + fChips(r)
     + '</div>'
@@ -239,26 +286,98 @@ function fKv(rows) {
     + '<span>' + r[1] + '</span></div>').join('') + '</div>';
 }
 
-function specRows(r) {
-  // Version, licence and activity are already in the chip row, and the counts
-  // are already in the ledger. Repeating them here was the page saying the
-  // same thing three times in three type styles.
-  const rel = newestRelease(r);
+const textOf = (html) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+/* What the project is, in its own words: the opening prose of its readme. The
+   one-line description above says what it is called and what kind of thing it
+   is; this is the paragraph that says why it exists, which is the thing a
+   reader landing here does not yet know. Taken at build time from the
+   document that is actually there, so it cannot drift from it.
+
+   A readme opens with a bold tagline (the description, again) and sometimes
+   an image; neither is prose, so neither is taken. Then whole sentences, in
+   order, until the next would not fit the column without it scrolling. The
+   full text is one press away, and the link to it follows the last sentence
+   taken. A sentence is never cut in half. */
+const LEAD_BUDGET = 440;
+
+// Sentence ends in markup: a full stop, question or exclamation mark followed
+// by a space, outside any tag. Returned as offsets into the HTML.
+function sentenceEnds(html) {
+  const ends = [];
+  let inTag = false;
+  for (let i = 0; i < html.length; i++) {
+    const c = html[i];
+    if (c === '<') inTag = true;
+    else if (c === '>') inTag = false;
+    else if (!inTag && /[.!?]/.test(c) && (i + 1 === html.length || /\s/.test(html[i + 1]))) ends.push(i + 1);
+  }
+  if (!ends.length || ends[ends.length - 1] !== html.length) ends.push(html.length);
+  return ends;
+}
+
+// Close whatever inline elements a cut left open, innermost first.
+function closeOpen(html) {
+  const open = [];
+  for (const m of html.matchAll(/<(\/?)([a-z]+)\b[^>]*?(\/?)>/gi)) {
+    if (m[3] || /^(br|img)$/i.test(m[2])) continue;
+    if (m[1]) open.pop(); else open.push(m[2]);
+  }
+  return html + open.reverse().map((t) => '</' + t + '>').join('');
+}
+
+export function readmeLead(html) {
+  const paras = [];
+  let used = 0;
+  let rest = html;
+  for (;;) {
+    const m = /^\s*<p>([\s\S]*?)<\/p>/.exec(rest);
+    if (!m) break;
+    rest = rest.slice(m[0].length);
+    const inner = m[1].trim();
+    const prose = textOf(inner) && !/^<strong>[^<]*<\/strong>(?:\s*<br\s*\/?>)*$/.test(inner);
+    if (!prose) {
+      if (paras.length) break;
+      continue;
+    }
+    let take = '';
+    for (const end of sentenceEnds(inner)) {
+      const next = inner.slice(0, end);
+      // The first sentence is always taken, however long; after it, only
+      // what still fits.
+      if (take && used + textOf(next).length > LEAD_BUDGET) break;
+      if (!take && !paras.length) { take = next; continue; }
+      if (used + textOf(next).length > LEAD_BUDGET) break;
+      take = next;
+    }
+    if (!take) break;
+    paras.push(closeOpen(take.trim()));
+    used += textOf(take).length;
+    if (take.length < inner.length) break;
+  }
+  return paras;
+}
+
+function fAbout(r, doc, manual) {
+  const lead = readmeLead(doc);
   const site = liveSite(r);
-  return [
-    // Stated, not only offered. The action rail carries an Open button, but a
-    // glyph does not tell a reader *where* it goes; the address does, and it
-    // is the single most useful fact about a project that is running.
-    ['Live site', site
-      ? '<a class="rp-kv-link" href="' + esc(site) + '" target="_blank" rel="noopener">'
-        + esc(siteLabel(site)) + '</a>'
+  const facts = [
+    ['Live at', site
+      ? '<a class="rp-kv-link" href="' + esc(site) + '" target="_blank" rel="noopener">' + esc(siteLabel(site)) + '</a>'
       : null],
-    ['First commit', esc(fmtDate(r.createdAt))],
-    ['Latest release', rel ? esc(fmtDate(rel.publishedAt)) : null],
-    ['Last commit', esc(fmtDate(r.pushedAt))],
-    ['Default branch', esc(r.defaultBranch)],
-    ['Repository size', fmtBytes(r.sizeKb * 1024)]
+    ['Licence', r.license ? esc(r.license) : null],
+    ['Started', esc(fmtDate(r.createdAt))],
+    ['Repository', '<a class="rp-kv-link" href="' + esc(r.htmlUrl) + '" target="_blank" rel="noopener">'
+      + esc(r.fullName) + '</a>']
   ];
+  return '<div class="rp-about">'
+    + (lead.length
+        ? '<div class="rp-about-lead">' + lead.map((p) => '<p>' + p + '</p>').join('') + '</div>'
+        : '')
+    + '<button class="rp-onward" type="button" data-goto="documentation">'
+    + '<span>' + (manual ? 'Read the readme' : 'Read the documentation') + '</span>' + icon('next') + '</button>'
+    + fKv(facts)
+    + '</div>';
 }
 
 function fLanguages(r) {
@@ -275,6 +394,33 @@ function fLanguages(r) {
         '<span class="rp-lang-item"><i style="background:' + x.color + '"></i>'
         + '<b>' + x.pct.toFixed(1) + '%</b><span>' + esc(x.name) + '</span>'
         + '<em>' + fmtBytes(x.bytes) + '</em></span>').join('') + '</div>'
+    + '</div>';
+}
+
+/* What has happened lately, newest first: the release, then the commits since.
+   The release is a way into the Releases tab rather than a summary of it —
+   the notes are one click away, at full width. */
+function fActivity(r) {
+  const rel = newestRelease(r);
+  return '<div class="rp-activity">'
+    + (rel
+        ? '<button class="rp-latest" type="button" data-goto="releases">'
+          + '<span class="rp-latest-label">Latest release</span>'
+          + '<b>' + esc(rel.tag) + '</b>'
+          + '<em>' + esc(fmtDate(rel.publishedAt)) + (rel.prerelease ? ' &middot; prerelease' : '') + '</em>'
+          + icon('next') + '</button>'
+        : '')
+    + (r.commits.length
+        ? '<div class="rp-commits">' + r.commits.map((c) =>
+            '<a class="rp-commit" href="' + esc(c.url) + '" target="_blank" rel="noopener">'
+            + '<span class="rp-commit-msg">' + esc(c.message) + '</span>'
+            + '<span class="rp-commit-meta"><time datetime="' + esc(c.date) + '">' + esc(fmtDate(c.date)) + '</time>'
+            + '<code>' + esc(c.sha) + '</code></span></a>').join('') + '</div>'
+        : '<p class="rp-note">No commits returned.</p>')
+    + (r.commitTotal > r.commits.length
+        ? '<a class="rp-quiet-link" href="' + esc(r.htmlUrl) + '/commits/' + esc(r.defaultBranch) + '" target="_blank" rel="noopener">'
+          + 'All ' + num(r.commitTotal) + ' commits on GitHub</a>'
+        : '')
     + '</div>';
 }
 
@@ -322,68 +468,51 @@ function mdLite(src) {
   return out;
 }
 
-// NFTY has forty-four published releases and their notes came to 190KB of
-// markup on a page nobody scrolls that far down. The newest fifteen are the
-// ones anyone reads; the rest are one link away, and the ledger still reports
-// the true total.
+/* Releases are an index and a page, the way the documentation is: every
+   version down the left, the one you picked at full width on the right. A
+   stack of every release's notes made NFTY's forty-seven a column you scrolled
+   through to find one, and gave the newest no more standing than the oldest.
+
+   The newest fifteen carry their notes in the page; NFTY's full set came to
+   190KB of markup. Older versions are still listed — the index is cheap — and
+   link to their page on GitHub. Every entry is a real link to GitHub, so with
+   no script the index still goes somewhere; the script keeps the ones it can
+   show here. */
 const RELEASES_SHOWN = 15;
 
-function fReleases(r) {
+function fVersions(r) {
   if (!r.releases.length) return '<p class="rp-note">No releases published.</p>';
-  const shown = r.releases.slice(0, RELEASES_SHOWN);
-  const rest = r.releases.length - shown.length;
-  return '<div class="rp-rel">' + shown.map((x) => {
-    const assets = x.assets.length
-      ? '<div class="rp-assets">' + x.assets.map((a) =>
+  return '<nav class="rp-vers" aria-label="Versions">' + r.releases.map((x, i) => {
+    const here = i < RELEASES_SHOWN;
+    return '<a class="rp-ver' + (i === 0 ? ' is-on' : '') + (here ? '' : ' rp-ver--away') + '" href="' + esc(x.url) + '"'
+      + (here ? ' data-rel="' + i + '"' : ' target="_blank" rel="noopener"')
+      + (i === 0 ? ' aria-current="true"' : '') + '>'
+      + '<b>' + esc(x.tag) + '</b>'
+      + (x.prerelease ? '<span class="rp-ver-pre">pre</span>' : '')
+      + '<time datetime="' + esc(x.publishedAt) + '">' + esc(fmtDate(x.publishedAt)) + '</time>'
+      + (here ? '' : icon('open'))
+      + '</a>';
+  }).join('') + '</nav>';
+}
+
+function fNotes(r) {
+  if (!r.releases.length) return '<p class="rp-note">Nothing has been released yet.</p>';
+  return r.releases.slice(0, RELEASES_SHOWN).map((x, i) => {
+    const notes = mdLite(x.body);
+    const files = x.assets.length
+      ? '<h4 class="rp-files-title">Files</h4><div class="rp-assets">' + x.assets.map((a) =>
           '<div class="rp-asset"><a href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.name) + '</a>'
           + '<em>' + fmtBytes(a.size) + '</em><em>' + num(a.downloads)
           + (a.downloads === 1 ? ' download' : ' downloads') + '</em></div>').join('') + '</div>'
       : '';
-    return '<div class="rp-rel-item">'
-      + '<div class="rp-rel-head"><h3>' + esc(x.tag) + '</h3>'
+    return '<article class="rp-rel-item" data-rel="' + i + '"' + (i === 0 ? '' : ' hidden') + '>'
+      + '<header class="rp-rel-head"><h3>' + esc(x.tag) + '</h3>'
       + (x.prerelease ? '<span class="rp-tag rp-tag--pre">Prerelease</span>' : '')
-      + '<span class="rp-rel-date">' + esc(fmtDate(x.publishedAt)) + '</span></div>'
-      + '<div class="rp-rel-notes">' + mdLite(x.body) + '</div>' + assets + '</div>';
-  }).join('')
-    + (rest
-        ? '<p class="rp-note rp-rel-more"><a href="' + esc(r.htmlUrl) + '/releases" target="_blank" '
-          + 'rel="noopener">' + num(rest) + ' earlier ' + (rest === 1 ? 'release' : 'releases')
-          + ' on GitHub</a></p>'
-        : '')
-    + '</div>';
-}
-
-function fCommits(r) {
-  if (!r.commits.length) return '<p class="rp-note">No commits returned.</p>';
-  return '<div class="rp-commits">' + r.commits.map((c) =>
-    '<a class="rp-commit" href="' + esc(c.url) + '" target="_blank" rel="noopener">'
-    + '<code>' + esc(c.sha) + '</code><span>' + esc(c.message) + '</span>'
-    + '<time datetime="' + esc(c.date) + '">' + esc(fmtDate(c.date)) + '</time></a>').join('') + '</div>';
-}
-
-const HEALTH_LABELS = {
-  readme: 'Readme', license: 'Licence', contributing: 'Contributing guide',
-  code_of_conduct: 'Code of conduct', issue_template: 'Issue template',
-  pull_request_template: 'Pull request template'
-};
-
-function fTeam(r) {
-  // github-actions is a workflow, not a contributor; listing it overstates the
-  // team by one on every repository with CI.
-  const rows = people(r).map((c) =>
-    '<a class="rp-person" href="' + esc(c.url) + '" target="_blank" rel="noopener">'
-    + '<span>' + esc(c.login[0].toUpperCase()) + '</span><b>' + esc(c.login) + '</b>'
-    + '<em>' + num(c.contributions) + '</em></a>');
-  const files = r.community ? r.community.files : null;
-  if (files) {
-    Object.keys(HEALTH_LABELS).forEach((k) => {
-      const yes = Boolean(files[k]);
-      // An absent optional file is not a failure, so it is not marked as one.
-      rows.push('<div class="rp-file ' + (yes ? 'yes' : 'no') + '"><i>'
-        + (yes ? '&#10003;' : '&ndash;') + '</i>' + HEALTH_LABELS[k] + '</div>');
-    });
-  }
-  return '<div class="rp-team">' + rows.join('') + '</div>';
+      + '<span class="rp-rel-date">' + esc(fmtDate(x.publishedAt)) + '</span>'
+      + '<a class="rp-quiet-link" href="' + esc(x.url) + '" target="_blank" rel="noopener">On GitHub</a></header>'
+      + (notes ? '<div class="rp-rel-notes">' + notes + '</div>' : '<p class="rp-note">No notes with this release.</p>')
+      + files + '</article>';
+  }).join('');
 }
 
 /* ── Assembly ──────────────────────────────────────────────────────────────
@@ -446,13 +575,6 @@ function fToc(html) {
   }).join('') + '</nav>';
 }
 
-/* Projects whose documentation is a site of its own rather than a readme.
-   /<repo>/docs/ is that site, built into public/ by
-   scripts/build-external-docs.mjs, so the console must not also claim the
-   address: its Documentation tab keeps showing the readme but stops rewriting
-   the URL, and points at the manual instead. */
-export const EXTERNAL_DOCS = { nfty: '/nfty/docs/' };
-
 /* Which panel a route opens on. `url` is how the browser keeps the address in
    step when the reader switches tabs by hand, and it is the address a link to
    that tab should use. Overview is the repository's own root. */
@@ -468,11 +590,13 @@ const TABS = [
  * Three tabs, because three is what the record divides into cleanly: what the
  * project is, what it says about itself, and what it has shipped. `open` is
  * which one the route asked for; every panel is in the markup either way.
+ * `syncedAt` is when this build fetched the record, for the line above it.
  */
-export function renderRepoPage(r, open = 'overview') {
+export function renderRepoPage(r, open = 'overview', syncedAt = null) {
   const doc = stripHandWrittenToc(r.readmeHtml);
   const manual = EXTERNAL_DOCS[r.name.toLowerCase()] || null;
-  return renderBar(r.name.toLowerCase())
+  return renderBar(r.name.toLowerCase(),
+      syncedAt ? { syncedAt, repo: r.fullName, pushedAt: r.pushedAt } : null)
     + '<div class="rp-console vapor-frame">'
     + fHead(r)
     + fLedger(r)
@@ -491,28 +615,26 @@ export function renderRepoPage(r, open = 'overview') {
     + '</div>'
     + '<div class="rp-panels">'
     + panel('overview', [
-        { id: 'spec', jp: '仕様', label: 'Specification', bodyClass: 'rp-block-body--fill', body: fKv(specRows(r)) },
-        { id: 'comp', jp: '構成', label: 'Composition', bodyClass: 'rp-block-body--fill', body: fLanguages(r) },
-        { id: 'team', jp: '開発', label: 'Project', bodyClass: 'rp-block-body--fill', body: fTeam(r) }
-      ], '3', open === 'overview')
+        { id: 'about', jp: '概要', label: 'About', body: fAbout(r, doc, manual) },
+        { id: 'comp', jp: '構成', label: 'Built with', bodyClass: 'rp-block-body--fill', body: fLanguages(r) },
+        { id: 'activity', jp: '履歴', label: 'Activity', body: fActivity(r) }
+      ], 'overview', open === 'overview')
     + panel('documentation', [
         { id: 'toc', jp: '目次', label: 'Contents', body: fToc(doc) },
-        { id: 'doc', jp: '文書', label: 'Document', bodyClass: 'rp-doc-body',
+        { id: 'doc', jp: '文書', label: 'Readme', bodyClass: 'rp-doc-body',
           body: (manual
             ? '<a class="rp-manual" href="' + esc(manual) + '">'
               + '<span class="rp-manual-label">Full manual</span>'
-              + '<span class="rp-manual-note">Installation, guides and reference &mdash; the readme below is the '
+              + '<span class="rp-manual-note">Installation, guides and reference. The readme below is the '
               + 'short version.</span>'
-              + '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" '
-              + 'stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter">'
-              + '<path d="M2.6 8h10.8"/><path d="M9.4 3.9 13.5 8l-4.1 4.1"/></svg></a>'
+              + icon('next') + '</a>'
             : '')
             + '<div class="rp-readme">' + doc + '</div>' }
       ], 'doc', open === 'documentation')
     + panel('releases', [
-        { id: 'rel', jp: '版', label: 'Published', body: fReleases(r) },
-        { id: 'log', jp: '履歴', label: 'Recent commits', body: fCommits(r) }
-      ], '2', open === 'releases')
+        { id: 'versions', jp: '版', label: 'Versions', body: fVersions(r) },
+        { id: 'notes', jp: '注記', label: 'Notes', bodyClass: 'rp-notes-body', body: fNotes(r) }
+      ], 'doc', open === 'releases')
     + '</div>'
     + '</div>';
 }

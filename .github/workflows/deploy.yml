@@ -1,8 +1,21 @@
 name: Deploy to GitHub Pages
 
+# Four ways in, because the site renders other repositories and has to follow
+# them, not only its own commits:
+#   push               a change to this site
+#   repository_dispatch  a product repository pushed or published a release
+#                      (each carries a small notify-site.yml that sends it)
+#   schedule           the net under that: anything a dispatch missed, or a
+#                      repository without the token, is picked up within the
+#                      half hour
+#   workflow_dispatch  the Run workflow button
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    types: [repo-updated]
+  schedule:
+    - cron: '7,37 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -11,8 +24,9 @@ permissions:
   id-token: write
 
 # One Pages deployment at a time. Without this, two pushes in quick succession
-# race and the older build can land last, publishing stale output. Queued runs
-# are not cancelled, so every commit still gets deployed, just in order.
+# race and the older build can land last, publishing stale output. A run that
+# is still waiting is superseded by a newer one, which is harmless here: the
+# newer run fetches the newer data.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -20,11 +34,56 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.gate.outputs.changed }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # A push lands on GitHub a moment before the API reports it everywhere.
+      # A dispatch is sent the instant the product repository's push completes,
+      # so give the API that moment rather than fetching the old state and
+      # concluding nothing changed.
+      - name: Let the API catch up with the push that sent us
+        if: github.event_name == 'repository_dispatch'
+        run: sleep 20
+
+      # Fresh on every run: the pages are only ever as current as this step.
+      # The workflow's own token reads public repositories at a thousand
+      # requests an hour; the fetch makes about forty.
+      - name: Fetch the repository pages' data from GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-repo-data.mjs
+
+      # A scheduled or dispatched run that fetched exactly what is already live
+      # stops here, so the half-hourly net does not become forty-eight
+      # identical deploys a day. A push to this site, or the Run workflow
+      # button, always deploys. If the live stamp cannot be read, deploy: a
+      # spare deploy costs a minute, a missed one leaves the site stale.
+      - name: Compare with what is live
+        id: gate
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          fetched=$(node -p "require('./public/sync.json').stamp")
+          live=$(curl -fsS --max-time 20 "https://www.vaporsoft.dev/sync.json?t=$(date +%s)"             | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).stamp" 2>/dev/null || echo none)
+          echo "fetched $fetched, live $live"
+          if { [ "$EVENT" = schedule ] || [ "$EVENT" = repository_dispatch ]; } && [ "$fetched" = "$live" ]; then
+            echo "::notice::Nothing changed on GitHub since the live build ($live). Not deploying."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Resolve contact form endpoint
+        if: steps.gate.outputs.changed == 'true'
         shell: bash
         env:
           FORMSPREE_ENDPOINT_VAR: ${{ vars.PUBLIC_FORMSPREE_ENDPOINT }}
@@ -37,16 +96,11 @@ jobs:
           fi
           echo "PUBLIC_FORMSPREE_ENDPOINT=$endpoint" >> "$GITHUB_ENV"
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-
       # ci.yml does not run on pushes to main, so a commit pushed straight to
       # main would otherwise deploy without the palette gate. Builtins only, so
       # it needs no install; see the brand job in ci.yml.
       - name: Check the palette and the rendered marks
+        if: steps.gate.outputs.changed == 'true'
         run: node scripts/check-palette.mjs
 
       # The manual NFTY publishes is a site of its own, built here rather than
@@ -56,6 +110,7 @@ jobs:
       # never committed — 7.7 MB of content-hashed files that change wholesale
       # on every docs edit.
       - name: Set up Python for the external documentation
+        if: steps.gate.outputs.changed == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -63,13 +118,18 @@ jobs:
       # No npm ci here: build-external-docs.mjs imports only node builtins, and
       # withastro/action below runs its own install, so one here was a second.
       - name: Build the documentation this site hosts
+        if: steps.gate.outputs.changed == 'true'
         run: npm run docs:external
 
+      # The data fetched above is already on disk, so the prebuild hook's
+      # --if-missing fetch finds it and does nothing.
       - name: Install, build, and upload site
+        if: steps.gate.outputs.changed == 'true'
         uses: withastro/action@v5
 
   deploy:
     needs: build
+    if: needs.build.outputs.changed == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

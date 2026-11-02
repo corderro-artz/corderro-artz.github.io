@@ -1,23 +1,35 @@
-// Fetch everything the repository pages render, once, and commit the result.
+// Fetch everything the repository pages render.
 //
 // The alternative is calling the API from the browser, which cannot work here:
 // unauthenticated requests are limited to sixty an hour *per IP address*,
 // shared, so one office network exhausts it and the page renders empty for
-// everyone behind it. A build-time fetch gets five thousand an hour and ships
-// a page that needs no loading state at all. The cost is staleness, which
-// re-running this answers.
+// everyone behind it. A build-time fetch gets thousands an hour and ships a
+// page that needs no loading state at all.
 //
-//   node scripts/fetch-repo-data.mjs
+// Staleness is answered by when this runs, not by the browser. It runs at the
+// start of every deploy (.github/workflows/deploy.yml), which happens on every
+// push here, whenever a product repository asks for one on push or release, and
+// on a half-hourly schedule as the net under both. Nothing it writes is
+// committed: a committed snapshot is a snapshot that rots.
 //
-// Writes src/data/repos.json and mirrors every readme image into
-// public/repo-assets/. Both are committed: the site build reads the JSON and
-// never touches the network.
+//   node scripts/fetch-repo-data.mjs               always fetch
+//   node scripts/fetch-repo-data.mjs --if-missing  only when there is no data
+//                                                  yet (the prebuild/predev hook)
+//
+// Writes
+//   src/data/repos.json     what the pages render
+//   src/data/sync.json      when it was fetched, and a stamp of what
+//   public/sync.json        the same, served, so a scheduled deploy can compare
+//                           what it just fetched with what is live and stop
+//                           early when nothing changed
+//   public/repo-assets/     every readme image, mirrored
 //
 // Authentication is optional but strongly advised — without a token the
-// sixty-an-hour limit applies to this script too, and it makes roughly thirty
+// sixty-an-hour limit applies to this script too, and it makes roughly forty
 // calls. It reads GITHUB_TOKEN or GH_TOKEN, and falls back to `gh auth token`.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,6 +38,9 @@ const OWNER = 'corderro-artz';
 const REPOS = ['akira', 'kata', 'nfty', 'crispr'];
 const ASSET_DIR = join(ROOT, 'public', 'repo-assets');
 const OUT = join(ROOT, 'src', 'data', 'repos.json');
+const SYNC_OUT = [join(ROOT, 'src', 'data', 'sync.json'), join(ROOT, 'public', 'sync.json')];
+
+if (process.argv.includes('--if-missing') && existsSync(OUT) && SYNC_OUT.every(existsSync)) process.exit(0);
 
 // An image larger than this is a screenshot recorded at full resolution, not a
 // diagram. Mirroring it would put a megabyte in the repository for something
@@ -164,6 +179,12 @@ async function readme(repo, full, branch) {
   html = html.replace(/<img\b[^>]*src="([^"]+)"[^>]*>/g, (m, u) => (isBadge(u) ? '' : m));
   html = html.replace(/<p[^>]*>\s*<\/p>/g, '');
   report.badgesDropped = before - (html.match(/<img\b/g) || []).length;
+  // A readme groups its badges under a bold label on a line of its own —
+  // Access, Delivery, Runtime — closed with a <br> so the badges sit under
+  // it. With the badges gone the label is all that is left, and it rendered as
+  // a run of headings with nothing under them. The <br> is what tells such a
+  // label from a bold tagline, which never has one.
+  html = html.replace(/<p[^>]*>\s*<strong>[^<]{1,40}<\/strong>\s*(?:<br\s*\/?>\s*)+<\/p>\s*/g, '');
 
   // 6 — GitHub carries a second plain-text copy of every code block in a data
   // attribute, for its own copy button. Dead weight that doubles the payload.
@@ -317,7 +338,22 @@ for (const name of REPOS) {
 }
 
 mkdirSync(dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(out, null, 0) + '\n');
+const body = JSON.stringify(out, null, 0);
+writeFileSync(OUT, body + '\n');
+
+// The stamp is a digest of the content alone. The time of the fetch is kept out
+// of it, or every run would look like a change and the scheduled deploy could
+// never tell "nothing happened" from "something did". Every repository's
+// latest commit is in the content, so a change to NFTY's manual, which is built
+// from NFTY's default branch, changes the stamp too.
+const sync = {
+  syncedAt: new Date().toISOString(),
+  stamp: createHash('sha256').update(body).digest('hex').slice(0, 16)
+};
+for (const file of SYNC_OUT) {
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify(sync) + '\n');
+}
 
 // A readme that lost its ids renders a contents column that goes nowhere, and
 // the page would still build and still look right. Fail here instead.
@@ -326,4 +362,4 @@ if (broken.length) {
   console.error('! No heading ids survived for: ' + broken.map(([k]) => k).join(', '));
   process.exit(1);
 }
-console.log(`\nwrote src/data/repos.json (${(JSON.stringify(out).length / 1024).toFixed(0)} KB)`);
+console.log(`\nwrote src/data/repos.json (${(body.length / 1024).toFixed(0)} KB), stamp ${sync.stamp}`);

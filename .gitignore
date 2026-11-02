@@ -9,3 +9,12 @@ backup/
 # Documentation sites this site hosts but does not author. Built into public/
 # by scripts/build-external-docs.mjs, in CI, on every deploy.
 public/*/docs/
+
+# The repository pages' data. Fetched from GitHub at the start of every deploy
+# by scripts/fetch-repo-data.mjs, and locally by the prebuild/predev hook when
+# it is missing. Committed, it was a snapshot that went stale the moment a
+# product repository moved.
+src/data/repos.json
+src/data/sync.json
+public/sync.json
+public/repo-assets/

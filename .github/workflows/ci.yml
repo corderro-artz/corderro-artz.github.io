@@ -53,6 +53,10 @@ jobs:
         # PUBLIC_FORMSPREE_ENDPOINT is deliberately not provided. The contact
         # page falls back to an empty endpoint and renders a "not configured"
         # notice, so the build stays valid without exposing the secret to CI.
+        # The prebuild hook fetches the repository pages' data, which is not
+        # committed; the token lifts it off the sixty-an-hour anonymous limit.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run build
 
       - name: Verify expected pages were emitted
@@ -75,6 +79,7 @@ jobs:
             akira/docs/index.html
             kata/docs/index.html
             crispr/docs/index.html
+            sync.json
           "
           for page in $pages; do
             if [ ! -s "dist/$page" ]; then

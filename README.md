@@ -9,10 +9,40 @@ Static site for www.vaporsoft.dev — minimal landing page, product showcase, co
 - **/vaporsoft/**, **/vaporsoft/icons/**, **/vaporsoft/palette/** — The studio's
   console: brand assets, marks and palette
 - **/&lt;repo&gt;/** and **/&lt;repo&gt;/docs/** — A console per repository (akira, kata,
-  nfty, crispr), rendered from `src/data/repos.json`; `/nfty/docs/` is instead
-  the hosted MkDocs manual built by `npm run docs:external`
+  nfty, crispr), rendered from data fetched from GitHub at build time (see
+  below); `/nfty/docs/` is instead the hosted MkDocs manual built by
+  `npm run docs:external`
 - **/components/** — Design system component reference (unlisted, `noindex`)
 - **/404.html** — Served by GitHub Pages for any unknown path
+
+## Keeping the repository pages current
+
+The repository pages are static, and they are rebuilt whenever what they show
+changes. `scripts/fetch-repo-data.mjs` fetches each repository's details,
+readme, releases and recent commits at the start of every deploy; nothing it
+writes is committed (`src/data/repos.json`, `public/repo-assets/`,
+`public/sync.json`). The deploy runs:
+
+- on every push to `main` here;
+- when a product repository asks for it. Each of akira, kata, nfty and crispr
+  carries `.github/workflows/notify-site.yml`, which sends a
+  `repo-updated` dispatch on push to `main` and on every release. It needs a
+  secret, `SITE_DISPATCH_TOKEN`, in that repository: a fine-grained token with
+  access to this repository only and **Contents: Read and write**. Without it,
+  the workflow says so and exits cleanly;
+- every half hour, as the net under both;
+- from the Actions tab, with **Run workflow**.
+
+A scheduled or dispatched run compares the stamp of what it fetched with the
+one in the live `/sync.json` and stops before building when they match, so the
+schedule does not turn into a deploy every half hour.
+
+Each page says how old its record is ("Synced 12 min ago") and, in the browser,
+checks the repository's last push with one unauthenticated API call. If GitHub
+has something newer, the line says the page is updating.
+
+Locally, `npm run dev` and `npm run build` fetch once if there is no data yet;
+`npm run repos:fetch` refreshes it.
 
 ## Brand assets
 
